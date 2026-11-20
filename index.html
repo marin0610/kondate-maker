@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>献立メーカー</title>
+<style>
+  :root{
+    --accent:#ea580c;
+    --accent-dark:#c2410c;
+    --accent-light:#fff3e8;
+    --ink:#1f2937;
+    --muted:#6b7280;
+    --line:#e7e0d8;
+    --bg:#fffaf4;
+    --card:#ffffff;
+    --fill:#f7f2ec;
+    --good:#16a34a;
+    --good-bg:#f0fdf4;
+    --warn:#b45309;
+    --warn-bg:#fffbeb;
+    --danger:#dc2626;
+    --danger-bg:#fef2f2;
+    --font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:var(--font-family);
+    background:var(--bg);
+    color:var(--ink);
+    font-size:16px;
+    line-height:1.55;
+    -webkit-text-size-adjust:100%;
+  }
+  header{
+    position:sticky;top:0;z-index:30;
+    background:var(--card);
+    border-bottom:1px solid var(--line);
+    padding:10px 14px 0;
+  }
+  header h1{font-size:20px;margin:0 0 2px;}
+  header .sub{font-size:12px;color:var(--muted);margin-bottom:8px;}
+  nav.tabs{display:flex;gap:4px;overflow-x:auto;}
+  nav.tabs button{
+    flex:1;white-space:nowrap;
+    border:1px solid var(--line);border-bottom:none;
+    background:var(--fill);color:var(--ink);
+    border-radius:10px 10px 0 0;
+    padding:10px 6px;font-size:15px;cursor:pointer;
+  }
+  nav.tabs button.active{background:var(--accent);color:#fff;font-weight:700;border-color:var(--accent);}
+  main{padding:14px;max-width:760px;margin:0 auto;}
+  section.tab{display:none;}
+  section.tab.active{display:block;}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:14px;margin-bottom:14px;
+    box-shadow:0 1px 2px rgba(0,0,0,.04);
+  }
+  .card h2{font-size:17px;margin:0 0 8px;}
+  .card h3{font-size:15px;margin:14px 0 6px;}
+  .note{font-size:13px;color:var(--muted);}
+  details.help{margin:6px 0 10px;}
+  details.help summary{font-size:13px;color:var(--accent-dark);cursor:pointer;}
+  details.help .help-body{font-size:13px;color:var(--muted);padding:6px 2px;}
+  label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px;}
+  input[type="text"],input[type="number"],input[type="url"],select{
+    width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;
+    font-size:16px;background:#fff;color:var(--ink);
+  }
+  .row{display:flex;gap:8px;}
+  .row>*{flex:1;}
+  .btn{
+    display:inline-block;border:1px solid var(--line);background:var(--card);color:var(--ink);
+    border-radius:10px;padding:11px 14px;font-size:15px;cursor:pointer;text-align:center;
+  }
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700;}
+  .btn.small{padding:7px 10px;font-size:13px;border-radius:8px;}
+  .btn.block{display:block;width:100%;margin-top:10px;}
+  .btn:disabled{opacity:.5;cursor:default;}
+  .btn.danger{color:var(--danger);border-color:#fecaca;}
+  .status{font-size:14px;margin:10px 0;min-height:1.2em;}
+  .status.err{color:var(--danger);}
+  .status.ok{color:var(--good);}
+  /* レシピカード */
+  .recipe{
+    display:flex;gap:12px;background:var(--card);border:1px solid var(--line);
+    border-radius:14px;padding:10px;margin-bottom:10px;cursor:pointer;align-items:stretch;
+  }
+  .rimg{
+    position:relative;flex:0 0 96px;width:96px;min-height:96px;border-radius:10px;
+    background:var(--accent-light);overflow:hidden;
+  }
+  .rimg .ph{
+    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    color:var(--accent-dark);font-size:30px;text-align:center;padding:4px;
+  }
+  .rimg .ph .phname{font-size:10px;margin-top:2px;line-height:1.3;}
+  .rimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .rbody{flex:1;min-width:0;}
+  .rname{font-size:16px;font-weight:700;margin:0 0 2px;}
+  .rdesc{font-size:13px;color:var(--muted);margin:0 0 6px;}
+  .rmeta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;}
+  .price{font-size:18px;font-weight:800;color:var(--accent-dark);}
+  .price small{font-size:12px;font-weight:400;color:var(--muted);}
+  .badge{
+    display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);
+    background:var(--fill);color:var(--ink);
+  }
+  .badge.good{background:var(--good-bg);border-color:#bbf7d0;color:var(--good);font-weight:700;}
+  .badge.sale{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8;font-weight:700;}
+  .badge.warn{background:var(--warn-bg);border-color:#fde68a;color:var(--warn);font-weight:700;}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
+  .chips button{
+    border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 13px;font-size:14px;cursor:pointer;
+  }
+  .chips button.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;}
+  /* 一覧の行 */
+  .item{
+    display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);
+  }
+  .item:last-child{border-bottom:none;}
+  .item .grow{flex:1;min-width:0;}
+  .item .ttl{font-weight:700;}
+  .item .sub2{font-size:13px;color:var(--muted);}
+  .empty{color:var(--muted);font-size:14px;padding:8px 0;}
+  /* 詳細オーバーレイ */
+  .overlay{
+    position:fixed;inset:0;z-index:50;background:var(--bg);overflow-y:auto;display:none;
+  }
+  .overlay.open{display:block;}
+  .overlay .inner{max-width:760px;margin:0 auto;padding:14px;}
+  .overlay .hero{
+    position:relative;border-radius:14px;overflow:hidden;background:var(--accent-light);
+    min-height:180px;margin-bottom:12px;
+  }
+  .overlay .hero .ph{
+    position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    font-size:56px;color:var(--accent-dark);
+  }
+  .overlay .hero .ph .phname{font-size:13px;margin-top:4px;}
+  .overlay .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  table.ing{width:100%;border-collapse:collapse;font-size:15px;}
+  table.ing td,table.ing th{padding:7px 4px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;}
+  table.ing td.num,table.ing th.num{text-align:right;white-space:nowrap;}
+  .st{font-size:12px;font-weight:700;white-space:nowrap;}
+  .st.stock{color:var(--good);}
+  .st.sale{color:#1d4ed8;}
+  .st.buy{color:var(--warn);}
+  .st.home{color:var(--muted);}
+  ol.steps{padding-left:22px;margin:6px 0;}
+  ol.steps li{margin-bottom:6px;}
+  .total-box{
+    background:var(--accent-light);border-radius:12px;padding:12px;margin:12px 0;font-size:15px;
+  }
+  .total-box .big{font-size:22px;font-weight:800;color:var(--accent-dark);}
+  a.ext{color:var(--accent-dark);}
+  .seg{display:flex;gap:6px;margin:8px 0;}
+  .seg button{flex:1;padding:9px;border-radius:10px;border:1px solid var(--line);background:var(--card);font-size:14px;cursor:pointer;}
+  .seg button.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;}
+  footer{padding:20px 14px 40px;text-align:center;color:var(--muted);font-size:12px;}
+</style>
+</head>
+<body>
+<header>
+  <h1>🍳 献立メーカー</h1>
+  <div class="sub">特売と冷蔵庫の在庫から、安くて大量に作れる献立を提案します</div>
+  <nav class="tabs" id="tabbar">
+    <button data-tab="suggest" class="active">献立提案</button>
+    <button data-tab="recipes">レシピ</button>
+    <button data-tab="shops">お店・特売</button>
+    <button data-tab="fridge">冷蔵庫</button>
+    <button data-tab="settings">設定</button>
+  </nav>
+</header>
+<main>
+  <!-- 献立提案 -->
+  <section class="tab active" id="tab-suggest">
+    <div class="card">
+      <h2>いま作れる献立</h2>
+      <div class="note">冷蔵庫の在庫だけで作れるもの（1食単価の安い順）</div>
+      <div id="suggest-makeable" style="margin-top:10px;"></div>
+    </div>
+    <div class="card">
+      <h2>あと少しで作れる献立</h2>
+      <div class="note">特売で買えるもの・買い足しが少しで済むもの（1食単価の安い順）</div>
+      <div id="suggest-almost" style="margin-top:10px;"></div>
+    </div>
+    <div class="card">
+      <h2>使い方</h2>
+      <div class="note">①「お店・特売」でいつものお店と特売メモを入れる → ②「冷蔵庫」に在庫を入れる → ③この画面に、安く作れる献立が並びます。献立をタップすると材料・作り方・買い物リストが見られます。</div>
+    </div>
+  </section>
+
+  <!-- レシピ一覧 -->
+  <section class="tab" id="tab-recipes">
+    <div class="chips" id="recipe-chips"></div>
+    <div id="recipe-list"></div>
+  </section>
+
+  <!-- お店・特売 -->
+  <section class="tab" id="tab-shops">
+    <div class="card">
+      <h2>お店を探す</h2>
+      <details class="help">
+        <summary>お店の探し方について</summary>
+        <div class="help-body">4つの方法があります。①現在地から探す（位置情報を使い、近い順に表示）②店名・地名で検索（例：玉出 恵美須）③郵便番号から探す（引っ越した直後など現在地が使えないとき）④店名を手で入力。地図データはOpenStreetMapの無料データを使っています。見つけたお店は「登録」を押すと「いつものお店」に入ります。</div>
+      </details>
+      <button class="btn primary block" id="btn-nearby">📍 現在地から近くの店を探す</button>
+      <h3>店名・地名で検索</h3>
+      <div class="row">
+        <input type="text" id="search-text" placeholder="例：玉出 恵美須">
+        <button class="btn" id="btn-textsearch" style="flex:0 0 96px;">検索</button>
+      </div>
+      <h3>郵便番号から探す</h3>
+      <div class="row">
+        <input type="text" id="search-zip" inputmode="numeric" placeholder="例：5560003（ハイフンなし）">
+        <button class="btn" id="btn-zipsearch" style="flex:0 0 96px;">検索</button>
+      </div>
+      <div class="status" id="shop-search-status"></div>
+      <div id="shop-search-results"></div>
+      <h3>手動で登録</h3>
+      <label>店名</label>
+      <input type="text" id="manual-shop-name" placeholder="例：近所の八百屋">
+      <label>チラシ掲載ページのURL（任意）</label>
+      <input type="url" id="manual-shop-flyer" placeholder="https://…">
+      <button class="btn block" id="btn-manual-shop">この内容で登録</button>
+    </div>
+    <div class="card">
+      <h2>いつものお店</h2>
+      <div id="shop-list"></div>
+    </div>
+    <div class="card">
+      <h2>特売メモ</h2>
+      <details class="help">
+        <summary>特売メモについて</summary>
+        <div class="help-body">チラシで見つけた特売を、手でメモする欄です（例：鶏もも肉 100gあたり 88円）。写真の読み取りはしません。ここに入れた食材は、献立の計算で特売価格が使われます。お店を選ぶと、そのお店のメモとして残ります。</div>
+      </details>
+      <label>食材名</label>
+      <input type="text" id="sale-name" placeholder="例：鶏もも肉">
+      <div class="row">
+        <div>
+          <label>価格（円）</label>
+          <input type="number" id="sale-price" inputmode="numeric" placeholder="88">
+        </div>
+        <div>
+          <label>単位</label>
+          <select id="sale-unit">
+            <option value="100g">100gあたり</option>
+            <option value="個">1個あたり</option>
+            <option value="パック">1パックあたり</option>
+            <option value="袋">1袋あたり</option>
+            <option value="本">1本あたり</option>
+            <option value="缶">1缶あたり</option>
+            <option value="丁">1丁あたり</option>
+            <option value="玉">1玉あたり</option>
+            <option value="箱">1箱あたり</option>
+          </select>
+        </div>
+      </div>
+      <label>お店（任意）</label>
+      <select id="sale-shop"></select>
+      <button class="btn primary block" id="btn-add-sale">特売メモを追加</button>
+      <div id="sale-list" style="margin-top:10px;"></div>
+    </div>
+  </section>
+
+  <!-- 冷蔵庫 -->
+  <section class="tab" id="tab-fridge">
+    <div class="card">
+      <h2>冷蔵庫の在庫</h2>
+      <div class="note">家にある食材を入れておくと、献立提案で優先的に使います。</div>
+      <label>食材名</label>
+      <input type="text" id="stock-name" placeholder="例：鶏もも肉">
+      <label>量（目安でOK）</label>
+      <input type="text" id="stock-qty" placeholder="例：600g、2個、1袋">
+      <button class="btn primary block" id="btn-add-stock">在庫を追加</button>
+      <div id="stock-list" style="margin-top:10px;"></div>
+    </div>
+  </section>
+
+  <!-- 設定 -->
+  <section class="tab" id="tab-settings">
+    <div class="card">
+      <h2>データのバックアップ</h2>
+      <div class="note">データはこの端末のブラウザ内（localStorage）に保存されています。機種変更やブラウザのデータ消去に備えて、ときどき書き出しておくのがおすすめです。</div>
+      <button class="btn block" id="btn-export">データを書き出す（JSON）</button>
+      <label>データを読み込む（JSONファイル）</label>
+      <input type="file" id="file-import" accept=".json,application/json">
+      <div class="status" id="backup-status"></div>
+    </div>
+    <div class="card">
+      <h2>このアプリについて</h2>
+      <div class="note">近所のお店の特売と冷蔵庫の在庫から、「安くて大量に作れる献立」を提案するアプリです。主婦層と一人暮らしで自炊する人を対象にしていて、1食あたりの単価が見えるのが特長です。レシピはアプリ内蔵のものだけを使い、分量と手順は自前の言葉で書いています。料理写真は後からAI生成画像を用意して差し込む方針で、レシピデータの画像欄（img）にファイル名が入っています（画像が無い間はプレースホルダが表示されます）。チラシの価格データは自動取得せず、特売メモとして手入力する形式です。</div>
+      <button class="btn danger block" id="btn-clear">データをすべて消す</button>
+    </div>
+  </section>
+</main>
+<footer>献立メーカー ／ データはこの端末のブラウザ内に保存されます</footer>
+
+<!-- レシピ詳細 -->
+<div class="overlay" id="recipe-detail">
+  <div class="inner">
+    <button class="btn" id="btn-detail-back">← 戻る</button>
+    <div id="detail-body" style="margin-top:12px;"></div>
+  </div>
+</div>
+
+<script>
+"use strict";
+// ===== レシピデータ（内蔵） =====
+// 価格の目安：per = ふだんの価格の目安。単位が g / ml のものは「100あたり」、個・本・袋などのものは「1つあたり」の円。
+// fixed がある材料は調味料などの固定費（円）。main:false は「家にある前提」の材料（作れる判定に数えない）。
+// img は料理写真のファイル名（後からAI生成画像を同名で置く。無い場合はプレースホルダ表示）。
+const RECIPES = [
+  {
+    id:"chicken-curry", name:"大盛りチキンカレー", img:"curry.jpg", emoji:"🍛", cat:"カレー",
+    servings:4, time:35,
+    desc:"鶏ももたっぷりの定番カレー。大鍋で作って2食分。",
+    ingredients:[
+      {n:"鶏もも肉", amt:600, unit:"g", per:98, main:true},
+      {n:"玉ねぎ", amt:3, unit:"個", per:40, main:true},
+      {n:"じゃがいも", amt:3, unit:"個", per:40, main:true},
+      {n:"にんじん", amt:1, unit:"本", per:50, main:true},
+      {n:"カレールー", amt:0.5, unit:"箱", per:200, main:true},
+      {n:"米", amt:450, unit:"g", per:50, main:true},
+      {n:"サラダ油", fixed:10, main:false}
+    ],
+    steps:[
+      "鶏肉は大きめの一口大、玉ねぎはくし切り、じゃがいもとにんじんは大きめに切る。",
+      "鍋に油を熱して鶏肉と玉ねぎをしっかり炒め、じゃがいもとにんじんを加えてさらに炒める。",
+      "水をひたひたまで入れて15分ほど煮て、火を止めてルーを溶かし入れる。",
+      "弱火で5分煮てとろみがついたら、炊きたてご飯にたっぷりかける。"
+    ]
+  },
+  {
+    id:"millefeuille-nabe", name:"豚バラ白菜のミルフィーユ鍋", img:"nabe.jpg", emoji:"🍲", cat:"鍋",
+    servings:4, time:25,
+    desc:"白菜と豚バラを重ねるだけ。締めのうどんまで大満足。",
+    ingredients:[
+      {n:"豚バラ肉", amt:500, unit:"g", per:148, main:true},
+      {n:"白菜", amt:800, unit:"g", per:25, main:true},
+      {n:"冷凍うどん", amt:2, unit:"玉", per:40, main:true},
+      {n:"顆粒だし・ポン酢など", fixed:30, main:false}
+    ],
+    steps:[
+      "白菜と豚バラを交互に重ねて5cm幅に切り、鍋にぎっしり並べる。",
+      "水と顆粒だしを加えてフタをし、中火で15分蒸し煮にする。",
+      "ポン酢やごまだれで食べる。残った汁に冷凍うどんを入れて締める。"
+    ]
+  },
+  {
+    id:"miso-butter-udon", name:"濃厚みそバター肉うどん", img:"udon.jpg", emoji:"🍜", cat:"うどん",
+    servings:2, time:15,
+    desc:"ひき肉ともやしをみそで炒めてのせる、こってり温うどん。",
+    ingredients:[
+      {n:"冷凍うどん", amt:2, unit:"玉", per:40, main:true},
+      {n:"豚ひき肉", amt:200, unit:"g", per:108, main:true},
+      {n:"もやし", amt:1, unit:"袋", per:30, main:true},
+      {n:"長ねぎ", amt:0.5, unit:"本", per:60, main:true},
+      {n:"味噌だれ", fixed:20, main:false},
+      {n:"バター", fixed:20, main:false}
+    ],
+    steps:[
+      "フライパンでひき肉ともやしを炒め、味噌だれで濃いめに味つけする。",
+      "冷凍うどんを表示通りゆでて湯切りし、熱々のだし汁（めんつゆを薄めたもの）に入れる。",
+      "炒めた具をのせ、刻んだ長ねぎとバターをのせて溶かしながら食べる。"
+    ]
+  },
+  {
+    id:"niku-udon", name:"甘辛肉うどん", img:"niku-udon.jpg", emoji:"🍜", cat:"うどん",
+    servings:2, time:15,
+    desc:"甘辛く煮た豚こまと玉ねぎをのせる、間違いない一杯。",
+    ingredients:[
+      {n:"冷凍うどん", amt:2, unit:"玉", per:40, main:true},
+      {n:"豚こま肉", amt:250, unit:"g", per:108, main:true},
+      {n:"玉ねぎ", amt:1, unit:"個", per:40, main:true},
+      {n:"めんつゆ・砂糖など", fixed:30, main:false}
+    ],
+    steps:[
+      "豚こまと玉ねぎを、めんつゆと砂糖で甘辛く煮る。",
+      "冷凍うどんをゆでてだし汁に入れ、肉と玉ねぎを汁ごとのせる。",
+      "好みで七味をふる。"
+    ]
+  },
+  {
+    id:"mabo-don", name:"麻婆豆腐丼", img:"mabodofu.jpg", emoji:"🍚", cat:"丼",
+    servings:3, time:20,
+    desc:"豆腐2丁とひき肉で作る、ご飯が進むピリ辛丼。",
+    ingredients:[
+      {n:"木綿豆腐", amt:2, unit:"丁", per:60, main:true},
+      {n:"豚ひき肉", amt:250, unit:"g", per:108, main:true},
+      {n:"長ねぎ", amt:1, unit:"本", per:60, main:true},
+      {n:"米", amt:300, unit:"g", per:50, main:true},
+      {n:"豆板醤・味噌などの調味料", fixed:40, main:false}
+    ],
+    steps:[
+      "豆腐は大きめに切って軽く水切りする。長ねぎはみじん切りにする。",
+      "フライパンでひき肉を炒め、豆板醤と味噌で味をつけ、水と鶏がらスープの素を加える。",
+      "豆腐と長ねぎを加えて3分煮て、水溶き片栗粉でとろみをつける。",
+      "ご飯にたっぷりかける。"
+    ]
+  },
+  {
+    id:"buta-kimchi", name:"豚キムチ炒め", img:"kimchi-itame.jpg", emoji:"🌶️", cat:"炒め物",
+    servings:2, time:12,
+    desc:"豚こま×キムチ×もやしの最強コスパ炒め。ご飯付き。",
+    ingredients:[
+      {n:"豚こま肉", amt:300, unit:"g", per:108, main:true},
+      {n:"キムチ", amt:200, unit:"g", per:70, main:true},
+      {n:"もやし", amt:1, unit:"袋", per:30, main:true},
+      {n:"米", amt:200, unit:"g", per:50, main:true},
+      {n:"ごま油・醤油など", fixed:10, main:false}
+    ],
+    steps:[
+      "豚こまを強火で炒め、色が変わったらキムチを汁ごと加える。",
+      "もやしを加えてさっと炒め、醤油とごま油で仕上げる。",
+      "炊きたてご飯と一緒にどうぞ。"
+    ]
+  },
+  {
+    id:"teriyaki-don", name:"鶏の照り焼き丼", img:"teriyaki.jpg", emoji:"🍚", cat:"丼",
+    servings:2, time:18,
+    desc:"甘辛だれをからめた鶏ももと、ふわふわ卵の丼。",
+    ingredients:[
+      {n:"鶏もも肉", amt:400, unit:"g", per:98, main:true},
+      {n:"玉ねぎ", amt:1, unit:"個", per:40, main:true},
+      {n:"卵", amt:2, unit:"個", per:25, main:true},
+      {n:"米", amt:300, unit:"g", per:50, main:true},
+      {n:"醤油・みりん・砂糖など", fixed:20, main:false}
+    ],
+    steps:[
+      "鶏肉は一口大に切り、皮目から焼いてこんがりさせる。玉ねぎも加えて炒める。",
+      "醤油・みりん・砂糖を加えて照りが出るまで煮からめる。",
+      "ご飯にのせ、半熟に焼いた卵をのせる。"
+    ]
+  },
+  {
+    id:"butabara-daikon", name:"豚バラ大根の煮物", img:"nimono.jpg", emoji:"🍢", cat:"煮物",
+    servings:3, time:30,
+    desc:"大根に豚のうまみがしみる、ほっとする煮物。",
+    ingredients:[
+      {n:"豚バラ肉", amt:300, unit:"g", per:148, main:true},
+      {n:"大根", amt:600, unit:"g", per:18, main:true},
+      {n:"醤油・みりん・だしなど", fixed:30, main:false}
+    ],
+    steps:[
+      "大根は厚めのいちょう切りにして下ゆでする。豚バラは大きめに切る。",
+      "鍋で豚バラを炒め、大根とだし汁を加える。",
+      "醤油とみりんで味をつけ、落としぶたをして20分煮る。"
+    ]
+  },
+  {
+    id:"soboro-don", name:"鶏そぼろ丼", img:"soboro.jpg", emoji:"🍚", cat:"丼",
+    servings:2, time:15,
+    desc:"甘辛そぼろと炒り卵の二色丼。安くて確実にうまい。",
+    ingredients:[
+      {n:"鶏ひき肉", amt:300, unit:"g", per:98, main:true},
+      {n:"卵", amt:3, unit:"個", per:25, main:true},
+      {n:"米", amt:300, unit:"g", per:50, main:true},
+      {n:"醤油・砂糖・酒など", fixed:20, main:false}
+    ],
+    steps:[
+      "ひき肉を醤油・砂糖・酒で炒り煮にして、そぼろにする。",
+      "卵は砂糖を少し入れて炒り卵にする。",
+      "ご飯に半分ずつのせて完成。"
+    ]
+  },
+  {
+    id:"kimchi-nabe", name:"キムチ鍋", img:"kimchi-nabe.jpg", emoji:"🍲", cat:"鍋",
+    servings:4, time:25,
+    desc:"豚バラとキムチの大鍋。体が温まる濃い味。",
+    ingredients:[
+      {n:"豚バラ肉", amt:400, unit:"g", per:148, main:true},
+      {n:"キムチ", amt:300, unit:"g", per:70, main:true},
+      {n:"木綿豆腐", amt:1, unit:"丁", per:60, main:true},
+      {n:"白菜", amt:400, unit:"g", per:25, main:true},
+      {n:"もやし", amt:1, unit:"袋", per:30, main:true},
+      {n:"味噌・鶏がらスープの素など", fixed:20, main:false}
+    ],
+    steps:[
+      "鍋にごま油（分量外）で豚バラとキムチを炒める。",
+      "水と鶏がらスープの素、味噌を加え、白菜・もやし・豆腐を入れる。",
+      "15分煮たら完成。締めはご飯か麺で。"
+    ]
+  },
+  {
+    id:"sukiyaki-ni", name:"すき焼き風煮", img:"sukiyaki.jpg", emoji:"🥘", cat:"煮物",
+    servings:3, time:20,
+    desc:"豚こまで作るすき焼き風。卵をつけて食べる甘辛煮。",
+    ingredients:[
+      {n:"豚こま肉", amt:400, unit:"g", per:108, main:true},
+      {n:"白菜", amt:400, unit:"g", per:25, main:true},
+      {n:"木綿豆腐", amt:1, unit:"丁", per:60, main:true},
+      {n:"しらたき", amt:1, unit:"袋", per:60, main:true},
+      {n:"長ねぎ", amt:1, unit:"本", per:60, main:true},
+      {n:"醤油・砂糖・みりんなど", fixed:30, main:false}
+    ],
+    steps:[
+      "白菜はざく切り、豆腐は大きめ、長ねぎは斜め切りにする。",
+      "鍋に割り下（醤油・砂糖・みりん・水）を煮立て、豚こまを煮る。",
+      "野菜と豆腐としらたきを加えて10分煮て、溶き卵につけて食べる。"
+    ]
+  },
+  {
+    id:"chahan", name:"大盛りチャーハン", img:"chahan.jpg", emoji:"🍚", cat:"炒め物",
+    servings:2, time:12,
+    desc:"ウインナーと卵の王道チャーハン。パラパラのコツ付き。",
+    ingredients:[
+      {n:"米", amt:300, unit:"g", per:50, main:true},
+      {n:"卵", amt:3, unit:"個", per:25, main:true},
+      {n:"ウインナー", amt:100, unit:"g", per:150, main:true},
+      {n:"長ねぎ", amt:1, unit:"本", per:60, main:true},
+      {n:"醤油・塩こしょうなど", fixed:15, main:false}
+    ],
+    steps:[
+      "ご飯は温かいものを用意し、卵は溶いておく。ウインナーは小口切り、長ねぎはみじん切り。",
+      "強火のフライパンに油と卵、すぐご飯を入れてほぐしながら炒める。",
+      "ウインナーと長ねぎを加え、鍋肌から醤油を回し入れて仕上げる。"
+    ]
+  },
+  {
+    id:"yakisoba", name:"ソース焼きそば", img:"yakisoba.jpg", emoji:"🍝", cat:"麺",
+    servings:2, time:12,
+    desc:"麺3玉の山盛り焼きそば。キャベツともやしでかさ増し。",
+    ingredients:[
+      {n:"焼きそば麺", amt:3, unit:"玉", per:35, main:true},
+      {n:"豚こま肉", amt:200, unit:"g", per:108, main:true},
+      {n:"キャベツ", amt:300, unit:"g", per:20, main:true},
+      {n:"もやし", amt:1, unit:"袋", per:30, main:true},
+      {n:"ソース", fixed:15, main:false}
+    ],
+    steps:[
+      "豚こま、キャベツ、もやしの順に炒める。",
+      "麺をほぐしながら加え、少し水を入れて蒸し炒めにする。",
+      "ソースをからめて完成。"
+    ]
+  },
+  {
+    id:"oyakodon", name:"親子丼", img:"oyakodon.jpg", emoji:"🍚", cat:"丼",
+    servings:2, time:15,
+    desc:"鶏ももと玉ねぎを卵でとじる、やさしい甘さの定番丼。",
+    ingredients:[
+      {n:"鶏もも肉", amt:300, unit:"g", per:98, main:true},
+      {n:"玉ねぎ", amt:1, unit:"個", per:40, main:true},
+      {n:"卵", amt:4, unit:"個", per:25, main:true},
+      {n:"米", amt:300, unit:"g", per:50, main:true},
+      {n:"めんつゆ・砂糖など", fixed:20, main:false}
+    ],
+    steps:[
+      "鶏肉は小さめの一口大、玉ねぎは薄切りにする。",
+      "小鍋にめんつゆと水、砂糖を煮立て、鶏肉と玉ねぎを煮る。",
+      "溶き卵を回し入れて半熟で火を止め、ご飯にのせる。"
+    ]
+  },
+  {
+    id:"hoikoro", name:"回鍋肉風キャベツ炒め", img:"hoikoro.jpg", emoji:"🥬", cat:"炒め物",
+    servings:2, time:15,
+    desc:"キャベツたっぷりの味噌だれ炒め。ご飯が止まらない。",
+    ingredients:[
+      {n:"豚バラ肉", amt:250, unit:"g", per:148, main:true},
+      {n:"キャベツ", amt:400, unit:"g", per:20, main:true},
+      {n:"ピーマン", amt:3, unit:"個", per:30, main:true},
+      {n:"米", amt:200, unit:"g", per:50, main:true},
+      {n:"味噌だれ", fixed:30, main:false}
+    ],
+    steps:[
+      "豚バラを炒めて脂を出し、キャベツとピーマンを加えて強火で炒める。",
+      "味噌だれ（味噌・醤油・砂糖・酒）をからめる。",
+      "ご飯にのせて食べても美味しい。"
+    ]
+  },
+  {
+    id:"tuna-pasta", name:"ツナとキャベツのペペロン風パスタ", img:"pasta.jpg", emoji:"🍝", cat:"麺",
+    servings:2, time:15,
+    desc:"ツナ缶2缶で具だくさん。にんにく醤油で濃い味に。",
+    ingredients:[
+      {n:"パスタ", amt:300, unit:"g", per:35, main:true},
+      {n:"ツナ缶", amt:2, unit:"缶", per:110, main:true},
+      {n:"キャベツ", amt:300, unit:"g", per:20, main:true},
+      {n:"にんにく・醤油・鷹の爪など", fixed:15, main:false}
+    ],
+    steps:[
+      "パスタを表示時間通りゆでる。ゆで汁は少し取っておく。",
+      "フライパンにツナ缶を油ごと入れ、にんにくと鷹の爪で香りを出す。キャベツを炒める。",
+      "パスタとゆで汁を加えてからめ、醤油で味を調える。"
+    ]
+  },
+  {
+    id:"nikujaga", name:"肉じゃが", img:"nikujaga.jpg", emoji:"🥔", cat:"煮物",
+    servings:3, time:30,
+    desc:"豚こまで作る肉じゃが。じゃがいも大きめで満足感。",
+    ingredients:[
+      {n:"豚こま肉", amt:250, unit:"g", per:108, main:true},
+      {n:"じゃがいも", amt:4, unit:"個", per:40, main:true},
+      {n:"玉ねぎ", amt:2, unit:"個", per:40, main:true},
+      {n:"にんじん", amt:1, unit:"本", per:50, main:true},
+      {n:"醤油・砂糖・みりん・だしなど", fixed:25, main:false}
+    ],
+    steps:[
+      "じゃがいもは大きめ、玉ねぎはくし切り、にんじんは乱切りにする。",
+      "鍋で豚こまと野菜を炒め、だし汁を加える。",
+      "醤油・砂糖・みりんで味をつけ、落としぶたで20分煮る。"
+    ]
+  },
+  {
+    id:"tonjiru", name:"具だくさん豚汁", img:"tonjiru.jpg", emoji:"🍲", cat:"鍋",
+    servings:4, time:25,
+    desc:"根菜たっぷりの豚汁。これだけで立派な主役級の汁物。",
+    ingredients:[
+      {n:"豚こま肉", amt:200, unit:"g", per:108, main:true},
+      {n:"大根", amt:300, unit:"g", per:18, main:true},
+      {n:"にんじん", amt:1, unit:"本", per:50, main:true},
+      {n:"じゃがいも", amt:2, unit:"個", per:40, main:true},
+      {n:"玉ねぎ", amt:1, unit:"個", per:40, main:true},
+      {n:"味噌・だし", fixed:30, main:false}
+    ],
+    steps:[
+      "野菜は食べやすい大きさに切る。大根とにんじんは少し小さめが煮えやすい。",
+      "鍋で豚こまと野菜を炒め、水とだしを加えて15分煮る。",
+      "味噌を溶き入れて完成。ご飯と一緒に。"
+    ]
+  },
+  {
+    id:"tori-dango-nabe", name:"鶏団子と白菜の鍋", img:"torinabe.jpg", emoji:"🍲", cat:"鍋",
+    servings:4, time:25,
+    desc:"ふわふわ鶏団子と白菜のやさしい鍋。ポン酢でさっぱり。",
+    ingredients:[
+      {n:"鶏ひき肉", amt:400, unit:"g", per:98, main:true},
+      {n:"白菜", amt:600, unit:"g", per:25, main:true},
+      {n:"木綿豆腐", amt:1, unit:"丁", per:60, main:true},
+      {n:"長ねぎ", amt:1, unit:"本", per:60, main:true},
+      {n:"だし・ポン酢など", fixed:25, main:false}
+    ],
+    steps:[
+      "鶏ひき肉に塩と片栗粉（分量外）を混ぜて団子だねを作る。",
+      "鍋にだしを煮立て、白菜と豆腐を入れる。",
+      "団子をスプーンで落とし入れ、火が通ったら長ねぎを散らす。"
+    ]
+  }
+];
+
+// ===== 計算ロジック =====
+function normName(s){
+  return String(s == null ? "" : s).replace(/[\s　・,、]/g, "").toLowerCase();
+}
+function nameMatch(a, b){
+  const na = normName(a), nb = normName(b);
+  if (!na || !nb) return false;
+  return na === nb || na.includes(nb) || nb.includes(na);
+}
+function findSale(ingName, sales){
+  return (sales || []).find(s => nameMatch(s.name, ingName)) || null;
+}
+function findStock(ingName, stock){
+  return (stock || []).find(s => nameMatch(s.name, ingName)) || null;
+}
+// 材料1つの概算コスト（円）。特売が単位換算できれば特売価格、なければ標準価格。
+function ingCost(ing, sales){
+  if (ing.fixed != null) return ing.fixed;
+  const sale = findSale(ing.n, sales);
+  if (sale){
+    if ((ing.unit === "g" || ing.unit === "ml") && sale.basis === "100g"){
+      return Math.round(ing.amt / 100 * sale.price);
+    }
+    if (sale.basis === "unit" && sale.unitName === ing.unit){
+      return Math.round(ing.amt * sale.price);
+    }
+  }
+  if (ing.unit === "g" || ing.unit === "ml") return Math.round(ing.amt / 100 * ing.per);
+  return Math.round(ing.amt * ing.per);
+}
+// レシピの評価：合計コスト、1食単価、材料ごとの状態（stock/sale/buy/home）、不足数
+function evaluateRecipe(recipe, state){
+  const items = recipe.ingredients.map(ing => {
+    const cost = ingCost(ing, state.sales);
+    let status;
+    if (!ing.main) status = "home";
+    else if (findStock(ing.n, state.stock)) status = "stock";
+    else if (findSale(ing.n, state.sales)) status = "sale";
+    else status = "buy";
+    return { ing, cost, status };
+  });
+  const total = items.reduce((a, b) => a + b.cost, 0);
+  const perMeal = Math.floor(total / recipe.servings);
+  const missing = items.filter(i => i.status === "buy");
+  const needBuy = items.filter(i => i.status === "buy" || i.status === "sale");
+  return { recipe, items, total, perMeal, missingCount: missing.length, missing, needBuy };
+}
+function haversineKm(lat1, lon1, lat2, lon2){
+  const R = 6371, toRad = d => d * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1), dLon = toRad(lon2 - lon1);
+  const a = Math.sin(dLat/2)**2 + Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+function fmtQty(ing, factor){
+  const amt = ing.amt != null ? ing.amt * (factor || 1) : null;
+  if (amt == null) return "";
+  const s = (Math.round(amt * 10) / 10).toString();
+  return s + ing.unit;
+}
+
+// ===== UI =====
+const LS_KEY = "kondate-maker:v1";
+let state = loadState();
+let currentCat = "全部";
+let detailId = null;
+let detailFactor = 1;
+
+function loadState(){
+  try {
+    const v = JSON.parse(localStorage.getItem(LS_KEY) || "null");
+    if (v && Array.isArray(v.stores) && Array.isArray(v.sales) && Array.isArray(v.stock)) return v;
+  } catch(e) {}
+  return { stores: [], sales: [], stock: [] };
+}
+function saveState(){
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e) {}
+}
+function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+function esc(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function yen(n){ return "¥" + Number(n).toLocaleString("ja-JP"); }
+
+// ---- タブ ----
+document.getElementById("tabbar").addEventListener("click", e => {
+  const btn = e.target.closest("button[data-tab]");
+  if (!btn) return;
+  document.querySelectorAll("nav.tabs button").forEach(b => b.classList.toggle("active", b === btn));
+  document.querySelectorAll("section.tab").forEach(s => s.classList.toggle("active", s.id === "tab-" + btn.dataset.tab));
+  renderAll();
+});
+
+// ---- レシピ表示 ----
+function recipeCard(ev){
+  const r = ev.recipe;
+  let badge = "";
+  if (ev.missingCount === 0){
+    const usesSale = ev.items.some(i => i.status === "sale");
+    badge = usesSale
+      ? '<span class="badge sale">特売で作れる</span>'
+      : '<span class="badge good">在庫で作れる</span>';
+  } else if (ev.missingCount <= 2){
+    badge = '<span class="badge warn">あと' + ev.missingCount + '品で作れる</span>';
+  }
+  return '<div class="recipe" data-recipe="' + r.id + '">' +
+    '<div class="rimg"><div class="ph"><div>' + r.emoji + '</div><div class="phname">' + esc(r.name) + '</div></div>' +
+    (r.img ? '<img src="' + esc(r.img) + '" alt="" loading="lazy" onerror="this.remove()">' : '') + '</div>' +
+    '<div class="rbody"><p class="rname">' + esc(r.name) + '</p>' +
+    '<p class="rdesc">' + esc(r.desc) + '</p>' +
+    '<div class="rmeta"><span class="price">' + yen(ev.perMeal) + '<small> / 1食</small></span>' +
+    '<span class="badge">' + r.servings + '食分</span><span class="badge">約' + r.time + '分</span>' + badge + '</div>' +
+    '</div></div>';
+}
+function renderSuggest(){
+  const evals = RECIPES.map(r => evaluateRecipe(r, state));
+  const makeable = evals.filter(e => e.missingCount === 0 && !e.items.some(i => i.status === "sale"))
+    .sort((a, b) => a.perMeal - b.perMeal);
+  const almost = evals.filter(e => e.missingCount > 0 ? e.missingCount <= 2 : e.items.some(i => i.status === "sale"))
+    .sort((a, b) => a.perMeal - b.perMeal);
+  const mk = document.getElementById("suggest-makeable");
+  mk.innerHTML = makeable.length
+    ? makeable.map(recipeCard).join("")
+    : '<div class="empty">まだありません。「冷蔵庫」に在庫を入れると、ここに作れる献立が出ます。</div>';
+  const al = document.getElementById("suggest-almost");
+  al.innerHTML = almost.length
+    ? almost.map(recipeCard).join("")
+    : '<div class="empty">まだありません。「お店・特売」で特売メモを入れると、ここに候補が出ます。</div>';
+}
+function renderRecipeList(){
+  const cats = ["全部"].concat(Array.from(new Set(RECIPES.map(r => r.cat))));
+  document.getElementById("recipe-chips").innerHTML = cats.map(c =>
+    '<button data-cat="' + esc(c) + '"' + (c === currentCat ? ' class="active"' : '') + '>' + esc(c) + '</button>').join("");
+  const list = RECIPES.filter(r => currentCat === "全部" || r.cat === currentCat)
+    .map(r => evaluateRecipe(r, state))
+    .sort((a, b) => a.perMeal - b.perMeal);
+  document.getElementById("recipe-list").innerHTML = list.map(recipeCard).join("");
+}
+document.getElementById("recipe-chips").addEventListener("click", e => {
+  const b = e.target.closest("button[data-cat]");
+  if (!b) return;
+  currentCat = b.dataset.cat;
+  renderRecipeList();
+});
+document.querySelector("main").addEventListener("click", e => {
+  const card = e.target.closest("[data-recipe]");
+  if (card) openDetail(card.dataset.recipe);
+});
+
+// ---- レシピ詳細 ----
+function openDetail(id){
+  detailId = id; detailFactor = 1;
+  renderDetail();
+  document.getElementById("recipe-detail").classList.add("open");
+}
+function closeDetail(){
+  document.getElementById("recipe-detail").classList.remove("open");
+  detailId = null;
+  renderAll();
+}
+document.getElementById("btn-detail-back").addEventListener("click", closeDetail);
+function statusLabel(st){
+  return { stock: '<span class="st stock">在庫あり</span>',
+           sale: '<span class="st sale">特売あり</span>',
+           buy: '<span class="st buy">買い足し</span>',
+           home: '<span class="st home">家にある前提</span>' }[st];
+}
+function cookpadLink(name){
+  return '<a class="ext" target="_blank" rel="noopener" href="https://cookpad.com/search/' + encodeURIComponent(name) + '">レシピを探す</a>';
+}
+function renderDetail(){
+  const r = RECIPES.find(x => x.id === detailId);
+  if (!r) return;
+  const ev = evaluateRecipe(r, state);
+  const f = detailFactor;
+  const rows = ev.items.map(i => {
+    const qty = i.ing.fixed != null ? "適量" : fmtQty(i.ing, f);
+    return '<tr><td>' + esc(i.ing.n) + '</td><td>' + esc(qty) + '</td>' +
+      '<td>' + statusLabel(i.status) + '</td>' +
+      '<td class="num">' + yen(i.cost * f) + '</td></tr>';
+  }).join("");
+  const shopRows = ev.needBuy.map(i =>
+    '<tr><td>' + esc(i.ing.n) + '</td><td>' + esc(fmtQty(i.ing, f)) + '</td>' +
+    '<td>' + (i.status === "sale" ? '<span class="st sale">特売メモあり</span>' : '<span class="st buy">ふだんの価格</span>') + '</td>' +
+    '<td class="num">' + yen(i.cost * f) + '</td>' +
+    '<td>' + cookpadLink(i.ing.n) + '</td></tr>').join("");
+  document.getElementById("detail-body").innerHTML =
+    '<div class="hero"><div class="ph"><div>' + r.emoji + '</div><div class="phname">' + esc(r.name) + '（写真は準備中）</div></div>' +
+    (r.img ? '<img src="' + esc(r.img) + '" alt="" onerror="this.remove()">' : '') + '</div>' +
+    '<h2 style="margin:4px 0;">' + esc(r.name) + '</h2>' +
+    '<p class="note">' + esc(r.desc) + '／ ' + r.servings + '食分 ／ 約' + r.time + '分</p>' +
+    '<div class="total-box">合計 <span class="big">' + yen(ev.total * f) + '</span>　1食あたり <span class="big">' + yen(ev.perMeal) + '</span></div>' +
+    '<div class="seg"><button data-factor="1"' + (f === 1 ? ' class="active"' : '') + '>1倍の量</button>' +
+    '<button data-factor="2"' + (f === 2 ? ' class="active"' : '') + '>2倍の量（作り置き）</button></div>' +
+    '<h3>材料と概算コスト</h3>' +
+    '<table class="ing"><tr><th>材料</th><th>分量</th><th>状態</th><th class="num">概算</th></tr>' + rows + '</table>' +
+    '<h3>作り方</h3><ol class="steps">' + r.steps.map(s => '<li>' + esc(s) + '</li>').join("") + '</ol>' +
+    '<h3>買い物リスト</h3>' +
+    (ev.needBuy.length
+      ? '<table class="ing"><tr><th>買うもの</th><th>量</th><th>価格</th><th class="num">概算</th><th></th></tr>' + shopRows + '</table>' +
+        '<p class="note">買い物の合計目安：' + yen(ev.needBuy.reduce((a, b) => a + b.cost, 0) * f) + '（特売メモがある材料は特売価格で計算）</p>'
+      : '<p class="note">買い足しは不要です。在庫だけで作れます。</p>');
+  document.querySelectorAll("#detail-body [data-factor]").forEach(b => {
+    b.addEventListener("click", () => { detailFactor = Number(b.dataset.factor); renderDetail(); });
+  });
+}
+
+// ---- お店 ----
+const SHOP_TYPE_LABEL = {
+  supermarket: "スーパー", chemist: "ドラッグストア", department_store: "百貨店・量販店",
+  convenience: "コンビニ", pharmacy: "薬局", greengrocer: "八百屋", butcher: "肉屋", seafood: "鮮魚店", store: "お店"
+};
+function shopLabel(tags){
+  if (!tags) return "お店";
+  if (tags.amenity === "pharmacy") return "薬局";
+  return SHOP_TYPE_LABEL[tags.shop] || "お店";
+}
+function setShopStatus(msg, isErr){
+  const el = document.getElementById("shop-search-status");
+  el.textContent = msg || "";
+  el.className = "status" + (isErr ? " err" : "");
+}
+function renderShopResults(results){
+  const box = document.getElementById("shop-search-results");
+  if (!results.length){
+    box.innerHTML = '<div class="empty">見つかりませんでした。検索のことばを変えるか、手動登録をお使いください。</div>';
+    return;
+  }
+  box.innerHTML = results.map((r, i) =>
+    '<div class="item"><div class="grow"><div class="ttl">' + esc(r.name) + '</div>' +
+    '<div class="sub2">' + esc(r.label) + (r.distKm != null ? ' ／ 約' + r.distKm.toFixed(1) + 'km' : '') +
+    (r.address ? ' ／ ' + esc(r.address) : '') + '</div></div>' +
+    '<button class="btn small primary" data-addshop="' + i + '">登録</button></div>').join("");
+  box.querySelectorAll("[data-addshop]").forEach(b => {
+    b.addEventListener("click", () => {
+      const r = results[Number(b.dataset.addshop)];
+      state.stores.push({ id: uid(), name: r.name, kind: r.label, address: r.address || "", flyerUrl: "" });
+      saveState(); renderAll();
+      setShopStatus("「" + r.name + "」をいつものお店に登録しました。");
+    });
+  });
+}
+async function overpassNearby(lat, lon){
+  const q = '[out:json][timeout:25];(' +
+    'node["shop"~"supermarket|chemist|department_store|convenience|greengrocer"](around:1500,' + lat + ',' + lon + ');' +
+    'way["shop"~"supermarket|chemist|department_store|convenience|greengrocer"](around:1500,' + lat + ',' + lon + ');' +
+    'node["amenity"="pharmacy"](around:1500,' + lat + ',' + lon + ');' +
+    'way["amenity"="pharmacy"](around:1500,' + lat + ',' + lon + ');' +
+    ');out center 60;';
+  const res = await fetch("https://overpass-api.de/api/interpreter", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: "data=" + encodeURIComponent(q)
+  });
+  if (!res.ok) throw new Error("overpass " + res.status);
+  const data = await res.json();
+  return (data.elements || []).map(el => {
+    const c = el.center || el;
+    const tags = el.tags || {};
+    const addr = [tags["addr:province"], tags["addr:city"], tags["addr:suburb"], tags["addr:quarter"]].filter(Boolean).join("");
+    return {
+      name: tags.name || shopLabel(tags),
+      label: shopLabel(tags),
+      address: addr,
+      distKm: haversineKm(lat, lon, c.lat, c.lon)
+    };
+  }).sort((a, b) => a.distKm - b.distKm);
+}
+document.getElementById("btn-nearby").addEventListener("click", () => {
+  if (!navigator.geolocation){
+    setShopStatus("この端末では位置情報が使えません。店名検索か郵便番号をお使いください。", true);
+    return;
+  }
+  setShopStatus("現在地を取得しています…");
+  navigator.geolocation.getCurrentPosition(async pos => {
+    try {
+      setShopStatus("近くのお店を探しています…");
+      const results = await overpassNearby(pos.coords.latitude, pos.coords.longitude);
+      setShopStatus(results.length ? results.length + "件見つかりました。" : "");
+      renderShopResults(results);
+    } catch(e) {
+      setShopStatus("お店の検索に失敗しました。通信環境を確認してもう一度お試しください。", true);
+    }
+  }, () => {
+    setShopStatus("位置情報が取得できませんでした。店名検索か郵便番号をお使いください。", true);
+  }, { timeout: 15000 });
+});
+document.getElementById("btn-textsearch").addEventListener("click", async () => {
+  const q = document.getElementById("search-text").value.trim();
+  if (!q){ setShopStatus("店名や地名を入力してください。", true); return; }
+  setShopStatus("検索しています…");
+  try {
+    const url = "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=20&addressdetails=1&countrycodes=jp&q=" + encodeURIComponent(q);
+    const res = await fetch(url, { headers: { "Accept": "application/json" } });
+    if (!res.ok) throw new Error("nominatim " + res.status);
+    const data = await res.json();
+    const results = data.map(d => {
+      const name = d.name || String(d.display_name || "").split(",")[0];
+      const a = d.address || {};
+      const addr = [a.prefecture || a.province, a.city || a.town || a.village, a.suburb || a.neighbourhood || a.quarter].filter(Boolean).join("");
+      const cls = d.category || d.class;
+      const label = d.type === "pharmacy" ? "薬局" : (cls === "shop" ? (SHOP_TYPE_LABEL[d.type] || "お店") : cls === "amenity" ? "施設" : "場所");
+      return { name, label, address: addr, distKm: null };
+    }).filter(r => r.name);
+    setShopStatus(results.length ? results.length + "件見つかりました。" : "");
+    renderShopResults(results);
+  } catch(e) {
+    setShopStatus("検索に失敗しました。通信環境を確認してもう一度お試しください。", true);
+  }
+});
+document.getElementById("btn-zipsearch").addEventListener("click", async () => {
+  const zip = document.getElementById("search-zip").value.replace(/[^0-9]/g, "");
+  if (zip.length !== 7){ setShopStatus("郵便番号は7桁で入力してください。", true); return; }
+  setShopStatus("住所を調べています…");
+  try {
+    const zres = await fetch("https://zipcloud.ibsnet.co.jp/api/search?zipcode=" + zip);
+    const zdata = await zres.json();
+    if (!zdata.results || !zdata.results.length){ setShopStatus("その郵便番号の住所が見つかりませんでした。", true); return; }
+    const r0 = zdata.results[0];
+    const addrText = r0.address1 + r0.address2 + r0.address3;
+    setShopStatus(addrText + " の近くのお店を探しています…");
+    const nres = await fetch("https://nominatim.openstreetmap.org/search?format=jsonv2&limit=1&countrycodes=jp&q=" + encodeURIComponent(addrText));
+    const ndata = await nres.json();
+    if (!ndata.length){ setShopStatus("住所の場所が特定できませんでした。", true); return; }
+    const results = await overpassNearby(Number(ndata[0].lat), Number(ndata[0].lon));
+    setShopStatus(results.length ? results.length + "件見つかりました。" : "");
+    renderShopResults(results);
+  } catch(e) {
+    setShopStatus("検索に失敗しました。通信環境を確認してもう一度お試しください。", true);
+  }
+});
+document.getElementById("btn-manual-shop").addEventListener("click", () => {
+  const name = document.getElementById("manual-shop-name").value.trim();
+  if (!name){ setShopStatus("店名を入力してください。", true); return; }
+  state.stores.push({ id: uid(), name, kind: "手動登録", address: "", flyerUrl: document.getElementById("manual-shop-flyer").value.trim() });
+  saveState();
+  document.getElementById("manual-shop-name").value = "";
+  document.getElementById("manual-shop-flyer").value = "";
+  renderAll();
+  setShopStatus("「" + name + "」を登録しました。");
+});
+function renderShops(){
+  const box = document.getElementById("shop-list");
+  if (!state.stores.length){
+    box.innerHTML = '<div class="empty">まだ登録がありません。上の検索か手動登録から追加してください。</div>';
+  } else {
+    box.innerHTML = state.stores.map(s =>
+      '<div class="item"><div class="grow"><div class="ttl">' + esc(s.name) + '</div>' +
+      '<div class="sub2">' + esc(s.kind || "") + (s.address ? ' ／ ' + esc(s.address) : '') + '</div>' +
+      (s.flyerUrl
+        ? '<div class="sub2"><a class="ext" target="_blank" rel="noopener" href="' + esc(s.flyerUrl) + '">チラシ掲載ページを開く</a></div>'
+        : '<div class="sub2">チラシURL： <input type="url" data-flyer-input="' + s.id + '" placeholder="https://…" style="width:60%;padding:6px;font-size:13px;"> <button class="btn small" data-flyer-save="' + s.id + '">保存</button></div>') +
+      '</div><button class="btn small danger" data-delshop="' + s.id + '">削除</button></div>').join("");
+    box.querySelectorAll("[data-delshop]").forEach(b => b.addEventListener("click", () => {
+      state.stores = state.stores.filter(x => x.id !== b.dataset.delshop);
+      saveState(); renderAll();
+    }));
+    box.querySelectorAll("[data-flyer-save]").forEach(b => b.addEventListener("click", () => {
+      const input = box.querySelector('[data-flyer-input="' + b.dataset.flyerSave + '"]');
+      const s = state.stores.find(x => x.id === b.dataset.flyerSave);
+      if (s && input){ s.flyerUrl = input.value.trim(); saveState(); renderAll(); }
+    }));
+  }
+  const sel = document.getElementById("sale-shop");
+  sel.innerHTML = '<option value="">お店を指定しない</option>' + state.stores.map(s =>
+    '<option value="' + s.id + '">' + esc(s.name) + '</option>').join("");
+}
+
+// ---- 特売メモ ----
+document.getElementById("btn-add-sale").addEventListener("click", () => {
+  const name = document.getElementById("sale-name").value.trim();
+  const price = Number(document.getElementById("sale-price").value);
+  const unitSel = document.getElementById("sale-unit").value;
+  if (!name || !(price > 0)){ alert("食材名と価格を入力してください。"); return; }
+  const sale = { id: uid(), name, price, shopId: document.getElementById("sale-shop").value || "" };
+  if (unitSel === "100g"){ sale.basis = "100g"; sale.unitName = ""; }
+  else { sale.basis = "unit"; sale.unitName = unitSel; }
+  state.sales.push(sale);
+  saveState();
+  document.getElementById("sale-name").value = "";
+  document.getElementById("sale-price").value = "";
+  renderAll();
+});
+function saleUnitText(s){
+  return s.basis === "100g" ? "100gあたり" : "1" + s.unitName + "あたり";
+}
+function renderSales(){
+  const box = document.getElementById("sale-list");
+  if (!state.sales.length){
+    box.innerHTML = '<div class="empty">特売メモはまだありません。チラシで見つけた特売を入れてください。</div>';
+    return;
+  }
+  box.innerHTML = state.sales.map(s => {
+    const shop = state.stores.find(x => x.id === s.shopId);
+    return '<div class="item"><div class="grow"><div class="ttl">' + esc(s.name) + '</div>' +
+      '<div class="sub2">' + yen(s.price) + '（' + esc(saleUnitText(s)) + '）' + (shop ? ' ／ ' + esc(shop.name) : '') + '</div></div>' +
+      '<button class="btn small" data-sale-search="' + esc(s.name) + '">レシピ検索</button>' +
+      '<button class="btn small danger" data-delsale="' + s.id + '">削除</button></div>';
+  }).join("");
+  box.querySelectorAll("[data-delsale]").forEach(b => b.addEventListener("click", () => {
+    state.sales = state.sales.filter(x => x.id !== b.dataset.delsale);
+    saveState(); renderAll();
+  }));
+  box.querySelectorAll("[data-sale-search]").forEach(b => b.addEventListener("click", () => {
+    window.open("https://cookpad.com/search/" + encodeURIComponent(b.dataset.saleSearch), "_blank");
+  }));
+}
+
+// ---- 冷蔵庫 ----
+document.getElementById("btn-add-stock").addEventListener("click", () => {
+  const name = document.getElementById("stock-name").value.trim();
+  if (!name){ alert("食材名を入力してください。"); return; }
+  state.stock.push({ id: uid(), name, qty: document.getElementById("stock-qty").value.trim() });
+  saveState();
+  document.getElementById("stock-name").value = "";
+  document.getElementById("stock-qty").value = "";
+  renderAll();
+});
+function renderStock(){
+  const box = document.getElementById("stock-list");
+  if (!state.stock.length){
+    box.innerHTML = '<div class="empty">在庫はまだありません。家にある食材を入れてください。</div>';
+    return;
+  }
+  box.innerHTML = state.stock.map(s =>
+    '<div class="item"><div class="grow"><div class="ttl">' + esc(s.name) + '</div>' +
+    (s.qty ? '<div class="sub2">' + esc(s.qty) + '</div>' : '') + '</div>' +
+    '<button class="btn small" data-stock-search="' + esc(s.name) + '">レシピ検索</button>' +
+    '<button class="btn small danger" data-delstock="' + s.id + '">削除</button></div>').join("");
+  box.querySelectorAll("[data-delstock]").forEach(b => b.addEventListener("click", () => {
+    state.stock = state.stock.filter(x => x.id !== b.dataset.delstock);
+    saveState(); renderAll();
+  }));
+  box.querySelectorAll("[data-stock-search]").forEach(b => b.addEventListener("click", () => {
+    window.open("https://cookpad.com/search/" + encodeURIComponent(b.dataset.stockSearch), "_blank");
+  }));
+}
+
+// ---- 設定：バックアップ ----
+document.getElementById("btn-export").addEventListener("click", () => {
+  const data = { app: "kondate-maker", version: 1, exportedAt: new Date().toISOString(),
+    stores: state.stores, sales: state.sales, stock: state.stock };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "kondate-maker-backup.json";
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+  document.getElementById("backup-status").textContent = "書き出しました。";
+});
+document.getElementById("file-import").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      if (!data || data.app !== "kondate-maker" || !Array.isArray(data.stores) || !Array.isArray(data.sales) || !Array.isArray(data.stock)){
+        throw new Error("形式が違います");
+      }
+      if (!confirm("今のデータを、読み込んだ内容で置き換えます。よろしいですか？")) return;
+      state = { stores: data.stores, sales: data.sales, stock: data.stock };
+      saveState(); renderAll();
+      document.getElementById("backup-status").textContent = "読み込みました。";
+    } catch(err) {
+      document.getElementById("backup-status").textContent = "読み込めませんでした。献立メーカーのバックアップファイルか確認してください。";
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
+});
+document.getElementById("btn-clear").addEventListener("click", () => {
+  if (!confirm("お店・特売メモ・在庫をすべて消します。よろしいですか？")) return;
+  state = { stores: [], sales: [], stock: [] };
+  saveState(); renderAll();
+});
+
+// ---- 全体描画 ----
+function renderAll(){
+  renderSuggest();
+  renderRecipeList();
+  renderShops();
+  renderSales();
+  renderStock();
+}
+renderAll();
+</script>
+</body>
+</html>
