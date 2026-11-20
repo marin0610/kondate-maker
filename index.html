@@ -1319,6 +1319,396 @@ const RECIPES = [
       "フライパンで豚こま肉を焼き、醤油と砂糖、ナンプラー少々（あれば）で甘辛く味をつける。",
       "切り込みを入れたパンにマヨネーズを塗り、なます、豚肉、パクチーをたっぷりはさむ。"
     ]
+  },
+  {
+    id:"tonkatsu", name:"とんかつ", img:"tonkatsu.jpg", emoji:"🐷", cat:"揚げ物",
+    servings:2, time:25, kcal:720, tags:["ガッツリ","お弁当OK","ご飯が進む","フライパンのみ"],
+    desc:"フライパンの揚げ焼きで作る家庭版とんかつ。千切りキャベツとソースで王道の味。",
+    ingredients:[
+      {n:"豚ロース肉", amt:300, unit:"g", per:150, main:true},
+      {n:"キャベツ", amt:300, unit:"g", per:20, main:true},
+      {n:"卵", amt:1, unit:"個", per:25, main:true},
+      {n:"パン粉", amt:1, unit:"袋", per:90, main:true},
+      {n:"小麦粉・揚げ油・とんかつソースなど", fixed:40, main:false}
+    ],
+    steps:[
+      "豚肉は筋を切り、両面に塩こしょうをする。キャベツは千切りにする。",
+      "小麦粉、溶き卵、パン粉の順に衣をつける。",
+      "フライパンに1cmほどの油を熱し、両面がこんがり色づくまで揚げ焼きにする。",
+      "食べやすく切り分け、キャベツと一緒に盛ってソースをかける。"
+    ]
+  },
+  {
+    id:"keema-curry", name:"キーマカレー", img:"keema.jpg", emoji:"🍛", cat:"カレー",
+    servings:3, time:20, kcal:680, tags:["ガッツリ","作り置き","鍋のみ"],
+    desc:"ひき肉とみじん切り野菜を煮込む、水分の少ないカレー。冷凍保存もできる。",
+    ingredients:[
+      {n:"合いびき肉", amt:300, unit:"g", per:110, main:true},
+      {n:"玉ねぎ", amt:2, unit:"個", per:40, main:true},
+      {n:"にんじん", amt:1, unit:"本", per:50, main:true},
+      {n:"カレールー", amt:0.5, unit:"箱", per:200, main:true},
+      {n:"米", amt:300, unit:"g", per:50, main:true},
+      {n:"ケチャップ・ウスターソースなど", fixed:20, main:false}
+    ],
+    steps:[
+      "玉ねぎとにんじんはみじん切りにする。",
+      "鍋でひき肉を炒め、野菜を加えてしんなりするまで炒める。",
+      "水を少なめに入れて10分煮て、火を止めてルーを溶かし入れる。",
+      "ケチャップとウスターソースで味を調え、ご飯にかける。"
+    ]
+  },
+  {
+    id:"hamburg", name:"ハンバーグ", img:"hamburg.jpg", emoji:"🍖", cat:"炒め物",
+    servings:2, time:25, kcal:620, tags:["節約","お弁当OK","ご飯が進む","フライパンのみ"],
+    desc:"玉ねぎたっぷりのふっくらハンバーグ。ケチャップソースで王道の味。",
+    ingredients:[
+      {n:"合いびき肉", amt:300, unit:"g", per:110, main:true},
+      {n:"玉ねぎ", amt:1, unit:"個", per:40, main:true},
+      {n:"卵", amt:1, unit:"個", per:25, main:true},
+      {n:"パン粉・牛乳・ソースの材料など", fixed:40, main:false}
+    ],
+    steps:[
+      "玉ねぎはみじん切りにして炒め、冷ましておく。",
+      "ひき肉に玉ねぎ、卵、パン粉、牛乳、塩こしょうを入れてよくこね、小判形に成形する。",
+      "フライパンで両面に焼き色をつけ、ふたをして蒸し焼きで中まで火を通す。",
+      "肉汁の残ったフライパンにケチャップとウスターソースを入れて煮立て、ソースとしてかける。"
+    ]
+  },
+  {
+    id:"omurice", name:"オムライス", img:"omurice.jpg", emoji:"🍳", cat:"主食",
+    servings:2, time:20, kcal:700, tags:["ガッツリ","フライパンのみ"],
+    desc:"ケチャップライスをふんわり卵で包む定番洋食。",
+    ingredients:[
+      {n:"米", amt:300, unit:"g", per:50, main:true},
+      {n:"鶏もも肉", amt:200, unit:"g", per:98, main:true},
+      {n:"玉ねぎ", amt:1, unit:"個", per:40, main:true},
+      {n:"卵", amt:3, unit:"個", per:25, main:true},
+      {n:"ケチャップ・バターなど", fixed:30, main:false}
+    ],
+    steps:[
+      "鶏肉は小さめの一口大、玉ねぎはみじん切りにする。",
+      "フライパンで鶏肉と玉ねぎを炒め、ご飯とケチャップを加えてケチャップライスを作り、器に盛る。",
+      "フライパンをきれいにしてバターを溶かし、溶き卵を流し入れて半熟状に焼く。",
+      "卵をライスの上にのせ、ケチャップをかける。"
+    ]
+  },
+  {
+    id:"buta-shogayaki", name:"豚の生姜焼き", img:"shogayaki.jpg", emoji:"🫚", cat:"炒め物",
+    servings:2, time:15, kcal:560, tags:["時短","お弁当OK","ご飯が進む","フライパンのみ"],
+    desc:"すりおろし生姜のたれで焼く、ご飯の進む定番おかず。千切りキャベツ添え。",
+    ingredients:[
+      {n:"豚ロース肉", amt:250, unit:"g", per:150, main:true},
+      {n:"玉ねぎ", amt:1, unit:"個", per:40, main:true},
+      {n:"キャベツ", amt:200, unit:"g", per:20, main:true},
+      {n:"しょうが・醤油・みりん・酒など", fixed:25, main:false}
+    ],
+    steps:[
+      "豚肉は筋を切り、すりおろし生姜と醤油、みりん、酒をもみ込んで10分置く。玉ねぎは薄切り、キャベツは千切りにする。",
+      "フライパンで豚肉を両面焼き、玉ねぎを加えて炒める。",
+      "残りの漬けだれを回し入れて照りよく仕上げ、キャベツと一緒に盛る。"
+    ]
+  },
+  {
+    id:"tori-karaage", name:"鶏の唐揚げ", img:"karaage.jpg", emoji:"🍗", cat:"揚げ物",
+    servings:2, time:25, kcal:680, tags:["ガッツリ","お弁当OK","ご飯が進む","フライパンのみ"],
+    desc:"フライパンの揚げ焼きで作る唐揚げ。下味しっかりで冷めてもおいしい。",
+    ingredients:[
+      {n:"鶏もも肉", amt:400, unit:"g", per:98, main:true},
+      {n:"キャベツ", amt:200, unit:"g", per:20, main:true},
+      {n:"片栗粉・揚げ油・しょうが・醤油など", fixed:50, main:false}
+    ],
+    steps:[
+      "鶏肉は大きめの一口大に切り、醤油、酒、すりおろし生姜をもみ込んで15分置く。",
+      "片栗粉を全体にまぶす。キャベツは千切りにする。",
+      "フライパンに1cmほどの油を熱し、鶏肉を両面こんがりと揚げ焼きにする。",
+      "油を切ってキャベツと一緒に盛る。"
+    ]
+  },
+  {
+    id:"macaroni-gratin", name:"マカロニグラタン", img:"gratin.jpg", emoji:"🧀", cat:"主食",
+    servings:2, time:30, kcal:720, tags:["ガッツリ"],
+    desc:"フライパンで作るホワイトソースの熱々グラタン。",
+    ingredients:[
+      {n:"マカロニ", amt:160, unit:"g", per:35, main:true},
+      {n:"鶏もも肉", amt:200, unit:"g", per:98, main:true},
+      {n:"玉ねぎ", amt:1, unit:"個", per:40, main:true},
+      {n:"牛乳", amt:400, unit:"ml", per:20, main:true},
+      {n:"スライスチーズ", amt:2, unit:"枚", per:25, main:true},
+      {n:"小麦粉・バター・コンソメなど", fixed:40, main:false}
+    ],
+    steps:[
+      "マカロニは表示時間より1分短くゆでる。鶏肉は一口大、玉ねぎは薄切りにする。",
+      "フライパンにバターを溶かして鶏肉と玉ねぎを炒め、小麦粉を振り入れて粉っぽさがなくなるまで炒める。",
+      "牛乳を少しずつ加えてのばし、とろみがついたらマカロニを入れて塩こしょうとコンソメで味を調える。",
+      "耐熱皿に移してチーズをのせ、オーブントースターで焼き色がつくまで焼く。"
+    ]
+  },
+  {
+    id:"napolitan", name:"ナポリタン", img:"napolitan.jpg", emoji:"🍝", cat:"麺",
+    servings:2, time:20, kcal:680, tags:["ガッツリ"],
+    desc:"ケチャップをしっかり炒める、喫茶店風の懐かしいパスタ。",
+    ingredients:[
+      {n:"パスタ", amt:300, unit:"g", per:35, main:true},
+      {n:"ウインナー", amt:100, unit:"g", per:150, main:true},
+      {n:"玉ねぎ", amt:1, unit:"個", per:40, main:true},
+      {n:"ピーマン", amt:2, unit:"個", per:30, main:true},
+      {n:"マッシュルーム", amt:1, unit:"パック", per:100, main:true},
+      {n:"ケチャップ・バターなど", fixed:30, main:false}
+    ],
+    steps:[
+      "パスタは表示時間通りゆでる。ウインナーは斜め切り、玉ねぎとピーマン、マッシュルームは薄切りにする。",
+      "フライパンでウインナーと野菜を炒め、ケチャップを加えて水分を飛ばすように炒める。",
+      "パスタとバターを加えて全体にからめ、塩こしょうで味を調える。"
+    ]
+  },
+  {
+    id:"carbonara", name:"カルボナーラ", img:"carbonara.jpg", emoji:"🍝", cat:"麺",
+    servings:2, time:15, kcal:780, tags:["ガッツリ","時短"],
+    desc:"卵とチーズの濃厚ソース。火を止めてからからめるのがコツ。",
+    ingredients:[
+      {n:"パスタ", amt:300, unit:"g", per:35, main:true},
+      {n:"ベーコン", amt:100, unit:"g", per:160, main:true},
+      {n:"卵", amt:2, unit:"個", per:25, main:true},
+      {n:"生クリーム", amt:100, unit:"ml", per:110, main:true},
+      {n:"粉チーズ・塩こしょうなど", fixed:30, main:false}
+    ],
+    steps:[
+      "パスタを表示時間通りゆでる。ベーコンは短冊切りにする。",
+      "フライパンでベーコンを炒め、生クリームを加えて温める。",
+      "火を止めてパスタを入れ、溶き卵と粉チーズを加えて手早くからめる。黒こしょうを振る。"
+    ]
+  },
+  {
+    id:"chikuzen-ni", name:"筑前煮", img:"chikuzen.jpg", emoji:"🍢", cat:"煮物",
+    servings:4, time:40, kcal:420, tags:["ヘルシー","野菜たっぷり","節約","作り置き","お弁当OK","鍋のみ"],
+    desc:"根菜と鶏肉のうま味が染みる、定番の煮物。作り置きにも向く。",
+    ingredients:[
+      {n:"鶏もも肉", amt:300, unit:"g", per:98, main:true},
+      {n:"ごぼう", amt:1, unit:"本", per:80, main:true},
+      {n:"にんじん", amt:1, unit:"本", per:50, main:true},
+      {n:"れんこん", amt:200, unit:"g", per:70, main:true},
+      {n:"たけのこ（水煮）", amt:1, unit:"パック", per:150, main:true},
+      {n:"干ししいたけ・醤油・みりん・だしなど", fixed:40, main:false}
+    ],
+    steps:[
+      "ごぼうとれんこんは乱切りにして水にさらす。にんじんとたけのこも食べやすく切り、鶏肉は一口大にする。",
+      "鍋に油を熱して鶏肉と根菜を炒め、だし汁と戻した干ししいたけを加える。",
+      "醤油、砂糖、みりんで味をつけ、落としぶたをして20分ほど煮る。"
+    ]
+  },
+  {
+    id:"buri-daikon", name:"ぶり大根", img:"buridaikon.jpg", emoji:"🐟", cat:"煮物",
+    servings:2, time:35, kcal:480, tags:["ヘルシー","作り置き","ご飯が進む","鍋のみ"],
+    desc:"大根にぶりのうま味と煮汁が染みる、冬の定番煮付け。",
+    ingredients:[
+      {n:"ぶり", amt:2, unit:"切れ", per:180, main:true},
+      {n:"大根", amt:400, unit:"g", per:18, main:true},
+      {n:"しょうが・醤油・みりん・酒など", fixed:30, main:false}
+    ],
+    steps:[
+      "大根は厚めの半月切りにして下ゆでする。ぶりは熱湯をかけて霜降りにする。",
+      "鍋に水、酒、醤油、砂糖、みりんと薄切りの生姜を入れて火にかけ、大根を入れて15分煮る。",
+      "ぶりを加えてさらに10分煮て、煮汁が染みたら火を止める。"
+    ]
+  },
+  {
+    id:"range-chawanmushi", name:"レンジで茶碗蒸し", img:"chawanmushi.jpg", emoji:"🍮", cat:"レンジ",
+    servings:2, time:15, kcal:160, tags:["節約","時短","レンジのみ"],
+    desc:"蒸し器いらず、レンジで作るなめらか茶碗蒸し。",
+    ingredients:[
+      {n:"卵", amt:2, unit:"個", per:25, main:true},
+      {n:"鶏むね肉", amt:100, unit:"g", per:68, main:true},
+      {n:"かまぼこ", amt:0.5, unit:"本", per:120, main:true},
+      {n:"しいたけ", amt:2, unit:"個", per:25, main:true},
+      {n:"だし・醤油・みりんなど", fixed:15, main:false}
+    ],
+    steps:[
+      "卵を溶き、冷ましただし汁と合わせてこす。鶏肉は小さく切り、しいたけは薄切りにする。",
+      "器に鶏肉、かまぼこ、しいたけを入れ、卵液を注いでふんわりラップをする。",
+      "レンジ600Wで2分、200W（解凍モード）で5分ほど、様子を見ながら加熱する。表面が固まったら取り出して余熱で仕上げる。"
+    ]
+  },
+  {
+    id:"dashimaki", name:"だし巻き卵", img:"dashimaki.jpg", emoji:"🥚", cat:"副菜",
+    servings:2, time:10, kcal:200, tags:["節約","時短","お弁当OK","フライパンのみ"],
+    desc:"だしのきいた、ふんわりジューシーな卵焼き。",
+    ingredients:[
+      {n:"卵", amt:3, unit:"個", per:25, main:true},
+      {n:"だし・醤油・砂糖・油など", fixed:15, main:false}
+    ],
+    steps:[
+      "卵を溶き、だし汁と醤油、砂糖を混ぜる。",
+      "卵焼き器（フライパン）に油を熱し、卵液を数回に分けて流し入れ、巻きながら焼く。",
+      "形を整えて切り分ける。"
+    ]
+  },
+  {
+    id:"korokke", name:"コロッケ", img:"korokke.jpg", emoji:"🥔", cat:"揚げ物",
+    servings:2, time:35, kcal:640, tags:["お弁当OK","ご飯が進む","フライパンのみ"],
+    desc:"フライパンの揚げ焼きで作る、ほくほくじゃがいものコロッケ。",
+    ingredients:[
+      {n:"じゃがいも", amt:4, unit:"個", per:40, main:true},
+      {n:"合いびき肉", amt:150, unit:"g", per:110, main:true},
+      {n:"玉ねぎ", amt:1, unit:"個", per:40, main:true},
+      {n:"パン粉", amt:1, unit:"袋", per:90, main:true},
+      {n:"卵", amt:1, unit:"個", per:25, main:true},
+      {n:"キャベツ", amt:200, unit:"g", per:20, main:true},
+      {n:"小麦粉・揚げ油・ソースなど", fixed:40, main:false}
+    ],
+    steps:[
+      "じゃがいもはゆでて熱いうちにつぶす。玉ねぎはみじん切り、キャベツは千切りにする。",
+      "フライパンでひき肉と玉ねぎを炒め、じゃがいもと合わせて塩こしょうで味をつけ、小判形に成形する。",
+      "小麦粉、溶き卵、パン粉の順に衣をつける。",
+      "フライパンに1cmほどの油を熱し、両面こんがりと揚げ焼きにする。キャベツと一緒に盛る。"
+    ]
+  },
+  {
+    id:"chicken-saute", name:"チキンソテー", img:"chicken-saute.jpg", emoji:"🍗", cat:"炒め物",
+    servings:2, time:20, kcal:520, tags:["お弁当OK","ご飯が進む","フライパンのみ"],
+    desc:"皮はパリッと、にんにく醤油で仕上げる鶏もものソテー。",
+    ingredients:[
+      {n:"鶏もも肉", amt:400, unit:"g", per:98, main:true},
+      {n:"キャベツ", amt:200, unit:"g", per:20, main:true},
+      {n:"にんにく・バター・醤油など", fixed:30, main:false}
+    ],
+    steps:[
+      "鶏肉は厚みを均一にして塩こしょうをする。キャベツは千切りにする。",
+      "フライパンに油を熱し、鶏肉を皮目から焼く。重しをして皮をパリッとさせ、裏返して中まで火を通す。",
+      "にんにくとバター、醤油を加えて照りよくからめ、切り分けてキャベツと盛る。"
+    ]
+  },
+  {
+    id:"yaki-gyoza", name:"焼き餃子", img:"gyoza.jpg", emoji:"🥟", cat:"主食",
+    servings:2, time:12, kcal:560, tags:["節約","時短","お弁当OK","フライパンのみ"],
+    desc:"冷凍餃子を羽根つきに焼く餃子定食。",
+    ingredients:[
+      {n:"冷凍餃子", amt:12, unit:"個", per:20, main:true},
+      {n:"米", amt:300, unit:"g", per:50, main:true},
+      {n:"ごま油・酢醤油など", fixed:15, main:false}
+    ],
+    steps:[
+      "フライパンに油を熱し、凍ったままの餃子を並べる。",
+      "水を加えてふたをし、蒸し焼きにする。水分が飛んだらごま油を回し入れて底をカリッと焼く。",
+      "皿に返して盛り、ご飯と酢醤油で食べる。"
+    ]
+  },
+  {
+    id:"tenshinhan", name:"天津飯", img:"tenshinhan.jpg", emoji:"🍚", cat:"丼",
+    servings:2, time:15, kcal:620, tags:["節約","時短","フライパンのみ"],
+    desc:"カニカマ入りのふわふわ卵に、甘酢あんをかけた中華丼。",
+    ingredients:[
+      {n:"米", amt:300, unit:"g", per:50, main:true},
+      {n:"卵", amt:3, unit:"個", per:25, main:true},
+      {n:"カニカマ", amt:1, unit:"パック", per:100, main:true},
+      {n:"片栗粉・中華だし・ケチャップなど", fixed:30, main:false}
+    ],
+    steps:[
+      "卵を溶き、ほぐしたカニカマを混ぜる。",
+      "フライパンに油を熱して卵を大きくかき混ぜながら半熟状に焼き、ご飯の上にのせる。",
+      "同じフライパンに水、中華だし、醤油、酢、砂糖、ケチャップを入れて煮立て、水溶き片栗粉でとろみをつけてかける。"
+    ]
+  },
+  {
+    id:"japchae", name:"チャプチェ", img:"japchae.jpg", emoji:"🍜", cat:"炒め物",
+    servings:3, time:25, kcal:540, tags:["野菜たっぷり","お弁当OK","ご飯が進む","フライパンのみ"],
+    desc:"春雨と牛肉、彩り野菜の韓国風炒め物。春雨はフライパンで煮戻すワンパン方式。",
+    ingredients:[
+      {n:"春雨", amt:100, unit:"g", per:120, main:true},
+      {n:"牛こま肉", amt:150, unit:"g", per:198, main:true},
+      {n:"玉ねぎ", amt:1, unit:"個", per:40, main:true},
+      {n:"にんじん", amt:1, unit:"本", per:50, main:true},
+      {n:"ピーマン", amt:2, unit:"個", per:30, main:true},
+      {n:"ほうれん草", amt:1, unit:"束", per:100, main:true},
+      {n:"ごま油・醤油・砂糖など", fixed:25, main:false}
+    ],
+    steps:[
+      "野菜は細切りにする。牛肉には醤油と砂糖をもみ込む。",
+      "フライパンに水と春雨を入れて煮ながら戻し、水分が飛んだら取り出す。",
+      "ごま油で牛肉と野菜を炒め、春雨を戻し入れて醤油と砂糖で甘辛く仕上げる。ほうれん草は最後に加える。"
+    ]
+  },
+  {
+    id:"mabo-nasu", name:"麻婆茄子", img:"mabonasu.jpg", emoji:"🍆", cat:"炒め物",
+    servings:2, time:20, kcal:580, tags:["野菜たっぷり","ご飯が進む","フライパンのみ"],
+    desc:"とろとろのなすとひき肉のピリ辛炒め。ご飯にかけてもおいしい。",
+    ingredients:[
+      {n:"なす", amt:3, unit:"個", per:40, main:true},
+      {n:"豚ひき肉", amt:250, unit:"g", per:108, main:true},
+      {n:"長ねぎ", amt:1, unit:"本", per:60, main:true},
+      {n:"豆板醤・味噌・醤油など", fixed:25, main:false}
+    ],
+    steps:[
+      "なすは乱切りにして水にさらし、水気を拭く。長ねぎはみじん切りにする。",
+      "フライパンに多めの油を熱し、なすを炒めて一度取り出す。",
+      "ひき肉と長ねぎ、豆板醤を炒め、なすを戻して味噌だれをからめる。"
+    ]
+  },
+  {
+    id:"yaki-udon", name:"焼きうどん", img:"yakiudon.jpg", emoji:"🍜", cat:"うどん",
+    servings:2, time:15, kcal:640, tags:["時短","野菜たっぷり","フライパンのみ"],
+    desc:"冷凍うどんと野菜たっぷりの醤油味焼きうどん。",
+    ingredients:[
+      {n:"冷凍うどん", amt:2, unit:"玉", per:60, main:true},
+      {n:"豚こま肉", amt:200, unit:"g", per:108, main:true},
+      {n:"キャベツ", amt:300, unit:"g", per:20, main:true},
+      {n:"にんじん", amt:0.5, unit:"本", per:50, main:true},
+      {n:"ピーマン", amt:1, unit:"個", per:30, main:true},
+      {n:"醤油・ソース・かつお節など", fixed:20, main:false}
+    ],
+    steps:[
+      "野菜は食べやすく切る。",
+      "フライパンで豚肉と野菜を炒め、冷凍うどんと水少々を加えてふたをし、蒸らしながらほぐす。",
+      "醤油とソースで味をつけ、かつお節をかける。"
+    ]
+  },
+  {
+    id:"gyudon", name:"牛丼", img:"gyudon.jpg", emoji:"🐮", cat:"丼",
+    servings:2, time:15, kcal:720, tags:["ガッツリ","時短","鍋のみ"],
+    desc:"甘辛い煮汁で牛肉と玉ねぎをさっと煮る、定番の丼。",
+    ingredients:[
+      {n:"牛こま肉", amt:200, unit:"g", per:198, main:true},
+      {n:"玉ねぎ", amt:2, unit:"個", per:40, main:true},
+      {n:"米", amt:300, unit:"g", per:50, main:true},
+      {n:"紅しょうが・醤油・みりん・だしなど", fixed:25, main:false}
+    ],
+    steps:[
+      "玉ねぎは薄切りにする。",
+      "鍋にだし汁、醤油、砂糖、みりんを入れて火にかけ、玉ねぎを煮る。",
+      "牛肉を加えてほぐしながら煮て、ご飯にのせ、紅しょうがを添える。"
+    ]
+  },
+  {
+    id:"potato-salad", name:"ポテトサラダ", img:"potesala.jpg", emoji:"🥗", cat:"副菜",
+    servings:4, time:25, kcal:280, tags:["節約","作り置き","お弁当OK"],
+    desc:"きゅうりとハムの王道ポテトサラダ。作り置きの定番副菜。",
+    ingredients:[
+      {n:"じゃがいも", amt:4, unit:"個", per:40, main:true},
+      {n:"きゅうり", amt:1, unit:"本", per:40, main:true},
+      {n:"にんじん", amt:0.5, unit:"本", per:50, main:true},
+      {n:"ハム", amt:4, unit:"枚", per:35, main:true},
+      {n:"マヨネーズ・塩こしょうなど", fixed:25, main:false}
+    ],
+    steps:[
+      "じゃがいもは皮をむいて一口大に切り、ゆでて熱いうちに粗くつぶす。にんじんは薄切りにして一緒にゆでる。",
+      "きゅうりは薄切りにして塩もみし、水気を絞る。ハムは細切りにする。",
+      "じゃがいもが冷めたら具とマヨネーズを和え、塩こしょうで味を調える。"
+    ]
+  },
+  {
+    id:"french-toast", name:"フレンチトースト", img:"frenchtoast.jpg", emoji:"🍞", cat:"主食",
+    servings:2, time:10, kcal:430, tags:["節約","時短","フライパンのみ"],
+    desc:"卵液をしっかり染み込ませた、ふわとろの朝食トースト。",
+    ingredients:[
+      {n:"食パン", amt:4, unit:"枚", per:30, main:true},
+      {n:"卵", amt:2, unit:"個", per:25, main:true},
+      {n:"牛乳", amt:100, unit:"ml", per:20, main:true},
+      {n:"バター・砂糖など", fixed:25, main:false}
+    ],
+    steps:[
+      "卵、牛乳、砂糖を混ぜた卵液に食パンを浸し、しっかり染み込ませる。",
+      "フライパンにバターを溶かし、弱めの中火で両面をこんがり焼く。",
+      "好みで砂糖やはちみつをかける。"
+    ]
   }
 ];
 
