@@ -116,6 +116,13 @@
     border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 13px;font-size:14px;cursor:pointer;
   }
   .chips button.active{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:700;}
+  .tagchips button{border-color:#fdba74;background:#fff7ed;}
+  .tagchips button.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .fieldlabel{font-size:13px;color:var(--muted);margin:10px 0 4px;}
+  .rtags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
+  .rtags .badge{background:#fff7ed;border-color:#fed7aa;color:var(--accent-dark);font-size:11px;padding:1px 7px;}
+  .checkrow{display:flex;align-items:center;gap:8px;font-size:14px;margin:8px 0;}
+  .checkrow input{width:20px;height:20px;flex:0 0 auto;}
   /* 一覧の行 */
   .item{
     display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);
@@ -178,13 +185,26 @@
   <!-- 献立提案 -->
   <section class="tab active" id="tab-suggest">
     <div class="card">
+      <h2>並び替え</h2>
+      <label>表示順</label>
+      <select id="suggest-sort">
+        <option value="recommend">おすすめ順</option>
+        <option value="price">安い順（1食単価）</option>
+        <option value="kcal-desc">カロリー高い順</option>
+        <option value="kcal-asc">カロリー低い順</option>
+        <option value="time">時短順</option>
+        <option value="servings">食分数が多い順</option>
+      </select>
+      <div class="note" id="suggest-ng-note" style="margin-top:8px;"></div>
+    </div>
+    <div class="card">
       <h2>いま作れる献立</h2>
-      <div class="note">冷蔵庫の在庫だけで作れるもの（1食単価の安い順）</div>
+      <div class="note">冷蔵庫の在庫だけで作れるもの</div>
       <div id="suggest-makeable" style="margin-top:10px;"></div>
     </div>
     <div class="card">
       <h2>あと少しで作れる献立</h2>
-      <div class="note">特売で買えるもの・買い足しが少しで済むもの（1食単価の安い順）</div>
+      <div class="note">特売で買えるもの・買い足しが少しで済むもの</div>
       <div id="suggest-almost" style="margin-top:10px;"></div>
     </div>
     <div class="card">
@@ -195,7 +215,21 @@
 
   <!-- レシピ一覧 -->
   <section class="tab" id="tab-recipes">
+    <div class="fieldlabel">ハッシュタグで絞る（タップでON／もう一度タップで解除）</div>
+    <div class="chips tagchips" id="recipe-tags"></div>
+    <div class="fieldlabel">カテゴリ</div>
     <div class="chips" id="recipe-chips"></div>
+    <label>表示順</label>
+    <select id="recipe-sort">
+      <option value="recommend">おすすめ順</option>
+      <option value="price">安い順（1食単価）</option>
+      <option value="kcal-desc">カロリー高い順</option>
+      <option value="kcal-asc">カロリー低い順</option>
+      <option value="time">時短順</option>
+      <option value="servings">食分数が多い順</option>
+    </select>
+    <div class="checkrow"><input type="checkbox" id="recipe-hide-ng" checked><span>苦手な食材（設定で登録）を含むレシピを除く</span></div>
+    <div class="note" id="recipe-count" style="margin:6px 0;"></div>
     <div id="recipe-list"></div>
   </section>
 
@@ -205,17 +239,17 @@
       <h2>お店を探す</h2>
       <details class="help">
         <summary>お店の探し方について</summary>
-        <div class="help-body">4つの方法があります。①現在地から探す（位置情報を使い、近い順に表示）②店名・地名で検索（例：玉出 恵美須）③郵便番号から探す（引っ越した直後など現在地が使えないとき）④店名を手で入力。地図データはOpenStreetMapの無料データを使っています。見つけたお店は「登録」を押すと「いつものお店」に入ります。</div>
+        <div class="help-body">4つの方法があります。①現在地から探す（位置情報を使い、近い順に表示）②店名・地名で検索（例：スーパー〇〇 ○○店）③郵便番号から探す（引っ越した直後など現在地が使えないとき）④店名を手で入力。地図データはOpenStreetMapの無料データを使っています。見つけたお店は「登録」を押すと「いつものお店」に入ります。</div>
       </details>
       <button class="btn primary block" id="btn-nearby">📍 現在地から近くの店を探す</button>
       <h3>店名・地名で検索</h3>
       <div class="row">
-        <input type="text" id="search-text" placeholder="例：玉出 恵美須">
+        <input type="text" id="search-text" placeholder="例：スーパー〇〇 ○○店">
         <button class="btn" id="btn-textsearch" style="flex:0 0 96px;">検索</button>
       </div>
       <h3>郵便番号から探す</h3>
       <div class="row">
-        <input type="text" id="search-zip" inputmode="numeric" placeholder="例：5560003（ハイフンなし）">
+        <input type="text" id="search-zip" inputmode="numeric" placeholder="例：0123456（ハイフンなし）">
         <button class="btn" id="btn-zipsearch" style="flex:0 0 96px;">検索</button>
       </div>
       <div class="status" id="shop-search-status"></div>
@@ -283,6 +317,14 @@
   <!-- 設定 -->
   <section class="tab" id="tab-settings">
     <div class="card">
+      <h2>苦手な食材（NG食材）</h2>
+      <div class="note">登録した食材を含むレシピは、献立提案からは自動で除外されます。レシピ一覧でも「苦手な食材を含むレシピを除く」をONにすると表示されません。家族の苦手や自分の苦手に合わせて使ってください。</div>
+      <label>苦手な食材名</label>
+      <input type="text" id="ng-name" placeholder="例：ピーマン">
+      <button class="btn primary block" id="btn-add-ng">苦手な食材を追加</button>
+      <div id="ng-list" style="margin-top:10px;"></div>
+    </div>
+    <div class="card">
       <h2>データのバックアップ</h2>
       <div class="note">データはこの端末のブラウザ内（localStorage）に保存されています。機種変更やブラウザのデータ消去に備えて、ときどき書き出しておくのがおすすめです。</div>
       <button class="btn block" id="btn-export">データを書き出す（JSON）</button>
@@ -292,7 +334,7 @@
     </div>
     <div class="card">
       <h2>このアプリについて</h2>
-      <div class="note">近所のお店の特売と冷蔵庫の在庫から、「安くて大量に作れる献立」を提案するアプリです。主婦層と一人暮らしで自炊する人を対象にしていて、1食あたりの単価が見えるのが特長です。レシピはアプリ内蔵のものだけを使い、分量と手順は自前の言葉で書いています。料理写真は後からAI生成画像を用意して差し込む方針で、レシピデータの画像欄（img）にファイル名が入っています（画像が無い間はプレースホルダが表示されます）。チラシの価格データは自動取得せず、特売メモとして手入力する形式です。</div>
+      <div class="note">近所のお店の特売と冷蔵庫の在庫から、「安くて大量に作れる献立」を提案するアプリです。主婦層と一人暮らしで自炊する人を対象にしていて、1食あたりの単価が見えるのが特長です。レシピはアプリ内蔵のものだけを使い、分量と手順は自前の言葉で書いています。料理写真は後からAI生成画像を用意して差し込む方針で、レシピデータの画像欄（img）にファイル名が入っています（画像が無い間はプレースホルダが表示されます）。チラシの価格データは自動取得せず、特売メモとして手入力する形式です。レシピにはハッシュタグ（大盛り／ガッツリ／ヘルシー／鍋のみ／フライパンのみ／レンジだけ等）が付いていて、レシピ一覧でタップして絞り込めます。表示されるカロリーは材料から見積もった1食あたりの目安（推定値）です。苦手な食材を登録すると、それを含むレシピを献立提案から除外できます。</div>
       <button class="btn danger block" id="btn-clear">データをすべて消す</button>
     </div>
   </section>
@@ -316,7 +358,7 @@
 const RECIPES = [
   {
     id:"chicken-curry", name:"大盛りチキンカレー", img:"curry.jpg", emoji:"🍛", cat:"カレー",
-    servings:4, time:35,
+    servings:4, time:35, kcal:950, tags:["大盛り","ガッツリ","作り置き","鍋のみ"],
     desc:"鶏ももたっぷりの定番カレー。大鍋で作って2食分。",
     ingredients:[
       {n:"鶏もも肉", amt:600, unit:"g", per:98, main:true},
@@ -336,7 +378,7 @@ const RECIPES = [
   },
   {
     id:"millefeuille-nabe", name:"豚バラ白菜のミルフィーユ鍋", img:"nabe.jpg", emoji:"🍲", cat:"鍋",
-    servings:4, time:25,
+    servings:4, time:25, kcal:660, tags:["大盛り","ガッツリ","鍋のみ"],
     desc:"白菜と豚バラを重ねるだけ。締めのうどんまで大満足。",
     ingredients:[
       {n:"豚バラ肉", amt:500, unit:"g", per:148, main:true},
@@ -352,7 +394,7 @@ const RECIPES = [
   },
   {
     id:"miso-butter-udon", name:"濃厚みそバター肉うどん", img:"udon.jpg", emoji:"🍜", cat:"うどん",
-    servings:2, time:15,
+    servings:2, time:15, kcal:720, tags:["ガッツリ","時短","節約"],
     desc:"ひき肉ともやしをみそで炒めてのせる、こってり温うどん。",
     ingredients:[
       {n:"冷凍うどん", amt:2, unit:"玉", per:40, main:true},
@@ -370,7 +412,7 @@ const RECIPES = [
   },
   {
     id:"niku-udon", name:"甘辛肉うどん", img:"niku-udon.jpg", emoji:"🍜", cat:"うどん",
-    servings:2, time:15,
+    servings:2, time:15, kcal:620, tags:["時短","節約"],
     desc:"甘辛く煮た豚こまと玉ねぎをのせる、間違いない一杯。",
     ingredients:[
       {n:"冷凍うどん", amt:2, unit:"玉", per:40, main:true},
@@ -386,7 +428,7 @@ const RECIPES = [
   },
   {
     id:"mabo-don", name:"麻婆豆腐丼", img:"mabodofu.jpg", emoji:"🍚", cat:"丼",
-    servings:3, time:20,
+    servings:3, time:20, kcal:680, tags:["ガッツリ","フライパンのみ","節約"],
     desc:"豆腐2丁とひき肉で作る、ご飯が進むピリ辛丼。",
     ingredients:[
       {n:"木綿豆腐", amt:2, unit:"丁", per:60, main:true},
@@ -404,7 +446,7 @@ const RECIPES = [
   },
   {
     id:"buta-kimchi", name:"豚キムチ炒め", img:"kimchi-itame.jpg", emoji:"🌶️", cat:"炒め物",
-    servings:2, time:12,
+    servings:2, time:12, kcal:730, tags:["ガッツリ","時短","フライパンのみ"],
     desc:"豚こま×キムチ×もやしの最強コスパ炒め。ご飯付き。",
     ingredients:[
       {n:"豚こま肉", amt:300, unit:"g", per:108, main:true},
@@ -421,7 +463,7 @@ const RECIPES = [
   },
   {
     id:"teriyaki-don", name:"鶏の照り焼き丼", img:"teriyaki.jpg", emoji:"🍚", cat:"丼",
-    servings:2, time:18,
+    servings:2, time:18, kcal:700, tags:["ガッツリ","フライパンのみ"],
     desc:"甘辛だれをからめた鶏ももと、ふわふわ卵の丼。",
     ingredients:[
       {n:"鶏もも肉", amt:400, unit:"g", per:98, main:true},
@@ -438,7 +480,7 @@ const RECIPES = [
   },
   {
     id:"butabara-daikon", name:"豚バラ大根の煮物", img:"nimono.jpg", emoji:"🍢", cat:"煮物",
-    servings:3, time:30,
+    servings:3, time:30, kcal:390, tags:["節約","作り置き","鍋のみ"],
     desc:"大根に豚のうまみがしみる、ほっとする煮物。",
     ingredients:[
       {n:"豚バラ肉", amt:300, unit:"g", per:148, main:true},
@@ -453,7 +495,7 @@ const RECIPES = [
   },
   {
     id:"soboro-don", name:"鶏そぼろ丼", img:"soboro.jpg", emoji:"🍚", cat:"丼",
-    servings:2, time:15,
+    servings:2, time:15, kcal:660, tags:["ガッツリ","時短","フライパンのみ","作り置き"],
     desc:"甘辛そぼろと炒り卵の二色丼。安くて確実にうまい。",
     ingredients:[
       {n:"鶏ひき肉", amt:300, unit:"g", per:98, main:true},
@@ -469,7 +511,7 @@ const RECIPES = [
   },
   {
     id:"kimchi-nabe", name:"キムチ鍋", img:"kimchi-nabe.jpg", emoji:"🍲", cat:"鍋",
-    servings:4, time:25,
+    servings:4, time:25, kcal:560, tags:["大盛り","鍋のみ"],
     desc:"豚バラとキムチの大鍋。体が温まる濃い味。",
     ingredients:[
       {n:"豚バラ肉", amt:400, unit:"g", per:148, main:true},
@@ -487,7 +529,7 @@ const RECIPES = [
   },
   {
     id:"sukiyaki-ni", name:"すき焼き風煮", img:"sukiyaki.jpg", emoji:"🥘", cat:"煮物",
-    servings:3, time:20,
+    servings:3, time:20, kcal:540, tags:["鍋のみ","節約"],
     desc:"豚こまで作るすき焼き風。卵をつけて食べる甘辛煮。",
     ingredients:[
       {n:"豚こま肉", amt:400, unit:"g", per:108, main:true},
@@ -505,7 +547,7 @@ const RECIPES = [
   },
   {
     id:"chahan", name:"大盛りチャーハン", img:"chahan.jpg", emoji:"🍚", cat:"炒め物",
-    servings:2, time:12,
+    servings:2, time:12, kcal:760, tags:["大盛り","ガッツリ","時短","フライパンのみ"],
     desc:"ウインナーと卵の王道チャーハン。パラパラのコツ付き。",
     ingredients:[
       {n:"米", amt:300, unit:"g", per:50, main:true},
@@ -522,7 +564,7 @@ const RECIPES = [
   },
   {
     id:"yakisoba", name:"ソース焼きそば", img:"yakisoba.jpg", emoji:"🍝", cat:"麺",
-    servings:2, time:12,
+    servings:2, time:12, kcal:710, tags:["大盛り","ガッツリ","時短","フライパンのみ","節約"],
     desc:"麺3玉の山盛り焼きそば。キャベツともやしでかさ増し。",
     ingredients:[
       {n:"焼きそば麺", amt:3, unit:"玉", per:35, main:true},
@@ -539,7 +581,7 @@ const RECIPES = [
   },
   {
     id:"oyakodon", name:"親子丼", img:"oyakodon.jpg", emoji:"🍚", cat:"丼",
-    servings:2, time:15,
+    servings:2, time:15, kcal:690, tags:["ガッツリ","時短","鍋のみ"],
     desc:"鶏ももと玉ねぎを卵でとじる、やさしい甘さの定番丼。",
     ingredients:[
       {n:"鶏もも肉", amt:300, unit:"g", per:98, main:true},
@@ -556,7 +598,7 @@ const RECIPES = [
   },
   {
     id:"hoikoro", name:"回鍋肉風キャベツ炒め", img:"hoikoro.jpg", emoji:"🥬", cat:"炒め物",
-    servings:2, time:15,
+    servings:2, time:15, kcal:720, tags:["ガッツリ","時短","フライパンのみ"],
     desc:"キャベツたっぷりの味噌だれ炒め。ご飯が止まらない。",
     ingredients:[
       {n:"豚バラ肉", amt:250, unit:"g", per:148, main:true},
@@ -573,7 +615,7 @@ const RECIPES = [
   },
   {
     id:"tuna-pasta", name:"ツナとキャベツのペペロン風パスタ", img:"pasta.jpg", emoji:"🍝", cat:"麺",
-    servings:2, time:15,
+    servings:2, time:15, kcal:700, tags:["ガッツリ","時短","節約"],
     desc:"ツナ缶2缶で具だくさん。にんにく醤油で濃い味に。",
     ingredients:[
       {n:"パスタ", amt:300, unit:"g", per:35, main:true},
@@ -589,7 +631,7 @@ const RECIPES = [
   },
   {
     id:"nikujaga", name:"肉じゃが", img:"nikujaga.jpg", emoji:"🥔", cat:"煮物",
-    servings:3, time:30,
+    servings:3, time:30, kcal:460, tags:["ヘルシー","節約","作り置き","鍋のみ"],
     desc:"豚こまで作る肉じゃが。じゃがいも大きめで満足感。",
     ingredients:[
       {n:"豚こま肉", amt:250, unit:"g", per:108, main:true},
@@ -606,7 +648,7 @@ const RECIPES = [
   },
   {
     id:"tonjiru", name:"具だくさん豚汁", img:"tonjiru.jpg", emoji:"🍲", cat:"鍋",
-    servings:4, time:25,
+    servings:4, time:25, kcal:320, tags:["大盛り","ヘルシー","節約","作り置き","鍋のみ"],
     desc:"根菜たっぷりの豚汁。これだけで立派な主役級の汁物。",
     ingredients:[
       {n:"豚こま肉", amt:200, unit:"g", per:108, main:true},
@@ -624,7 +666,7 @@ const RECIPES = [
   },
   {
     id:"tori-dango-nabe", name:"鶏団子と白菜の鍋", img:"torinabe.jpg", emoji:"🍲", cat:"鍋",
-    servings:4, time:25,
+    servings:4, time:25, kcal:420, tags:["ヘルシー","節約","鍋のみ"],
     desc:"ふわふわ鶏団子と白菜のやさしい鍋。ポン酢でさっぱり。",
     ingredients:[
       {n:"鶏ひき肉", amt:400, unit:"g", per:98, main:true},
@@ -637,6 +679,38 @@ const RECIPES = [
       "鶏ひき肉に塩と片栗粉（分量外）を混ぜて団子だねを作る。",
       "鍋にだしを煮立て、白菜と豆腐を入れる。",
       "団子をスプーンで落とし入れ、火が通ったら長ねぎを散らす。"
+    ]
+  },
+  {
+    id:"range-buta-moyashi", name:"レンジで豚バラもやし", img:"range-moyashi.jpg", emoji:"🍽️", cat:"レンジ",
+    servings:2, time:10, kcal:480, tags:["レンジだけ","時短","節約"],
+    desc:"耐熱皿に重ねてチンするだけ。洗い物が少ない蒸ししゃぶ風。",
+    ingredients:[
+      {n:"豚バラ肉", amt:300, unit:"g", per:148, main:true},
+      {n:"もやし", amt:1, unit:"袋", per:30, main:true},
+      {n:"ポン酢・ごま油など", fixed:15, main:false}
+    ],
+    steps:[
+      "もやしは洗って水気を切り、耐熱皿に広げる。",
+      "豚バラを1枚ずつ広げてもやしの上に並べ、塩こしょうを少々ふる。",
+      "ふんわりラップをして電子レンジ600Wで6分加熱する。肉の色が変わっていない部分があれば、上下を返して1分ずつ追加加熱する。",
+      "ポン酢とごま油を回しかけて完成。"
+    ]
+  },
+  {
+    id:"range-saba-kyabetsu", name:"サバ缶とキャベツのレンジ蒸し", img:"range-saba.jpg", emoji:"🐟", cat:"レンジ",
+    servings:2, time:10, kcal:360, tags:["レンジだけ","時短","ヘルシー","節約"],
+    desc:"サバ水煮缶とキャベツを重ねてチン。缶の汁ごと使うから味が決まる。",
+    ingredients:[
+      {n:"サバ水煮缶", amt:1, unit:"缶", per:150, main:true},
+      {n:"キャベツ", amt:300, unit:"g", per:20, main:true},
+      {n:"醤油・しょうがなど", fixed:15, main:false}
+    ],
+    steps:[
+      "キャベツはざく切りにして耐熱容器に入れる。",
+      "サバ缶を汁ごとほぐしてキャベツの上にのせ、醤油少々としょうがを散らす。",
+      "ふんわりラップをして電子レンジ600Wで5分加熱する。",
+      "全体をよく混ぜ、キャベツがしんなりしていたら完成。ご飯にのせても合う。"
     ]
   }
 ];
@@ -705,15 +779,43 @@ function fmtQty(ing, factor){
 const LS_KEY = "kondate-maker:v1";
 let state = loadState();
 let currentCat = "全部";
+let currentTag = "全部";
+let recipeSort = "recommend";
+let suggestSort = "recommend";
 let detailId = null;
 let detailFactor = 1;
+
+// レシピに含まれる苦手食材（NG）の材料名リストを返す
+function ngHits(recipe){
+  const ng = state.ng || [];
+  if (!ng.length) return [];
+  return recipe.ingredients.filter(ing => ng.some(n => nameMatch(n, ing.n))).map(ing => ing.n);
+}
+// 表示順の切り替え（おすすめ順＝作りやすさ→単価、それ以外は指定キー）
+function sortEvals(list, mode){
+  const arr = list.slice();
+  switch(mode){
+    case "price": arr.sort((a, b) => a.perMeal - b.perMeal); break;
+    case "kcal-desc": arr.sort((a, b) => (b.recipe.kcal || 0) - (a.recipe.kcal || 0) || a.perMeal - b.perMeal); break;
+    case "kcal-asc": arr.sort((a, b) => (a.recipe.kcal || 0) - (b.recipe.kcal || 0) || a.perMeal - b.perMeal); break;
+    case "time": arr.sort((a, b) => a.recipe.time - b.recipe.time || a.perMeal - b.perMeal); break;
+    case "servings": arr.sort((a, b) => b.recipe.servings - a.recipe.servings || a.perMeal - b.perMeal); break;
+    default: arr.sort((a, b) => a.missingCount - b.missingCount || a.perMeal - b.perMeal);
+  }
+  return arr;
+}
+const TAG_ORDER = ["大盛り", "ガッツリ", "ヘルシー", "節約", "時短", "作り置き", "鍋のみ", "フライパンのみ", "レンジだけ"];
 
 function loadState(){
   try {
     const v = JSON.parse(localStorage.getItem(LS_KEY) || "null");
-    if (v && Array.isArray(v.stores) && Array.isArray(v.sales) && Array.isArray(v.stock)) return v;
+    if (v && Array.isArray(v.stores) && Array.isArray(v.sales) && Array.isArray(v.stock)){
+      // 第1版の保存データ（ngなし）でもそのまま使えるように補完する
+      v.ng = Array.isArray(v.ng) ? v.ng.filter(x => typeof x === "string" && x) : [];
+      return v;
+    }
   } catch(e) {}
-  return { stores: [], sales: [], stock: [] };
+  return { stores: [], sales: [], stock: [], ng: [] };
 }
 function saveState(){
   try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e) {}
@@ -745,21 +847,33 @@ function recipeCard(ev){
   } else if (ev.missingCount <= 2){
     badge = '<span class="badge warn">あと' + ev.missingCount + '品で作れる</span>';
   }
+  const hits = ngHits(r);
+  const ngBadge = hits.length ? '<span class="badge warn">苦手食材：' + esc(hits.join("・")) + '</span>' : '';
+  const tags = (r.tags || []).map(tg => '<span class="badge">#' + esc(tg) + '</span>').join("");
   return '<div class="recipe" data-recipe="' + r.id + '">' +
     '<div class="rimg"><div class="ph"><div>' + r.emoji + '</div><div class="phname">' + esc(r.name) + '</div></div>' +
     (r.img ? '<img src="' + esc(r.img) + '" alt="" loading="lazy" onerror="this.remove()">' : '') + '</div>' +
     '<div class="rbody"><p class="rname">' + esc(r.name) + '</p>' +
     '<p class="rdesc">' + esc(r.desc) + '</p>' +
     '<div class="rmeta"><span class="price">' + yen(ev.perMeal) + '<small> / 1食</small></span>' +
-    '<span class="badge">' + r.servings + '食分</span><span class="badge">約' + r.time + '分</span>' + badge + '</div>' +
+    '<span class="badge">' + r.servings + '食分</span><span class="badge">約' + r.time + '分</span>' +
+    (r.kcal ? '<span class="badge">約' + r.kcal + 'kcal（目安）</span>' : '') + badge + ngBadge + '</div>' +
+    (tags ? '<div class="rtags">' + tags + '</div>' : '') +
     '</div></div>';
 }
 function renderSuggest(){
-  const evals = RECIPES.map(r => evaluateRecipe(r, state));
-  const makeable = evals.filter(e => e.missingCount === 0 && !e.items.some(i => i.status === "sale"))
-    .sort((a, b) => a.perMeal - b.perMeal);
-  const almost = evals.filter(e => e.missingCount > 0 ? e.missingCount <= 2 : e.items.some(i => i.status === "sale"))
-    .sort((a, b) => a.perMeal - b.perMeal);
+  const allEvals = RECIPES.map(r => evaluateRecipe(r, state));
+  // 苦手食材を含むレシピは提案から除外する
+  const evals = allEvals.filter(e => ngHits(e.recipe).length === 0);
+  const ngNote = document.getElementById("suggest-ng-note");
+  if (ngNote){
+    const excluded = allEvals.length - evals.length;
+    ngNote.textContent = (state.ng && state.ng.length)
+      ? "苦手な食材（" + state.ng.join("、") + "）を含む " + excluded + " 件は提案から除いています。変更は「設定」タブから。"
+      : "";
+  }
+  const makeable = sortEvals(evals.filter(e => e.missingCount === 0 && !e.items.some(i => i.status === "sale")), suggestSort);
+  const almost = sortEvals(evals.filter(e => e.missingCount > 0 ? e.missingCount <= 2 : e.items.some(i => i.status === "sale")), suggestSort);
   const mk = document.getElementById("suggest-makeable");
   mk.innerHTML = makeable.length
     ? makeable.map(recipeCard).join("")
@@ -773,16 +887,47 @@ function renderRecipeList(){
   const cats = ["全部"].concat(Array.from(new Set(RECIPES.map(r => r.cat))));
   document.getElementById("recipe-chips").innerHTML = cats.map(c =>
     '<button data-cat="' + esc(c) + '"' + (c === currentCat ? ' class="active"' : '') + '>' + esc(c) + '</button>').join("");
-  const list = RECIPES.filter(r => currentCat === "全部" || r.cat === currentCat)
-    .map(r => evaluateRecipe(r, state))
-    .sort((a, b) => a.perMeal - b.perMeal);
-  document.getElementById("recipe-list").innerHTML = list.map(recipeCard).join("");
+  const tags = ["全部"].concat(TAG_ORDER.filter(tg => RECIPES.some(r => (r.tags || []).includes(tg))));
+  document.getElementById("recipe-tags").innerHTML = tags.map(tg =>
+    '<button data-tag="' + esc(tg) + '"' + (tg === currentTag ? ' class="active"' : '') + '>' +
+    (tg === "全部" ? "全部" : "#" + esc(tg)) + '</button>').join("");
+  const hideNgEl = document.getElementById("recipe-hide-ng");
+  const hideNg = !hideNgEl || hideNgEl.checked;
+  let list = RECIPES.filter(r => currentCat === "全部" || r.cat === currentCat)
+    .filter(r => currentTag === "全部" || (r.tags || []).includes(currentTag));
+  const totalMatched = list.length;
+  if (hideNg) list = list.filter(r => ngHits(r).length === 0);
+  const evals = sortEvals(list.map(r => evaluateRecipe(r, state)), recipeSort);
+  const cnt = document.getElementById("recipe-count");
+  if (cnt){
+    cnt.textContent = evals.length + "件表示" +
+      (hideNg && totalMatched !== evals.length ? "（苦手な食材を含む " + (totalMatched - evals.length) + " 件を除いています）" : "") +
+      "　※カロリーは材料からの目安（推定値）です";
+  }
+  document.getElementById("recipe-list").innerHTML = evals.length
+    ? evals.map(recipeCard).join("")
+    : '<div class="empty">条件に合うレシピがありません。タグやカテゴリ、苦手食材の除外を変えてみてください。</div>';
 }
 document.getElementById("recipe-chips").addEventListener("click", e => {
   const b = e.target.closest("button[data-cat]");
   if (!b) return;
   currentCat = b.dataset.cat;
   renderRecipeList();
+});
+document.getElementById("recipe-tags").addEventListener("click", e => {
+  const b = e.target.closest("button[data-tag]");
+  if (!b) return;
+  currentTag = (currentTag === b.dataset.tag) ? "全部" : b.dataset.tag;
+  renderRecipeList();
+});
+document.getElementById("recipe-sort").addEventListener("change", e => {
+  recipeSort = e.target.value;
+  renderRecipeList();
+});
+document.getElementById("recipe-hide-ng").addEventListener("change", () => renderRecipeList());
+document.getElementById("suggest-sort").addEventListener("change", e => {
+  suggestSort = e.target.value;
+  renderSuggest();
 });
 document.querySelector("main").addEventListener("click", e => {
   const card = e.target.closest("[data-recipe]");
@@ -830,7 +975,10 @@ function renderDetail(){
     '<div class="hero"><div class="ph"><div>' + r.emoji + '</div><div class="phname">' + esc(r.name) + '（写真は準備中）</div></div>' +
     (r.img ? '<img src="' + esc(r.img) + '" alt="" onerror="this.remove()">' : '') + '</div>' +
     '<h2 style="margin:4px 0;">' + esc(r.name) + '</h2>' +
-    '<p class="note">' + esc(r.desc) + '／ ' + r.servings + '食分 ／ 約' + r.time + '分</p>' +
+    '<p class="note">' + esc(r.desc) + '／ ' + r.servings + '食分 ／ 約' + r.time + '分' +
+    (r.kcal ? ' ／ 1食約' + r.kcal + 'kcal（材料からの目安・推定値）' : '') + '</p>' +
+    ((r.tags && r.tags.length) ? '<div class="rtags" style="margin:4px 0 8px;">' + r.tags.map(tg => '<span class="badge">#' + esc(tg) + '</span>').join("") + '</div>' : '') +
+    (ngHits(r).length ? '<p class="note" style="color:var(--danger);">⚠ 苦手な食材（' + esc(ngHits(r).join("・")) + '）が含まれています。</p>' : '') +
     '<div class="total-box">合計 <span class="big">' + yen(ev.total * f) + '</span>　1食あたり <span class="big">' + yen(ev.perMeal) + '</span></div>' +
     '<div class="seg"><button data-factor="1"' + (f === 1 ? ' class="active"' : '') + '>1倍の量</button>' +
     '<button data-factor="2"' + (f === 2 ? ' class="active"' : '') + '>2倍の量（作り置き）</button></div>' +
@@ -882,20 +1030,63 @@ function renderShopResults(results){
     });
   });
 }
+// Overpassは無料の公共サーバーで、本家（overpass-api.de）が混雑で容量オーバー（502等）になることがある。
+// 複数のエンドポイントを順に試し、本家の混雑系エラー時は少し待って1回だけ再試行する。
+const OVERPASS_ENDPOINTS = [
+  "https://overpass-api.de/api/interpreter",
+  "https://overpass.kumi.systems/api/interpreter",
+  "https://overpass.nchc.org.tw/api/interpreter"
+];
+function sleepMs(ms){ return new Promise(res => setTimeout(res, ms)); }
+async function fetchOverpassOnce(url, q){
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 20000);
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: "data=" + encodeURIComponent(q),
+      signal: ctrl.signal
+    });
+    if (!res.ok){
+      const err = new Error("overpass " + res.status);
+      err.status = res.status;
+      throw err;
+    }
+    const data = await res.json();
+    if (!data || !Array.isArray(data.elements)) throw new Error("overpass bad response");
+    return data;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+async function fetchOverpass(q){
+  let lastErr = null;
+  for (const url of OVERPASS_ENDPOINTS){
+    try {
+      return await fetchOverpassOnce(url, q);
+    } catch(e) {
+      lastErr = e;
+      // 本家が混雑系（429/502/503/504）のときは短く待って1回だけ再試行する
+      const congested = e && (e.status === 429 || e.status === 502 || e.status === 503 || e.status === 504);
+      if (congested && url.indexOf("overpass-api.de") >= 0){
+        await sleepMs(3000);
+        try { return await fetchOverpassOnce(url, q); } catch(e2) { lastErr = e2; }
+      }
+    }
+  }
+  const err = new Error("overpass all endpoints failed");
+  err.cause = lastErr;
+  throw err;
+}
 async function overpassNearby(lat, lon){
-  const q = '[out:json][timeout:25];(' +
+  const q = '[out:json][timeout:20];(' +
     'node["shop"~"supermarket|chemist|department_store|convenience|greengrocer"](around:1500,' + lat + ',' + lon + ');' +
     'way["shop"~"supermarket|chemist|department_store|convenience|greengrocer"](around:1500,' + lat + ',' + lon + ');' +
     'node["amenity"="pharmacy"](around:1500,' + lat + ',' + lon + ');' +
     'way["amenity"="pharmacy"](around:1500,' + lat + ',' + lon + ');' +
-    ');out center 60;';
-  const res = await fetch("https://overpass-api.de/api/interpreter", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: "data=" + encodeURIComponent(q)
-  });
-  if (!res.ok) throw new Error("overpass " + res.status);
-  const data = await res.json();
+    ');out center 50;';
+  const data = await fetchOverpass(q);
   return (data.elements || []).map(el => {
     const c = el.center || el;
     const tags = el.tags || {};
@@ -921,7 +1112,7 @@ document.getElementById("btn-nearby").addEventListener("click", () => {
       setShopStatus(results.length ? results.length + "件見つかりました。" : "");
       renderShopResults(results);
     } catch(e) {
-      setShopStatus("お店の検索に失敗しました。通信環境を確認してもう一度お試しください。", true);
+      setShopStatus("お店の検索に失敗しました。地図サーバーが混雑している可能性があります。少し時間をおいてもう一度試すか、店名検索・郵便番号からの検索をお使いください。", true);
     }
   }, () => {
     setShopStatus("位置情報が取得できませんでした。店名検索か郵便番号をお使いください。", true);
@@ -968,7 +1159,7 @@ document.getElementById("btn-zipsearch").addEventListener("click", async () => {
     setShopStatus(results.length ? results.length + "件見つかりました。" : "");
     renderShopResults(results);
   } catch(e) {
-    setShopStatus("検索に失敗しました。通信環境を確認してもう一度お試しください。", true);
+    setShopStatus("検索に失敗しました。地図サーバーが混雑している可能性があります。少し時間をおいてもう一度試すか、店名検索をお使いください。", true);
   }
 });
 document.getElementById("btn-manual-shop").addEventListener("click", () => {
@@ -1078,10 +1269,38 @@ function renderStock(){
   }));
 }
 
+// ---- 設定：苦手食材（NG） ----
+document.getElementById("btn-add-ng").addEventListener("click", () => {
+  const name = document.getElementById("ng-name").value.trim();
+  if (!name){ alert("食材名を入力してください。"); return; }
+  if (!Array.isArray(state.ng)) state.ng = [];
+  if (state.ng.some(n => nameMatch(n, name))){ alert("すでに登録されています。"); return; }
+  state.ng.push(name);
+  saveState();
+  document.getElementById("ng-name").value = "";
+  renderAll();
+});
+function renderNg(){
+  const box = document.getElementById("ng-list");
+  if (!box) return;
+  const ng = state.ng || [];
+  if (!ng.length){
+    box.innerHTML = '<div class="empty">まだ登録がありません。</div>';
+    return;
+  }
+  box.innerHTML = ng.map((n, i) =>
+    '<div class="item"><div class="grow"><div class="ttl">' + esc(n) + '</div></div>' +
+    '<button class="btn small danger" data-delng="' + i + '">削除</button></div>').join("");
+  box.querySelectorAll("[data-delng]").forEach(b => b.addEventListener("click", () => {
+    state.ng.splice(Number(b.dataset.delng), 1);
+    saveState(); renderAll();
+  }));
+}
+
 // ---- 設定：バックアップ ----
 document.getElementById("btn-export").addEventListener("click", () => {
-  const data = { app: "kondate-maker", version: 1, exportedAt: new Date().toISOString(),
-    stores: state.stores, sales: state.sales, stock: state.stock };
+  const data = { app: "kondate-maker", version: 2, exportedAt: new Date().toISOString(),
+    stores: state.stores, sales: state.sales, stock: state.stock, ng: state.ng || [] };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
@@ -1101,7 +1320,9 @@ document.getElementById("file-import").addEventListener("change", e => {
         throw new Error("形式が違います");
       }
       if (!confirm("今のデータを、読み込んだ内容で置き換えます。よろしいですか？")) return;
-      state = { stores: data.stores, sales: data.sales, stock: data.stock };
+      // 第1版のバックアップ（ngなし）も読み込める
+      state = { stores: data.stores, sales: data.sales, stock: data.stock,
+        ng: Array.isArray(data.ng) ? data.ng.filter(x => typeof x === "string" && x) : [] };
       saveState(); renderAll();
       document.getElementById("backup-status").textContent = "読み込みました。";
     } catch(err) {
@@ -1112,8 +1333,8 @@ document.getElementById("file-import").addEventListener("change", e => {
   e.target.value = "";
 });
 document.getElementById("btn-clear").addEventListener("click", () => {
-  if (!confirm("お店・特売メモ・在庫をすべて消します。よろしいですか？")) return;
-  state = { stores: [], sales: [], stock: [] };
+  if (!confirm("お店・特売メモ・在庫・苦手な食材をすべて消します。よろしいですか？")) return;
+  state = { stores: [], sales: [], stock: [], ng: [] };
   saveState(); renderAll();
 });
 
@@ -1124,6 +1345,7 @@ function renderAll(){
   renderShops();
   renderSales();
   renderStock();
+  renderNg();
 }
 renderAll();
 </script>
