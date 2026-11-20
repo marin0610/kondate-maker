@@ -363,7 +363,7 @@
     </div>
     <div class="card">
       <h2>このアプリについて</h2>
-      <div class="note">近所のお店の特売と冷蔵庫の在庫から、「安くて大量に作れる献立」を提案するアプリです。主婦層と一人暮らしで自炊する人を対象にしていて、1食あたりの単価が見えるのが特長です。レシピはアプリ内蔵のものだけを使い、分量と手順は自前の言葉で書いています。料理写真は後からAI生成画像を用意して差し込む方針で、レシピデータの画像欄（img）にファイル名が入っています（画像が無い間はプレースホルダが表示されます）。チラシの価格データは自動取得せず、特売メモとして手入力する形式です。レシピにはハッシュタグ（大盛り／ガッツリ／ヘルシー／野菜たっぷり／節約／時短／作り置き／お弁当OK／ご飯が進む／鍋のみ／フライパンのみ／レンジのみ／ベジタリアン／ビーガン等）が付いていて、レシピ一覧でタップして絞り込めます。表示されるカロリーは材料から見積もった1食あたりの目安（推定値）です。苦手な食材を登録すると、それを含むレシピを献立提案から除外できます。アレルギー食材を登録すると、それを含むレシピは最優先（絶対）で献立提案とレシピ一覧から常時除外されます（判定は材料名への照合のため、完全な保証ではありません）。優先したい食材を登録すると、それを使うレシピが献立提案のおすすめ順で上位に出ます。材料はお好みで有機（オーガニック）のものに置き換えても作れます。</div>
+      <div class="note">近所のお店の特売と冷蔵庫の在庫から、「安くて大量に作れる献立」を提案するアプリです。主婦層と一人暮らしで自炊する人を対象にしていて、1食あたりの単価が見えるのが特長です。レシピはアプリ内蔵のものだけを使い、分量と手順は自前の言葉で書いています。料理写真は後からAI生成画像を用意して差し込む方針で、レシピデータの画像欄（img）にファイル名が入っています（画像が無い間はプレースホルダが表示されます）。チラシの価格データは自動取得せず、特売メモとして手入力する形式です。レシピにはハッシュタグ（大盛り／ガッツリ／ヘルシー／野菜たっぷり／節約／時短／作り置き／お弁当OK／ご飯が進む／鍋のみ／フライパンのみ／レンジのみ等）が付いていて、レシピ一覧でタップして絞り込めます。表示されるカロリーは材料から見積もった1食あたりの目安（推定値）です。苦手な食材を登録すると、それを含むレシピを献立提案から除外できます。アレルギー食材を登録すると、それを含むレシピは最優先（絶対）で献立提案とレシピ一覧から常時除外されます（判定は材料名への照合のため、完全な保証ではありません）。優先したい食材を登録すると、それを使うレシピが献立提案のおすすめ順で上位に出ます。材料はお好みで有機（オーガニック）のものに置き換えても作れます。</div>
       <button class="btn danger block" id="btn-clear">データをすべて消す</button>
     </div>
   </section>
@@ -795,7 +795,7 @@ const RECIPES = [
   },
   {
     id:"range-atsuage-cheese", name:"レンジ厚揚げチーズ", img:"range-atsuage.jpg", emoji:"🧀", cat:"レンジ",
-    servings:2, time:8, kcal:310, tags:["節約","時短","お弁当OK","レンジのみ","ベジタリアン"],
+    servings:2, time:8, kcal:310, tags:["節約","時短","お弁当OK","レンジのみ"],
     desc:"厚揚げにねぎ味噌とチーズをのせてチン。おつまみにもなる1品。",
     ingredients:[
       {n:"厚揚げ", amt:1, unit:"パック", per:120, main:true},
@@ -811,7 +811,7 @@ const RECIPES = [
   },
   {
     id:"komatsuna-misoshiru", name:"小松菜と油揚げのみそ汁", img:"komatsuna-miso.jpg", emoji:"🍲", cat:"汁物",
-    servings:4, time:15, kcal:110, tags:["ヘルシー","野菜たっぷり","節約","時短","鍋のみ","ベジタリアン"],
+    servings:4, time:15, kcal:110, tags:["ヘルシー","野菜たっぷり","節約","時短","鍋のみ"],
     desc:"小松菜がたっぷり入る、毎日のみそ汁。家族分の基本形。",
     ingredients:[
       {n:"小松菜", amt:2, unit:"束", per:100, main:true},
@@ -873,7 +873,7 @@ const RECIPES = [
   },
   {
     id:"kiriboshi-nimono", name:"切り干し大根の煮物", img:"kiriboshi.jpg", emoji:"🥗", cat:"煮物",
-    servings:4, time:25, kcal:170, tags:["ヘルシー","野菜たっぷり","節約","作り置き","お弁当OK","鍋のみ","ベジタリアン"],
+    servings:4, time:25, kcal:170, tags:["ヘルシー","野菜たっぷり","節約","作り置き","お弁当OK","鍋のみ"],
     desc:"乾物のうまみがしみる、作り置きの定番副菜。",
     ingredients:[
       {n:"切り干し大根", amt:40, unit:"g", per:80, main:true},
@@ -889,7 +889,7 @@ const RECIPES = [
   },
   {
     id:"hijiki-nimono", name:"ひじきと大豆の煮物", img:"hijiki.jpg", emoji:"🥗", cat:"煮物",
-    servings:4, time:25, kcal:190, tags:["ヘルシー","節約","作り置き","お弁当OK","鍋のみ","ベジタリアン"],
+    servings:4, time:25, kcal:190, tags:["ヘルシー","節約","作り置き","お弁当OK","鍋のみ"],
     desc:"鉄分・食物繊維を意識した、冷めてもおいしい煮物。",
     ingredients:[
       {n:"乾燥ひじき", amt:20, unit:"g", per:100, main:true},
@@ -906,7 +906,7 @@ const RECIPES = [
   },
   {
     id:"kabocha-nimono", name:"かぼちゃの煮物", img:"kabocha.jpg", emoji:"🎃", cat:"煮物",
-    servings:3, time:20, kcal:200, tags:["ヘルシー","野菜たっぷり","節約","作り置き","お弁当OK","鍋のみ","ベジタリアン"],
+    servings:3, time:20, kcal:200, tags:["ヘルシー","野菜たっぷり","節約","作り置き","お弁当OK","鍋のみ"],
     desc:"ほくほく甘い、基本のかぼちゃ煮。お弁当にも。",
     ingredients:[
       {n:"かぼちゃ", amt:600, unit:"g", per:30, main:true},
@@ -1034,7 +1034,7 @@ const RECIPES = [
   },
   {
     id:"renkon-kinpira", name:"れんこんのきんぴら", img:"renkon.jpg", emoji:"🥒", cat:"副菜",
-    servings:3, time:15, kcal:170, tags:["ヘルシー","野菜たっぷり","節約","時短","作り置き","お弁当OK","フライパンのみ","ベジタリアン","ビーガン"],
+    servings:3, time:15, kcal:170, tags:["ヘルシー","野菜たっぷり","節約","時短","作り置き","お弁当OK","フライパンのみ"],
     desc:"シャキシャキ食感の、作り置きできるきんぴら。",
     ingredients:[
       {n:"れんこん", amt:200, unit:"g", per:70, main:true},
@@ -1049,7 +1049,7 @@ const RECIPES = [
   },
   {
     id:"nasu-yaki-bitashi", name:"なすの焼き浸し", img:"nasu-bitashi.jpg", emoji:"🍆", cat:"副菜",
-    servings:3, time:20, kcal:230, tags:["ヘルシー","野菜たっぷり","節約","作り置き","フライパンのみ","ベジタリアン"],
+    servings:3, time:20, kcal:230, tags:["ヘルシー","野菜たっぷり","節約","作り置き","フライパンのみ"],
     desc:"焼いて浸すだけの揚げない浸し。冷やすとさらにおいしい。",
     ingredients:[
       {n:"なす", amt:4, unit:"個", per:40, main:true},
@@ -1538,7 +1538,7 @@ const RECIPES = [
   },
   {
     id:"dashimaki", name:"だし巻き卵", img:"dashimaki.jpg", emoji:"🥚", cat:"副菜",
-    servings:2, time:10, kcal:200, tags:["節約","時短","お弁当OK","フライパンのみ","ベジタリアン"],
+    servings:2, time:10, kcal:200, tags:["節約","時短","お弁当OK","フライパンのみ"],
     desc:"だしのきいた、ふんわりジューシーな卵焼き。",
     ingredients:[
       {n:"卵", amt:3, unit:"個", per:25, main:true},
@@ -1705,7 +1705,7 @@ const RECIPES = [
   },
   {
     id:"french-toast", name:"フレンチトースト", img:"frenchtoast.jpg", emoji:"🍞", cat:"主食",
-    servings:2, time:10, kcal:430, tags:["節約","時短","フライパンのみ","ベジタリアン"],
+    servings:2, time:10, kcal:430, tags:["節約","時短","フライパンのみ"],
     desc:"卵液をしっかり染み込ませた、ふわとろの朝食トースト。",
     ingredients:[
       {n:"食パン", amt:4, unit:"枚", per:30, main:true},
@@ -1721,7 +1721,7 @@ const RECIPES = [
   },
   {
     id:"range-pudding", name:"レンジでカスタードプリン", img:"pudding.jpg", emoji:"🍮", cat:"デザート",
-    servings:2, time:15, kcal:170, tags:["レンジのみ","作り置き","ベジタリアン"],
+    servings:2, time:15, kcal:170, tags:["レンジのみ","作り置き"],
     desc:"電子レンジで作る、なめらかカスタードプリン。冷やすとさらにおいしい。",
     ingredients:[
       {n:"卵", amt:1, unit:"個", per:25, main:true},
@@ -1737,7 +1737,7 @@ const RECIPES = [
   },
   {
     id:"pancake", name:"パンケーキ", img:"pancake.jpg", emoji:"🥞", cat:"デザート",
-    servings:2, time:15, kcal:420, tags:["フライパンのみ","ベジタリアン"],
+    servings:2, time:15, kcal:420, tags:["フライパンのみ"],
     desc:"ホットケーキミックスで作る基本のパンケーキ。弱火でふんわり焼く。",
     ingredients:[
       {n:"ホットケーキミックス", amt:200, unit:"g", per:45, main:true},
@@ -1754,7 +1754,7 @@ const RECIPES = [
   },
   {
     id:"baked-cheesecake", name:"ベイクドチーズケーキ", img:"cheesecake.jpg", emoji:"🧀", cat:"デザート",
-    servings:4, time:55, kcal:320, tags:["作り置き","ベジタリアン"],
+    servings:4, time:55, kcal:320, tags:["作り置き"],
     desc:"170℃でじっくり焼く基本のチーズケーキ。冷蔵庫で冷やすとしっとりする。",
     ingredients:[
       {n:"クリームチーズ", amt:200, unit:"g", per:125, main:true},
@@ -1772,7 +1772,7 @@ const RECIPES = [
   },
   {
     id:"brownie", name:"ブラウニー", img:"brownie.jpg", emoji:"🍫", cat:"デザート",
-    servings:4, time:40, kcal:330, tags:["作り置き","ベジタリアン"],
+    servings:4, time:40, kcal:330, tags:["作り置き"],
     desc:"板チョコで作る濃厚ブラウニー。180℃で25分焼く。",
     ingredients:[
       {n:"板チョコレート", amt:2, unit:"枚", per:110, main:true},
@@ -1804,7 +1804,7 @@ const RECIPES = [
   },
   {
     id:"sweet-potato", name:"スイートポテト", img:"sweetpotato.jpg", emoji:"🍠", cat:"デザート",
-    servings:2, time:30, kcal:260, tags:["作り置き","ベジタリアン"],
+    servings:2, time:30, kcal:260, tags:["作り置き"],
     desc:"さつまいもをレンジでやわらかくして作る、ほくほくスイートポテト。",
     ingredients:[
       {n:"さつまいも", amt:300, unit:"g", per:30, main:true},
@@ -1820,7 +1820,7 @@ const RECIPES = [
   },
   {
     id:"banana-pound", name:"バナナのパウンドケーキ風", img:"bananacake.jpg", emoji:"🍌", cat:"デザート",
-    servings:4, time:50, kcal:280, tags:["作り置き","ベジタリアン"],
+    servings:4, time:50, kcal:280, tags:["作り置き"],
     desc:"ホットケーキミックスと完熟バナナで作る、しっとりケーキ。",
     ingredients:[
       {n:"バナナ", amt:2, unit:"本", per:60, main:true},
@@ -1851,8 +1851,68 @@ const RECIPES = [
     ]
   },
   {
+    id:"butter-cookie", name:"基本のバタークッキー", img:"buttercookies.jpg", emoji:"🍪", cat:"デザート",
+    servings:5, time:60, kcal:340, tags:["作り置き"],
+    desc:"バターの香りを楽しむ王道のクッキー。型抜きでも、棒状にして切り分けても作れる。",
+    ingredients:[
+      {n:"無塩バター", amt:100, unit:"g", per:200, main:true},
+      {n:"薄力粉", amt:180, unit:"g", per:30, main:true},
+      {n:"卵", amt:1, unit:"個", per:25, main:true},
+      {n:"砂糖・塩・バニラエッセンスなど", fixed:30, main:false}
+    ],
+    steps:[
+      "無塩バターと卵は冷蔵庫から出し、30分置いて室温に戻す。バターは、指で押すと少しへこむやわらかさが目安。",
+      "ボウルにバターを入れて泡立て器でクリーム状に混ぜ、砂糖大さじ5（約60g）を2回に分けて加え、そのつどよく混ぜる。卵黄1個分とバニラエッセンス2滴を加えて混ぜる。",
+      "薄力粉180gをふるい入れ（粉を目の細かい網に通し、だまをなくす）、ゴムベラで切るように混ぜる。粉っぽさがなくなったら、ひとまとめにする。",
+      "ラップで包んで厚さ1cmに平らにし、冷蔵庫で30分冷やす。型抜きする場合は、打ち粉（くっつき防止にふる薄力粉。分量外）をした台で厚さ5mmに伸ばし、型で抜く。切り分ける場合は、冷やす前に直径4cmの棒状に形作り、冷えてから厚さ7mmに切る。",
+      "オーブンを170℃に温め始める（予熱）。クッキングシートを敷いた天板に、生地を1cm以上離して並べる。",
+      "170℃のオーブンで12〜15分焼く。ふちに薄く焼き色がついたら取り出し、天板の上で10分冷ましてから網に移す。"
+    ]
+  },
+  {
+    id:"choc-chip-cookie", name:"チョコチップクッキー", img:"chocchipcookies.jpg", emoji:"🍪", cat:"デザート",
+    servings:6, time:40, kcal:390, tags:["作り置き"],
+    desc:"外はさっくり、中は少ししっとりしたアメリカンタイプ。焼きたてを冷ますと食感が落ち着く。",
+    ingredients:[
+      {n:"無塩バター", amt:100, unit:"g", per:200, main:true},
+      {n:"薄力粉", amt:180, unit:"g", per:30, main:true},
+      {n:"チョコチップ", amt:100, unit:"g", per:180, main:true},
+      {n:"卵", amt:1, unit:"個", per:25, main:true},
+      {n:"砂糖・ベーキングパウダー・塩など", fixed:40, main:false}
+    ],
+    steps:[
+      "無塩バターと卵は冷蔵庫から出し、30分置いて室温に戻す。バターは、指で押すと少しへこむやわらかさが目安。",
+      "ボウルにバターを入れて泡立て器でクリーム状に混ぜ、砂糖大さじ7（約80g）を2回に分けて加え、そのつどよく混ぜる。溶き卵を少しずつ加えて混ぜる。",
+      "薄力粉180g、ベーキングパウダー小さじ1/2、塩ひとつまみを合わせてふるい入れる。粉っぽさが少し残る段階でチョコチップ100gを加え、ゴムベラで切るように混ぜる。",
+      "生地をラップで包み、冷蔵庫で15分休ませる。オーブンを170℃に温め始める（予熱）。",
+      "大さじ1杯ほどの生地をすくい、全部で18個に分ける。クッキングシートを敷いた天板に3cm以上離して並べ、厚さ1cmほどに軽くつぶす。焼くと広がるので、間隔を空ける。",
+      "170℃のオーブンで12〜14分焼く。ふちが固まり、表面に薄く焼き色がついたら取り出す。中心がやわらかくても、天板の上で5分、網に移して15分冷ますと固まる。"
+    ]
+  },
+  {
+    id:"stained-glass-cookie", name:"ステンドグラスクッキー", img:"stainedglasscookies.jpg", emoji:"🍪", cat:"デザート",
+    servings:5, time:60, kcal:400, tags:["作り置き"],
+    desc:"型抜きクッキーの真ん中に色つきの飴を入れて焼く、光に透かすと色ガラスのように見えるクッキー。",
+    ingredients:[
+      {n:"無塩バター", amt:100, unit:"g", per:200, main:true},
+      {n:"薄力粉", amt:180, unit:"g", per:30, main:true},
+      {n:"卵", amt:1, unit:"個", per:25, main:true},
+      {n:"色つき飴", amt:80, unit:"g", per:150, main:true},
+      {n:"砂糖・塩・バニラエッセンスなど", fixed:30, main:false}
+    ],
+    steps:[
+      "無塩バターと卵は冷蔵庫から出し、30分置いて室温に戻す。ボウルにバターを入れてクリーム状に混ぜ、砂糖大さじ5（約60g）を2回に分けて加え、そのつどよく混ぜる。卵黄1個分とバニラエッセンス2滴を加えて混ぜる。",
+      "薄力粉180gをふるい入れて、ゴムベラで切るように混ぜる。粉っぽさがなくなったらラップで包み、厚さ1cmに平らにして冷蔵庫で30分冷やす。",
+      "色つき飴は色ごとに厚手の袋に入れ、麺棒で細かく砕く。色が混ざらないよう、色ごとに別の小皿へ分けておく。",
+      "オーブンを170℃に温め始める（予熱）。生地を打ち粉（くっつき防止にふる薄力粉。分量外）をした台で厚さ5mmに伸ばし、直径約6cmの型で抜く。真ん中を直径2〜3cmの小さい型で抜き、全部で20枚作る。",
+      "クッキングシートを敷いた天板に、生地を1cm以上離して並べる。真ん中の穴に、砕いた飴を1枚につき小さじ1（約4g）ずつ入れる。穴からあふれると形が崩れるので、穴の内側に収まる量にする。",
+      "170℃のオーブンで10〜12分焼く。クッキーのふちに薄く焼き色がつき、飴が完全に溶けて平らになったら取り出す。",
+      "焼きたての飴は熱くてやわらかいので、触らずに天板の上で15分冷ます。飴がしっかり固まってから、フライ返しでそっと外す。湿気で飴がべたつきやすいため、完全に冷めてから密閉容器に入れる。"
+    ]
+  },
+  {
     id:"tofu-hamburg", name:"豆腐ハンバーグ風", img:"tofuhamburg.jpg", emoji:"🍽️", cat:"炒め物",
-    servings:2, time:20, kcal:380, tags:["ベジタリアン","ビーガン","ヘルシー","フライパンのみ","ご飯が進む"],
+    servings:2, time:20, kcal:380, tags:["ヘルシー","フライパンのみ","ご飯が進む"],
     desc:"卵も肉も使わない、豆腐と玉ねぎのハンバーグ風。甘辛い醤油だれでご飯が進む。",
     ingredients:[
       {n:"木綿豆腐", amt:1, unit:"丁", per:90, main:true},
@@ -1869,7 +1929,7 @@ const RECIPES = [
   },
   {
     id:"shojin-nimono", name:"大豆と根菜の煮物（精進風）", img:"shojin.jpg", emoji:"🥕", cat:"煮物",
-    servings:4, time:30, kcal:240, tags:["ベジタリアン","ビーガン","ヘルシー","野菜たっぷり","作り置き","鍋のみ"],
+    servings:4, time:30, kcal:240, tags:["ヘルシー","野菜たっぷり","作り置き","鍋のみ"],
     desc:"昆布と干し椎茸のだしで煮る、動物性食品を使わない精進風の煮物。",
     ingredients:[
       {n:"大豆水煮", amt:1, unit:"パック", per:110, main:true},
@@ -1887,7 +1947,7 @@ const RECIPES = [
   },
   {
     id:"vegan-mabo", name:"肉なし麻婆豆腐", img:"veganmabo.jpg", emoji:"🌶️", cat:"炒め物",
-    servings:2, time:15, kcal:320, tags:["ベジタリアン","ビーガン","ヘルシー","時短","フライパンのみ","ご飯が進む"],
+    servings:2, time:15, kcal:320, tags:["ヘルシー","時短","フライパンのみ","ご飯が進む"],
     desc:"ひき肉の代わりにしいたけのみじん切りで旨みを出す、肉なし麻婆豆腐。",
     ingredients:[
       {n:"木綿豆腐", amt:1, unit:"丁", per:90, main:true},
@@ -1904,7 +1964,7 @@ const RECIPES = [
   },
   {
     id:"veggie-curry", name:"野菜だけのカレー", img:"veggiecurry.jpg", emoji:"🍛", cat:"カレー",
-    servings:4, time:30, kcal:520, tags:["ベジタリアン","ビーガン","野菜たっぷり","作り置き","鍋のみ"],
+    servings:4, time:30, kcal:520, tags:["野菜たっぷり","作り置き","鍋のみ"],
     desc:"肉を使わず、野菜の旨みで作るカレー。大きめ野菜で食べごたえ十分。",
     ingredients:[
       {n:"玉ねぎ", amt:3, unit:"個", per:40, main:true},
@@ -1924,7 +1984,7 @@ const RECIPES = [
   },
   {
     id:"tonyu-pudding", name:"豆乳プリン", img:"tonyupudding.jpg", emoji:"🍮", cat:"デザート",
-    servings:2, time:10, kcal:120, tags:["ベジタリアン","ビーガン","レンジのみ","時短","作り置き"],
+    servings:2, time:10, kcal:120, tags:["レンジのみ","時短","作り置き"],
     desc:"卵もゼラチンも使わない、寒天で固める豆乳プリン。黒蜜をかけて。",
     ingredients:[
       {n:"豆乳", amt:300, unit:"ml", per:30, main:true},
@@ -2131,7 +2191,7 @@ function sortEvals(list, mode){
   }
   return arr;
 }
-const TAG_ORDER = ["大盛り", "ガッツリ", "ヘルシー", "野菜たっぷり", "ベジタリアン", "ビーガン", "節約", "時短", "作り置き", "お弁当OK", "ご飯が進む", "鍋のみ", "フライパンのみ", "レンジのみ"];
+const TAG_ORDER = ["大盛り", "ガッツリ", "ヘルシー", "野菜たっぷり", "節約", "時短", "作り置き", "お弁当OK", "ご飯が進む", "鍋のみ", "フライパンのみ", "レンジのみ"];
 
 function loadState(){
   try {
