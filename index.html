@@ -529,7 +529,7 @@ const RECIPES = [
   },
   {
     id:"sukiyaki-ni", name:"すき焼き風煮", img:"sukiyaki.jpg", emoji:"🥘", cat:"煮物",
-    servings:3, time:20, kcal:540, tags:["鍋のみ","節約"],
+    servings:3, time:20, kcal:540, tags:["鍋のみ"],
     desc:"豚こまで作るすき焼き風。卵をつけて食べる甘辛煮。",
     ingredients:[
       {n:"豚こま肉", amt:400, unit:"g", per:108, main:true},
@@ -683,7 +683,7 @@ const RECIPES = [
   },
   {
     id:"range-buta-moyashi", name:"レンジで豚バラもやし", img:"range-moyashi.jpg", emoji:"🍽️", cat:"レンジ",
-    servings:2, time:10, kcal:480, tags:["レンジのみ","時短","節約"],
+    servings:2, time:10, kcal:480, tags:["レンジのみ","時短"],
     desc:"耐熱皿に重ねてチンするだけ。洗い物が少ない蒸ししゃぶ風。",
     ingredients:[
       {n:"豚バラ肉", amt:300, unit:"g", per:148, main:true},
@@ -711,6 +711,528 @@ const RECIPES = [
       "サバ缶を汁ごとほぐしてキャベツの上にのせ、醤油少々としょうがを散らす。",
       "ふんわりラップをして電子レンジ600Wで5分加熱する。",
       "全体をよく混ぜ、キャベツがしんなりしていたら完成。ご飯にのせても合う。"
+    ]
+  },
+  {
+    id:"range-komatsuna-hitashi", name:"レンジで小松菜のおひたし", img:"range-komatsuna.jpg", emoji:"🥬", cat:"レンジ",
+    servings:2, time:8, kcal:120, tags:["レンジのみ","時短","ヘルシー","節約"],
+    desc:"小松菜と油揚げをチンして浸すだけ。あと1品にちょうどいい副菜。",
+    ingredients:[
+      {n:"小松菜", amt:1, unit:"束", per:100, main:true},
+      {n:"油揚げ", amt:2, unit:"枚", per:20, main:true},
+      {n:"だし・醤油・かつお節など", fixed:15, main:false}
+    ],
+    steps:[
+      "小松菜は4cm幅に切り、油揚げは短冊切りにする。",
+      "耐熱容器に入れてふんわりラップをし、電子レンジ600Wで3分加熱する。",
+      "だし醤油（だし・醤油・水を合わせたもの）に浸し、かつお節をのせる。"
+    ]
+  },
+  {
+    id:"range-yodare-dori", name:"レンジよだれ鶏", img:"range-yodare.jpg", emoji:"🍗", cat:"レンジ",
+    servings:2, time:12, kcal:330, tags:["レンジのみ","時短","ヘルシー","節約"],
+    desc:"鶏むねをレンジでしっとり蒸して、ピリ辛だれをかける。",
+    ingredients:[
+      {n:"鶏むね肉", amt:300, unit:"g", per:68, main:true},
+      {n:"きゅうり", amt:1, unit:"本", per:40, main:true},
+      {n:"ラー油・酢・醤油など", fixed:25, main:false}
+    ],
+    steps:[
+      "鶏むねは皮を取り、フォークで数か所刺して酒と塩（分量外）をまぶす。きゅうりは千切りにする。",
+      "耐熱皿に鶏肉を入れてふんわりラップをし、電子レンジ600Wで5分加熱し、そのまま3分置く。",
+      "鶏肉を食べやすい厚さに切り、きゅうりの上に並べて、ラー油入りの酢醤油だれをかける。"
+    ]
+  },
+  {
+    id:"range-nasu-buta", name:"なすと豚こまのレンジ蒸し", img:"range-nasu.jpg", emoji:"🍆", cat:"レンジ",
+    servings:2, time:12, kcal:440, tags:["レンジのみ","時短","節約"],
+    desc:"なすと豚こまを重ねてチン。ポン酢でさっぱり食べる蒸し物。",
+    ingredients:[
+      {n:"豚こま肉", amt:250, unit:"g", per:108, main:true},
+      {n:"なす", amt:3, unit:"個", per:40, main:true},
+      {n:"ポン酢・ごま油など", fixed:20, main:false}
+    ],
+    steps:[
+      "なすは縦半分に切ってから斜め薄切りにし、水にさらして水気を切る。",
+      "耐熱皿になすと豚こまを交互に重ね、塩こしょう少々をふる。",
+      "ふんわりラップをして電子レンジ600Wで6分加熱し、肉に火が通ったらポン酢とごま油を回しかける。"
+    ]
+  },
+  {
+    id:"range-atsuage-cheese", name:"レンジ厚揚げチーズ", img:"range-atsuage.jpg", emoji:"🧀", cat:"レンジ",
+    servings:2, time:8, kcal:310, tags:["レンジのみ","時短","節約"],
+    desc:"厚揚げにねぎ味噌とチーズをのせてチン。おつまみにもなる1品。",
+    ingredients:[
+      {n:"厚揚げ", amt:1, unit:"パック", per:120, main:true},
+      {n:"スライスチーズ", amt:2, unit:"枚", per:25, main:true},
+      {n:"長ねぎ", amt:0.5, unit:"本", per:60, main:true},
+      {n:"味噌・みりんなど", fixed:15, main:false}
+    ],
+    steps:[
+      "厚揚げは半分に切り、切り口を上にして耐熱皿に並べる。",
+      "刻んだ長ねぎと味噌・みりんを混ぜて厚揚げに塗り、チーズをのせる。",
+      "ふんわりラップをして電子レンジ600Wで3分加熱し、チーズが溶けたら完成。"
+    ]
+  },
+  {
+    id:"komatsuna-misoshiru", name:"小松菜と油揚げのみそ汁", img:"komatsuna-miso.jpg", emoji:"🍲", cat:"汁物",
+    servings:4, time:15, kcal:110, tags:["ヘルシー","節約","時短","鍋のみ"],
+    desc:"小松菜がたっぷり入る、毎日のみそ汁。家族分の基本形。",
+    ingredients:[
+      {n:"小松菜", amt:2, unit:"束", per:100, main:true},
+      {n:"油揚げ", amt:2, unit:"枚", per:20, main:true},
+      {n:"味噌・だし", fixed:20, main:false}
+    ],
+    steps:[
+      "小松菜は4cm幅に切り、油揚げは短冊切りにする。",
+      "鍋にだし汁を沸かし、油揚げと小松菜の茎を入れて2分煮る。",
+      "葉を加えてさっと火を通し、火を止めて味噌を溶き入れる。"
+    ]
+  },
+  {
+    id:"tsumire-jiru", name:"鶏つみれのしょうが汁", img:"tsumire.jpg", emoji:"🍲", cat:"汁物",
+    servings:4, time:20, kcal:280, tags:["ヘルシー","節約","鍋のみ"],
+    desc:"しょうが入りの鶏つみれと白菜の、体が温まる汁物。",
+    ingredients:[
+      {n:"鶏ひき肉", amt:300, unit:"g", per:98, main:true},
+      {n:"白菜", amt:400, unit:"g", per:25, main:true},
+      {n:"長ねぎ", amt:1, unit:"本", per:60, main:true},
+      {n:"卵", amt:1, unit:"個", per:25, main:true},
+      {n:"しょうが・だし・醤油など", fixed:25, main:false}
+    ],
+    steps:[
+      "鶏ひき肉に卵、刻んだ長ねぎの半量、塩少々を混ぜてつみれだねを作る。",
+      "鍋にだし汁としょうがを入れて沸かし、つみれだねをスプーンで落とし入れる。",
+      "白菜と残りの長ねぎを加えて5分煮て、醤油と塩で味を調える。"
+    ]
+  },
+  {
+    id:"saba-misoni", name:"サバの味噌煮", img:"saba-miso.jpg", emoji:"🐟", cat:"煮物",
+    servings:3, time:20, kcal:420, tags:["ヘルシー","節約","鍋のみ"],
+    desc:"味噌だれでこっくり煮る、ご飯に合う魚の定番。",
+    ingredients:[
+      {n:"サバ切り身", amt:3, unit:"切れ", per:130, main:true},
+      {n:"味噌・酒・砂糖・しょうがなど", fixed:30, main:false}
+    ],
+    steps:[
+      "サバは皮目に浅く切り込みを入れ、熱湯を回しかけて臭みを取る。",
+      "鍋に水・酒・味噌・砂糖・しょうがを入れて煮立て、サバを皮目を上にして入れる。",
+      "落としぶたをして中火で12分ほど煮て、煮汁を少し煮詰める。"
+    ]
+  },
+  {
+    id:"harihari-nabe", name:"豚こまと水菜のはりはり鍋", img:"harihari.jpg", emoji:"🍲", cat:"鍋",
+    servings:4, time:20, kcal:390, tags:["ヘルシー","節約","鍋のみ"],
+    desc:"水菜のシャキシャキ感を楽しむ、あっさりだしの鍋。",
+    ingredients:[
+      {n:"豚こま肉", amt:400, unit:"g", per:108, main:true},
+      {n:"水菜", amt:200, unit:"g", per:50, main:true},
+      {n:"油揚げ", amt:2, unit:"枚", per:20, main:true},
+      {n:"だし・ポン酢など", fixed:25, main:false}
+    ],
+    steps:[
+      "水菜は5cm幅に切り、油揚げは短冊切りにする。",
+      "鍋にだし汁を沸かし、油揚げと豚こまを入れて火を通す。アクは取る。",
+      "水菜を加えてさっと火を通し、ポン酢で食べる。"
+    ]
+  },
+  {
+    id:"kiriboshi-nimono", name:"切り干し大根の煮物", img:"kiriboshi.jpg", emoji:"🥗", cat:"煮物",
+    servings:4, time:25, kcal:170, tags:["ヘルシー","節約","作り置き","鍋のみ"],
+    desc:"乾物のうまみがしみる、作り置きの定番副菜。",
+    ingredients:[
+      {n:"切り干し大根", amt:40, unit:"g", per:80, main:true},
+      {n:"にんじん", amt:1, unit:"本", per:50, main:true},
+      {n:"油揚げ", amt:2, unit:"枚", per:20, main:true},
+      {n:"だし・醤油・砂糖など", fixed:25, main:false}
+    ],
+    steps:[
+      "切り干し大根は水で戻して水気を絞り、食べやすい長さに切る。にんじんは細切りにする。",
+      "鍋に戻し汁とだし、油揚げ、にんじんを入れて煮立てる。",
+      "切り干し大根を加え、醤油と砂糖で味をつけて汁気が少なくなるまで10分煮る。"
+    ]
+  },
+  {
+    id:"hijiki-nimono", name:"ひじきと大豆の煮物", img:"hijiki.jpg", emoji:"🥗", cat:"煮物",
+    servings:4, time:25, kcal:190, tags:["ヘルシー","節約","作り置き","鍋のみ"],
+    desc:"鉄分・食物繊維を意識した、冷めてもおいしい煮物。",
+    ingredients:[
+      {n:"乾燥ひじき", amt:20, unit:"g", per:100, main:true},
+      {n:"大豆水煮", amt:1, unit:"パック", per:100, main:true},
+      {n:"にんじん", amt:0.5, unit:"本", per:50, main:true},
+      {n:"油揚げ", amt:1, unit:"枚", per:20, main:true},
+      {n:"だし・醤油・砂糖など", fixed:25, main:false}
+    ],
+    steps:[
+      "ひじきは水で戻してざるに上げる。にんじんは細切り、油揚げは短冊切りにする。",
+      "鍋にだしと具材をすべて入れて煮立てる。",
+      "醤油と砂糖で味をつけ、弱めの中火で12分ほど煮る。"
+    ]
+  },
+  {
+    id:"kabocha-nimono", name:"かぼちゃの煮物", img:"kabocha.jpg", emoji:"🎃", cat:"煮物",
+    servings:3, time:20, kcal:200, tags:["ヘルシー","節約","作り置き","鍋のみ"],
+    desc:"ほくほく甘い、基本のかぼちゃ煮。お弁当にも。",
+    ingredients:[
+      {n:"かぼちゃ", amt:600, unit:"g", per:30, main:true},
+      {n:"醤油・砂糖・だしなど", fixed:25, main:false}
+    ],
+    steps:[
+      "かぼちゃは種とワタを取り、一口大に切って面取りする。",
+      "鍋にかぼちゃの皮を下にして並べ、ひたひたの水とだし、砂糖、醤油を加える。",
+      "落としぶたをして弱めの中火で12分煮て、そのまま少し置いて味を含ませる。"
+    ]
+  },
+  {
+    id:"meat-sauce", name:"たっぷりミートソース", img:"meatsauce.jpg", emoji:"🍝", cat:"麺",
+    servings:4, time:30, kcal:620, tags:["節約","作り置き","鍋のみ"],
+    desc:"鍋いっぱいに作ってパスタにかける。余りは冷凍もできる。",
+    ingredients:[
+      {n:"合いびき肉", amt:400, unit:"g", per:110, main:true},
+      {n:"玉ねぎ", amt:2, unit:"個", per:40, main:true},
+      {n:"にんじん", amt:1, unit:"本", per:50, main:true},
+      {n:"トマト缶", amt:1, unit:"缶", per:100, main:true},
+      {n:"パスタ", amt:400, unit:"g", per:35, main:true},
+      {n:"コンソメ・ケチャップなど", fixed:30, main:false}
+    ],
+    steps:[
+      "玉ねぎとにんじんはみじん切りにする。鍋でひき肉を炒め、出た脂は軽く拭く。",
+      "野菜を加えてしんなりするまで炒め、トマト缶と水、コンソメを加える。",
+      "弱火で15分煮て、ケチャップと塩こしょうで味を調える。ゆでたパスタにかける。"
+    ]
+  },
+  {
+    id:"gyoza-soup", name:"冷凍餃子の野菜スープ", img:"gyoza-soup.jpg", emoji:"🥟", cat:"鍋",
+    servings:2, time:15, kcal:470, tags:["時短","節約","鍋のみ"],
+    desc:"冷凍餃子と野菜を鍋に入れるだけ。一人暮らしの味方。",
+    ingredients:[
+      {n:"冷凍餃子", amt:12, unit:"個", per:20, main:true},
+      {n:"白菜", amt:300, unit:"g", per:25, main:true},
+      {n:"もやし", amt:1, unit:"袋", per:30, main:true},
+      {n:"鶏がらスープの素・ごま油など", fixed:25, main:false}
+    ],
+    steps:[
+      "白菜はざく切りにする。鍋に水と鶏がらスープの素を入れて沸かす。",
+      "冷凍餃子と白菜を入れて5分煮る。",
+      "もやしを加えて1分煮て、ごま油を回しかける。"
+    ]
+  },
+  {
+    id:"tantanmen", name:"担々麺", img:"tantanmen.jpg", emoji:"🍜", cat:"麺",
+    servings:2, time:15, kcal:780, tags:["ガッツリ","時短","鍋のみ"],
+    desc:"豆乳と練りごまで作る、辛さ控えめもできる濃厚担々麺。",
+    ingredients:[
+      {n:"中華麺", amt:2, unit:"玉", per:45, main:true},
+      {n:"豚ひき肉", amt:200, unit:"g", per:108, main:true},
+      {n:"小松菜", amt:1, unit:"束", per:100, main:true},
+      {n:"豆乳", amt:200, unit:"ml", per:40, main:true},
+      {n:"練りごま・ラー油・味噌など", fixed:40, main:false}
+    ],
+    steps:[
+      "小松菜は4cm幅に切る。鍋でひき肉を炒め、味噌と豆板醤少々で味をつけて一度取り出す。",
+      "同じ鍋に水と鶏がらスープの素、豆乳、練りごまを入れて温める（沸騰させすぎない）。",
+      "中華麺と小松菜をゆでてスープに入れ、肉そぼろとラー油をのせる。"
+    ]
+  },
+  {
+    id:"komatsuna-bacon", name:"小松菜とベーコンの炒め物", img:"komatsuna-bacon.jpg", emoji:"🥓", cat:"炒め物",
+    servings:2, time:10, kcal:250, tags:["時短","節約","フライパンのみ"],
+    desc:"にんにくの香りで小松菜をもりもり食べる炒め物。",
+    ingredients:[
+      {n:"小松菜", amt:1, unit:"束", per:100, main:true},
+      {n:"ベーコン", amt:60, unit:"g", per:160, main:true},
+      {n:"にんにく・塩こしょうなど", fixed:15, main:false}
+    ],
+    steps:[
+      "小松菜は4cm幅に切り、ベーコンは1cm幅に切る。",
+      "フライパンに油とにんにく、ベーコンを入れて炒める。",
+      "小松菜を茎から加えて強火でさっと炒め、塩こしょうで調える。"
+    ]
+  },
+  {
+    id:"sake-chanchan", name:"鮭のちゃんちゃん焼き風", img:"chanchan.jpg", emoji:"🐟", cat:"炒め物",
+    servings:3, time:20, kcal:470, tags:["ヘルシー","節約","フライパンのみ"],
+    desc:"鮭と野菜を味噌だれで蒸し焼きにする、家族向けの主菜。",
+    ingredients:[
+      {n:"鮭切り身", amt:3, unit:"切れ", per:120, main:true},
+      {n:"キャベツ", amt:300, unit:"g", per:20, main:true},
+      {n:"玉ねぎ", amt:1, unit:"個", per:40, main:true},
+      {n:"にんじん", amt:0.5, unit:"本", per:50, main:true},
+      {n:"味噌・バター・酒など", fixed:30, main:false}
+    ],
+    steps:[
+      "鮭は塩少々をふる。キャベツはざく切り、玉ねぎはくし切り、にんじんは薄切りにする。",
+      "フライパンに野菜を広げ、鮭をのせて酒をふり、フタをして中火で8分蒸し焼きにする。",
+      "味噌だれとバターをのせ、全体をほぐしながら混ぜる。"
+    ]
+  },
+  {
+    id:"torimune-piccata", name:"鶏むね肉のピカタ", img:"piccata.jpg", emoji:"🍗", cat:"炒め物",
+    servings:2, time:15, kcal:400, tags:["ヘルシー","時短","節約","フライパンのみ"],
+    desc:"卵の衣でしっとり焼く、鶏むねの洋風おかず。",
+    ingredients:[
+      {n:"鶏むね肉", amt:300, unit:"g", per:68, main:true},
+      {n:"卵", amt:2, unit:"個", per:25, main:true},
+      {n:"小麦粉・油・ケチャップなど", fixed:20, main:false}
+    ],
+    steps:[
+      "鶏むねはそぎ切りにして塩こしょうと小麦粉をまぶす。",
+      "溶き卵にくぐらせ、油を熱したフライパンで両面を焼く。",
+      "中まで火が通ったら取り出し、ケチャップを添える。"
+    ]
+  },
+  {
+    id:"atsuage-oyster", name:"厚揚げとキャベツのオイスター炒め", img:"atsuage-oyster.jpg", emoji:"🥬", cat:"炒め物",
+    servings:2, time:12, kcal:380, tags:["ヘルシー","時短","節約","フライパンのみ"],
+    desc:"厚揚げでボリュームを出す、野菜たっぷりの炒め物。",
+    ingredients:[
+      {n:"厚揚げ", amt:1, unit:"パック", per:120, main:true},
+      {n:"キャベツ", amt:300, unit:"g", per:20, main:true},
+      {n:"にんじん", amt:0.5, unit:"本", per:50, main:true},
+      {n:"オイスターソース・醤油など", fixed:20, main:false}
+    ],
+    steps:[
+      "厚揚げは一口大、キャベツはざく切り、にんじんは薄切りにする。",
+      "フライパンで厚揚げを焼き色がつくまで焼く。",
+      "野菜を加えて炒め、オイスターソースと醤油で味をつける。"
+    ]
+  },
+  {
+    id:"renkon-kinpira", name:"れんこんのきんぴら", img:"renkon.jpg", emoji:"🥒", cat:"副菜",
+    servings:3, time:15, kcal:170, tags:["ヘルシー","時短","節約","作り置き","フライパンのみ"],
+    desc:"シャキシャキ食感の、作り置きできるきんぴら。",
+    ingredients:[
+      {n:"れんこん", amt:200, unit:"g", per:70, main:true},
+      {n:"にんじん", amt:0.5, unit:"本", per:50, main:true},
+      {n:"ごま油・醤油・ごまなど", fixed:20, main:false}
+    ],
+    steps:[
+      "れんこんは薄切りにして酢水にさらし、水気を切る。にんじんは細切りにする。",
+      "フライパンにごま油を熱し、れんこんとにんじんを炒める。",
+      "醤油・砂糖・みりんで味をつけ、仕上げにごまをふる。"
+    ]
+  },
+  {
+    id:"nasu-yaki-bitashi", name:"なすの焼き浸し", img:"nasu-bitashi.jpg", emoji:"🍆", cat:"副菜",
+    servings:3, time:20, kcal:230, tags:["ヘルシー","節約","作り置き","フライパンのみ"],
+    desc:"焼いて浸すだけの揚げない浸し。冷やすとさらにおいしい。",
+    ingredients:[
+      {n:"なす", amt:4, unit:"個", per:40, main:true},
+      {n:"油・めんつゆ・しょうがなど", fixed:30, main:false}
+    ],
+    steps:[
+      "なすは縦半分に切って皮目に切り込みを入れ、一口大に切る。",
+      "フライパンに多めの油を熱し、なすを皮目から焼いて火を通す。",
+      "薄めためんつゆとしょうがに熱いうちに浸し、そのまま冷ます。"
+    ]
+  },
+  {
+    id:"mochi-pizza", name:"フライパン餅ピザ", img:"mochi-pizza.jpg", emoji:"🍕", cat:"主食",
+    servings:2, time:15, kcal:610, tags:["時短","節約","フライパンのみ"],
+    desc:"切り餅を並べて焼く、もちもち生地の簡単ピザ。",
+    ingredients:[
+      {n:"切り餅", amt:4, unit:"個", per:40, main:true},
+      {n:"ウインナー", amt:80, unit:"g", per:150, main:true},
+      {n:"スライスチーズ", amt:4, unit:"枚", per:25, main:true},
+      {n:"玉ねぎ", amt:0.5, unit:"個", per:40, main:true},
+      {n:"ケチャップ・油など", fixed:15, main:false}
+    ],
+    steps:[
+      "切り餅は半分の厚さに切る。ウインナーは斜め切り、玉ねぎは薄切りにする。",
+      "フライパンに油を薄く引き、餅を並べて弱めの中火で焼く。",
+      "餅がつながったら裏返し、ケチャップを塗って具とチーズをのせ、フタをしてチーズが溶けるまで焼く。"
+    ]
+  },
+  {
+    id:"gapao", name:"ガパオライス", img:"gapao.jpg", emoji:"🍚", cat:"丼",
+    servings:2, time:15, kcal:680, tags:["ガッツリ","時短","フライパンのみ"],
+    desc:"ナンプラーの香りと目玉焼きが決め手。仕上げにパクチーを散らすタイ風ご飯。",
+    ingredients:[
+      {n:"鶏ひき肉", amt:300, unit:"g", per:98, main:true},
+      {n:"玉ねぎ", amt:1, unit:"個", per:40, main:true},
+      {n:"ピーマン", amt:2, unit:"個", per:30, main:true},
+      {n:"パクチー", amt:1, unit:"袋", per:80, main:true},
+      {n:"卵", amt:2, unit:"個", per:25, main:true},
+      {n:"米", amt:300, unit:"g", per:50, main:true},
+      {n:"ナンプラー・醤油・砂糖など", fixed:30, main:false}
+    ],
+    steps:[
+      "玉ねぎは粗みじん、ピーマンは1cm角に切る。フライパンで目玉焼きを作って取り出す。",
+      "同じフライパンで鶏ひき肉と玉ねぎ、ピーマンを炒め、ナンプラーと醤油、砂糖で味をつける。",
+      "ご飯にのせて目玉焼きをのせ、刻んだパクチーを散らす。辛さは好みで唐辛子を足す。"
+    ]
+  },
+  {
+    id:"tomyum-udon", name:"トムヤム風うどん", img:"tomyum.jpg", emoji:"🍜", cat:"うどん",
+    servings:1, time:10, kcal:520, tags:["時短","鍋のみ"],
+    desc:"1人分の冷凍うどんで作る、酸っぱ辛いエスニックうどん。パクチーたっぷり。",
+    ingredients:[
+      {n:"冷凍うどん", amt:1, unit:"玉", per:40, main:true},
+      {n:"むきえび", amt:80, unit:"g", per:180, main:true},
+      {n:"パクチー", amt:1, unit:"袋", per:80, main:true},
+      {n:"トムヤムペースト・ナンプラーなど", fixed:30, main:false}
+    ],
+    steps:[
+      "鍋に水とトムヤムペーストを入れて沸かす。",
+      "冷凍うどんとむきえびを入れて表示時間ゆでる。",
+      "ナンプラーと砂糖少々で味を調え、刻んだパクチーをたっぷりのせる。"
+    ]
+  },
+  {
+    id:"bulgogi", name:"プルコギ", img:"bulgogi.jpg", emoji:"🥩", cat:"炒め物",
+    servings:3, time:20, kcal:730, tags:["ガッツリ","フライパンのみ"],
+    desc:"甘辛だれの牛肉と野菜の炒め物。ご飯にのせてもおいしい韓国の定番。",
+    ingredients:[
+      {n:"牛こま肉", amt:300, unit:"g", per:198, main:true},
+      {n:"玉ねぎ", amt:2, unit:"個", per:40, main:true},
+      {n:"にんじん", amt:1, unit:"本", per:50, main:true},
+      {n:"ニラ", amt:1, unit:"束", per:100, main:true},
+      {n:"米", amt:300, unit:"g", per:50, main:true},
+      {n:"コチュジャン・醤油・砂糖など", fixed:30, main:false}
+    ],
+    steps:[
+      "牛肉に醤油・砂糖・コチュジャン・ごま油をもみ込み、10分置く。野菜は食べやすく切る。",
+      "フライパンで牛肉と玉ねぎ、にんじんを炒める。",
+      "火が通ったらニラを加えてさっと炒め、ご飯と一緒に盛る。"
+    ]
+  },
+  {
+    id:"bibimbap", name:"ビビンバ", img:"bibimbap.jpg", emoji:"🍚", cat:"丼",
+    servings:2, time:20, kcal:690, tags:["ガッツリ","フライパンのみ"],
+    desc:"肉そぼろと野菜のナムルをのせて混ぜて食べる、韓国の混ぜご飯。",
+    ingredients:[
+      {n:"豚ひき肉", amt:200, unit:"g", per:108, main:true},
+      {n:"もやし", amt:1, unit:"袋", per:30, main:true},
+      {n:"にんじん", amt:1, unit:"本", per:50, main:true},
+      {n:"ほうれん草", amt:1, unit:"束", per:100, main:true},
+      {n:"キムチ", amt:100, unit:"g", per:70, main:true},
+      {n:"卵", amt:2, unit:"個", per:25, main:true},
+      {n:"米", amt:300, unit:"g", per:50, main:true},
+      {n:"コチュジャン・ごま油・醤油など", fixed:30, main:false}
+    ],
+    steps:[
+      "もやし、にんじん、ほうれん草はそれぞれゆでるかレンジで加熱し、ごま油と塩で和えてナムルにする。",
+      "フライパンで豚ひき肉を炒めて醤油と砂糖で味をつけ、目玉焼きも作る。",
+      "ご飯に具とキムチ、目玉焼きをのせ、コチュジャンを添えてよく混ぜて食べる。"
+    ]
+  },
+  {
+    id:"nira-chijimi", name:"ニラとシーフードのチヂミ", img:"chijimi.jpg", emoji:"🥞", cat:"主食",
+    servings:2, time:15, kcal:530, tags:["時短","節約","フライパンのみ"],
+    desc:"外はカリッと、中はもちっと。タレで食べる韓国のお好み焼き風。",
+    ingredients:[
+      {n:"冷凍シーフードミックス", amt:150, unit:"g", per:120, main:true},
+      {n:"ニラ", amt:1, unit:"束", per:100, main:true},
+      {n:"小麦粉", amt:100, unit:"g", per:25, main:true},
+      {n:"卵", amt:1, unit:"個", per:25, main:true},
+      {n:"酢醤油・ごま油など", fixed:15, main:false}
+    ],
+    steps:[
+      "ニラは4cm幅に切る。ボウルに小麦粉、水、卵を混ぜて生地を作り、ニラと解凍したシーフードを加える。",
+      "フライパンにごま油を熱し、生地を薄く広げて両面をこんがり焼く。",
+      "食べやすく切って、酢醤油にラー油を落としたタレで食べる。"
+    ]
+  },
+  {
+    id:"kimchi-jjigae", name:"キムチチゲ", img:"jjigae.jpg", emoji:"🍲", cat:"鍋",
+    servings:3, time:20, kcal:470, tags:["ヘルシー","節約","鍋のみ"],
+    desc:"キムチと豆腐の辛いスープ。寒い日に体が温まる韓国の鍋。",
+    ingredients:[
+      {n:"豚こま肉", amt:200, unit:"g", per:108, main:true},
+      {n:"キムチ", amt:300, unit:"g", per:70, main:true},
+      {n:"木綿豆腐", amt:1, unit:"丁", per:60, main:true},
+      {n:"長ねぎ", amt:1, unit:"本", per:60, main:true},
+      {n:"もやし", amt:1, unit:"袋", per:30, main:true},
+      {n:"だし・味噌・コチュジャンなど", fixed:20, main:false}
+    ],
+    steps:[
+      "鍋で豚こまとキムチを炒め、香りが出たら水とだしを加える。",
+      "もやしと斜め切りの長ねぎを加えて5分煮る。",
+      "豆腐を大きめに崩し入れて3分煮て、味噌とコチュジャンで味を調える。"
+    ]
+  },
+  {
+    id:"chinjao-rosu", name:"青椒肉絲", img:"chinjao.jpg", emoji:"🥦", cat:"炒め物",
+    servings:2, time:15, kcal:600, tags:["時短","フライパンのみ"],
+    desc:"ピーマンと豚肉の細切り炒め。オイスターソースで本格中華の味。",
+    ingredients:[
+      {n:"豚こま肉", amt:250, unit:"g", per:108, main:true},
+      {n:"ピーマン", amt:4, unit:"個", per:30, main:true},
+      {n:"たけのこ水煮", amt:1, unit:"パック", per:120, main:true},
+      {n:"オイスターソース・酒・片栗粉など", fixed:25, main:false}
+    ],
+    steps:[
+      "豚こまは細切りにして酒と片栗粉をもみ込む。ピーマンとたけのこも細切りにする。",
+      "フライパンに油を熱し、豚肉をほぐしながら炒める。",
+      "野菜を加えて強火で炒め、オイスターソースと醤油で味をつける。"
+    ]
+  },
+  {
+    id:"ebi-chili", name:"エビチリ", img:"ebichili.jpg", emoji:"🌶️", cat:"炒め物",
+    servings:2, time:20, kcal:530, tags:["フライパンのみ"],
+    desc:"甘辛いチリソースをからめた、中華の人気メニュー。",
+    ingredients:[
+      {n:"むきえび", amt:200, unit:"g", per:180, main:true},
+      {n:"長ねぎ", amt:1, unit:"本", per:60, main:true},
+      {n:"ケチャップ・豆板醤・片栗粉など", fixed:40, main:false}
+    ],
+    steps:[
+      "むきえびは背わたを取り、塩と片栗粉をもみ込んで水で洗い、水気を拭く。",
+      "フライパンでえびを両面焼いて一度取り出す。",
+      "同じフライパンで刻んだ長ねぎと豆板醤を炒め、ケチャップと水、砂糖を加えてソースを作り、えびを戻してからめる。"
+    ]
+  },
+  {
+    id:"chuka-don", name:"中華丼", img:"chukadon.jpg", emoji:"🍚", cat:"丼",
+    servings:3, time:20, kcal:630, tags:["フライパンのみ"],
+    desc:"野菜と豚肉のあんかけをご飯にかける、具だくさんの中華ご飯。",
+    ingredients:[
+      {n:"豚こま肉", amt:250, unit:"g", per:108, main:true},
+      {n:"白菜", amt:300, unit:"g", per:25, main:true},
+      {n:"にんじん", amt:0.5, unit:"本", per:50, main:true},
+      {n:"うずら卵（水煮）", amt:1, unit:"パック", per:120, main:true},
+      {n:"もやし", amt:1, unit:"袋", per:30, main:true},
+      {n:"米", amt:450, unit:"g", per:50, main:true},
+      {n:"鶏がらスープの素・オイスターソース・片栗粉など", fixed:30, main:false}
+    ],
+    steps:[
+      "白菜はざく切り、にんじんは薄切りにする。フライパンで豚こまを炒める。",
+      "野菜とうずら卵を加えて炒め、水と鶏がらスープの素、オイスターソースを加えて煮る。",
+      "水溶き片栗粉でとろみをつけ、ご飯にかける。"
+    ]
+  },
+  {
+    id:"happousai", name:"八宝菜", img:"happousai.jpg", emoji:"🥗", cat:"炒め物",
+    servings:3, time:20, kcal:430, tags:["ヘルシー","節約","フライパンのみ"],
+    desc:"野菜とシーフードがたっぷり入る、中華の野菜炒め煮。",
+    ingredients:[
+      {n:"豚こま肉", amt:200, unit:"g", per:108, main:true},
+      {n:"冷凍シーフードミックス", amt:100, unit:"g", per:120, main:true},
+      {n:"白菜", amt:300, unit:"g", per:25, main:true},
+      {n:"にんじん", amt:0.5, unit:"本", per:50, main:true},
+      {n:"たけのこ水煮", amt:0.5, unit:"パック", per:120, main:true},
+      {n:"鶏がらスープの素・片栗粉など", fixed:25, main:false}
+    ],
+    steps:[
+      "白菜はざく切り、にんじんとたけのこは薄切りにする。シーフードは解凍する。",
+      "フライパンで豚こまとシーフードを炒め、野菜を加える。",
+      "水と鶏がらスープの素を加えて少し煮て、水溶き片栗粉でとろみをつける。"
+    ]
+  },
+  {
+    id:"okra-natto-don", name:"オクラ納豆丼", img:"okura-natto.jpg", emoji:"🍚", cat:"丼",
+    servings:1, time:5, kcal:450, tags:["ヘルシー","時短","節約"],
+    desc:"火を使わない1人分のねばねば丼。忙しい日の自炊に。",
+    ingredients:[
+      {n:"米", amt:150, unit:"g", per:50, main:true},
+      {n:"納豆", amt:1, unit:"パック", per:35, main:true},
+      {n:"オクラ", amt:1, unit:"パック", per:90, main:true},
+      {n:"めんつゆ・かつお節など", fixed:10, main:false}
+    ],
+    steps:[
+      "オクラは塩でこすって洗い、小口切りにする。",
+      "納豆を付属のたれと混ぜ、オクラと合わせる。",
+      "ご飯にのせ、めんつゆ少々とかつお節をかける。"
     ]
   }
 ];
@@ -1079,6 +1601,50 @@ async function fetchOverpass(q){
   err.cause = lastErr;
   throw err;
 }
+// 最終フォールバック：Overpassが全エンドポイント失敗（混雑等）のとき、Nominatimのviewbox検索で
+// カテゴリごとに近隣のお店を探す。Nominatimの利用ポリシーに配慮し、クエリは必要最小限の5件を
+// 逐次実行し、リクエスト間隔も1秒以上空ける。結果形式はOverpass時と同じ {name,label,address,distKm}。
+const NOMINATIM_NEARBY_QUERIES = ["supermarket", "convenience", "chemist", "greengrocer", "pharmacy"];
+async function nominatimNearby(lat, lon){
+  const viewbox = (lon - 0.02) + "," + (lat + 0.02) + "," + (lon + 0.02) + "," + (lat - 0.02);
+  const seen = new Set();
+  const out = [];
+  let anyOk = false;
+  for (let qi = 0; qi < NOMINATIM_NEARBY_QUERIES.length; qi++){
+    if (qi > 0) await sleepMs(1100);
+    const q = NOMINATIM_NEARBY_QUERIES[qi];
+    const url = "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=30&addressdetails=1&countrycodes=jp&bounded=1&viewbox=" +
+      encodeURIComponent(viewbox) + "&q=" + encodeURIComponent(q);
+    try {
+      const res = await fetch(url, { headers: { "Accept": "application/json" } });
+      if (!res.ok) continue;
+      const data = await res.json();
+      anyOk = true;
+      for (const d of data){
+        const key = (d.osm_type && d.osm_id) ? d.osm_type + ":" + d.osm_id
+          : (d.name || "") + "@" + Number(d.lat).toFixed(4) + "," + Number(d.lon).toFixed(4);
+        if (seen.has(key)) continue;
+        seen.add(key);
+        const name = d.name || String(d.display_name || "").split(",")[0];
+        if (!name) continue;
+        const a = d.address || {};
+        const addr = [a.prefecture || a.province, a.city || a.town || a.village, a.suburb || a.neighbourhood || a.quarter].filter(Boolean).join("");
+        const label = d.type === "pharmacy" ? "薬局" : (SHOP_TYPE_LABEL[d.type] || "お店");
+        out.push({ name, label, address: addr, distKm: haversineKm(lat, lon, Number(d.lat), Number(d.lon)) });
+      }
+    } catch(e) { /* このカテゴリは飛ばして次へ */ }
+  }
+  if (!anyOk) throw new Error("nominatim nearby all queries failed");
+  out.sort((a, b) => a.distKm - b.distKm);
+  const results = out.filter(r => r.distKm <= 2.5).slice(0, 50);
+  results.viaNominatim = true;
+  return results;
+}
+function nearbyFoundMessage(results){
+  if (!results.length) return results.viaNominatim ? "別の検索方法（Nominatim）でも近くにお店が見つかりませんでした。" : "";
+  if (results.viaNominatim) return "地図サーバーが混雑していたため、別の検索方法（Nominatim）で " + results.length + " 件見つかりました。";
+  return results.length + "件見つかりました。";
+}
 async function overpassNearby(lat, lon){
   const q = '[out:json][timeout:20];(' +
     'node["shop"~"supermarket|chemist|department_store|convenience|greengrocer"](around:1500,' + lat + ',' + lon + ');' +
@@ -1086,7 +1652,13 @@ async function overpassNearby(lat, lon){
     'node["amenity"="pharmacy"](around:1500,' + lat + ',' + lon + ');' +
     'way["amenity"="pharmacy"](around:1500,' + lat + ',' + lon + ');' +
     ');out center 50;';
-  const data = await fetchOverpass(q);
+  let data;
+  try {
+    data = await fetchOverpass(q);
+  } catch(e) {
+    // Overpassが全滅した場合はNominatim viewbox検索へフォールバックする
+    return await nominatimNearby(lat, lon);
+  }
   return (data.elements || []).map(el => {
     const c = el.center || el;
     const tags = el.tags || {};
@@ -1109,7 +1681,7 @@ document.getElementById("btn-nearby").addEventListener("click", () => {
     try {
       setShopStatus("近くのお店を探しています…");
       const results = await overpassNearby(pos.coords.latitude, pos.coords.longitude);
-      setShopStatus(results.length ? results.length + "件見つかりました。" : "");
+      setShopStatus(nearbyFoundMessage(results));
       renderShopResults(results);
     } catch(e) {
       setShopStatus("お店の検索に失敗しました。地図サーバーが混雑している可能性があります。少し時間をおいてもう一度試すか、店名検索・郵便番号からの検索をお使いください。", true);
@@ -1156,7 +1728,7 @@ document.getElementById("btn-zipsearch").addEventListener("click", async () => {
     const ndata = await nres.json();
     if (!ndata.length){ setShopStatus("住所の場所が特定できませんでした。", true); return; }
     const results = await overpassNearby(Number(ndata[0].lat), Number(ndata[0].lon));
-    setShopStatus(results.length ? results.length + "件見つかりました。" : "");
+    setShopStatus(nearbyFoundMessage(results));
     renderShopResults(results);
   } catch(e) {
     setShopStatus("検索に失敗しました。地図サーバーが混雑している可能性があります。少し時間をおいてもう一度試すか、店名検索をお使いください。", true);
