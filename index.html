@@ -112,6 +112,10 @@
   .badge.sale{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8;font-weight:700;}
   .badge.warn{background:var(--warn-bg);border-color:#fde68a;color:var(--warn);font-weight:700;}
   .badge.allergy{background:var(--danger-bg);border-color:#fecaca;color:var(--danger);font-weight:700;}
+  /* 優先食材のみモードでの警告表示（苦手食材を含むカード） */
+  .recipe.caution{border:2px solid #f87171;background:#fff7f7;}
+  .warnline{color:var(--danger);font-weight:700;font-size:14px;margin:4px 0;}
+  .warnline.soft{font-weight:600;font-size:13px;}
   .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;}
   .chips button{
     border:1px solid var(--line);background:var(--card);border-radius:999px;padding:7px 13px;font-size:14px;cursor:pointer;
@@ -230,6 +234,8 @@
       <option value="servings">食分数が多い順</option>
     </select>
     <div class="checkrow"><input type="checkbox" id="recipe-hide-ng" checked><span>苦手な食材（設定で登録）を含むレシピを除く</span></div>
+    <div class="checkrow"><input type="checkbox" id="recipe-priority-only"><span>優先食材のみで探す（設定で登録した優先食材を使うレシピだけ表示）</span></div>
+    <div class="note" id="recipe-priority-note" style="margin:6px 0;"></div>
     <div class="note" id="recipe-count" style="margin:6px 0;"></div>
     <div id="recipe-list"></div>
   </section>
@@ -305,11 +311,13 @@
   <section class="tab" id="tab-fridge">
     <div class="card">
       <h2>冷蔵庫の在庫</h2>
-      <div class="note">家にある食材を入れておくと、献立提案で優先的に使います。</div>
+      <div class="note">家にある食材を入れておくと、献立提案で優先的に使います。賞味期限を入れると、期限切れ・あと3日以内の食材は自動で「優先食材」に合算され、それを使うレシピが提案・一覧のおすすめ順で上位に出ます（アレルギー・苦手な食材の除外の方が強いので、除外対象が浮上することはありません）。</div>
       <label>食材名</label>
       <input type="text" id="stock-name" placeholder="例：鶏もも肉">
       <label>量（目安でOK）</label>
       <input type="text" id="stock-qty" placeholder="例：600g、2個、1袋">
+      <label>賞味期限（任意）</label>
+      <input type="date" id="stock-expiry">
       <button class="btn primary block" id="btn-add-stock">在庫を追加</button>
       <div id="stock-list" style="margin-top:10px;"></div>
     </div>
@@ -319,7 +327,7 @@
   <section class="tab" id="tab-settings">
     <div class="card">
       <h2>アレルギー（必ず除外）</h2>
-      <div class="note" style="color:var(--danger);">アレルギーは命に関わることがあるため、このアプリで<strong>最優先（絶対）</strong>に扱います。ここに登録した食材を含むレシピは、献立提案とレシピ一覧から<strong>常時除外</strong>されます（除外をオフにはできません）。優先したい食材・冷蔵庫の在庫・特売など、他のどの要素でもこの除外は上書きされず、除外対象のレシピが浮上することはありません。</div>
+      <div class="note" style="color:var(--danger);">アレルギーは命に関わることがあるため、このアプリで<strong>最優先（絶対）</strong>に扱います。ここに登録した食材を含むレシピは、献立提案とレシピ一覧から<strong>常時除外</strong>されます（除外をオフにはできません）。優先したい食材・冷蔵庫の在庫・特売など、他のどの要素でもこの除外は上書きされず、除外対象のレシピが浮上することはありません。レシピ一覧の「優先食材のみで探す」モードでも表示されません（あのモードで警告付きで見えるのは、苦手な食材を含むレシピだけです）。</div>
       <div class="note" style="margin-top:6px;">⚠ 除外の判定は、材料名に登録した言葉（と下記の関連語）が含まれているかどうかの照合です。材料名の書き方によっては拾いきれない場合があるため、<strong>完全な保証はできません</strong>。作る前には、材料と食品の原材料表示を必ずご自身で確認してください。</div>
       <label>特定原材料8品目（タップで登録／もう一度タップで解除）</label>
       <div class="chips" id="allergy-presets" style="margin-bottom:4px;"></div>
@@ -338,11 +346,12 @@
     </div>
     <div class="card">
       <h2>優先したい食材</h2>
-      <div class="note">好きな食材や、早く使い切りたい食材を登録すると、それを使うレシピが献立提案の「おすすめ順」で上位に出て、カードに「優先食材：○○」のバッジが付きます。レシピ一覧でもバッジが付きます。なお、強さの順番は「アレルギー（絶対）＞苦手＞優先食材」です。除外対象のレシピは優先登録しても絶対に提案に出ません。</div>
+      <div class="note">好きな食材や、早く使い切りたい食材を登録すると、それを使うレシピが献立提案の「おすすめ順」で上位に出て、カードに「優先食材：○○」のバッジが付きます。レシピ一覧でもバッジが付きます。レシピ一覧の「優先食材のみで探す」をオンにすると、優先食材を使うレシピだけが表示されます。そのモードでは、苦手な食材を含むレシピは確認できるよう消さずに、赤文字の警告付きで表示しますが、アレルギー食材を含むレシピは表示されません（常時除外）。なお、強さの順番は「アレルギー（絶対）＞苦手＞優先食材」です。除外対象のレシピは優先登録しても絶対に提案に出ませんし、通常のレシピ一覧でもアレルギーを含むレシピは表示されません。また、冷蔵庫の在庫で賞味期限が3日以内・期限切れの食材は、下に「期限が近いため自動で優先中」として表示され、優先食材に自動で合算されます（在庫を削除すると自動優先からも外れます）。</div>
       <label>優先したい食材名</label>
       <input type="text" id="priority-name" placeholder="例：鶏もも肉、ツナ">
       <button class="btn primary block" id="btn-add-priority">優先したい食材を追加</button>
       <div id="priority-list" style="margin-top:10px;"></div>
+      <div id="priority-auto" style="margin-top:10px;"></div>
     </div>
     <div class="card">
       <h2>データのバックアップ</h2>
@@ -1413,6 +1422,74 @@ function allergyHits(recipe){
   if (!al.length) return [];
   return recipe.ingredients.filter(ing => al.some(a => allergyWords(a).some(w => nameMatch(w, ing.n)))).map(ing => ing.n);
 }
+// レシピに当てはまる「登録したアレルギー名」のリストを返す（警告表示でどのアレルゲンか示すため）
+function allergyTermsHit(recipe){
+  const al = state.allergy || [];
+  if (!al.length) return [];
+  return al.filter(a => allergyWords(a).some(w => recipe.ingredients.some(ing => nameMatch(w, ing.n))));
+}
+// レシピに当てはまる「登録した苦手食材名」のリストを返す
+function ngTermsHit(recipe){
+  const ng = state.ng || [];
+  if (!ng.length) return [];
+  return ng.filter(n => recipe.ingredients.some(ing => nameMatch(n, ing.n)));
+}
+// 優先食材への素のヒット（苦手・アレルギーとの重なりを差し引かない）。
+// 「優先食材のみ」モードの対象判定に使う。手動リスト＋期限連動の自動優先が対象。
+function rawPriorityHits(recipe){
+  const pr = (state.priority || []).concat(autoPriorityNames());
+  if (!pr.length) return [];
+  return recipe.ingredients.filter(ing => pr.some(x => nameMatch(x, ing.n))).map(ing => ing.n);
+}
+// ---- 賞味期限と期限連動の自動優先 ----
+// expiry（YYYY-MM-DD）から今日までの残り日数。期限なし・形式違いは null。
+function expiryDaysLeft(expiry){
+  if (!expiry || typeof expiry !== "string") return null;
+  const m = expiry.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return null;
+  const d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  const t = new Date(); t.setHours(0, 0, 0, 0);
+  return Math.round((d - t) / 86400000);
+}
+function expiryLabel(s){
+  const d = expiryDaysLeft(s.expiry);
+  if (d === null) return "";
+  if (d < 0) return "賞味期限：" + s.expiry + "（期限切れ：" + (-d) + "日過ぎ）";
+  if (d === 0) return "賞味期限：" + s.expiry + "（今日まで）";
+  return "賞味期限：" + s.expiry + "（あと" + d + "日）";
+}
+function expiryStyle(s){
+  const d = expiryDaysLeft(s.expiry);
+  if (d === null) return "";
+  if (d < 0) return ' style="color:var(--danger);font-weight:700;"';
+  if (d <= 3) return ' style="color:var(--warn);font-weight:700;"';
+  return "";
+}
+// 期限切れ・3日以内の在庫食材名（自動優先の対象）。在庫データから都度計算するので、
+// 在庫を削除すれば自動優先からも自動で外れる。
+function autoPriorityNames(){
+  const seen = [];
+  (state.stock || []).forEach(s => {
+    const d = expiryDaysLeft(s.expiry);
+    if (d !== null && d <= 3 && !seen.some(n => nameMatch(n, s.name))) seen.push(s.name);
+  });
+  return seen;
+}
+// レシピに含まれる「期限連動の自動優先」食材の材料名リスト。
+// 手動の優先食材と重なる材料、および苦手・アレルギーに当てはまる材料は数えない（除外が勝つ原則）。
+function autoPriorityHits(recipe){
+  const names = autoPriorityNames();
+  if (!names.length) return [];
+  const excluded = new Set(ngHits(recipe).concat(allergyHits(recipe)));
+  const manual = new Set(priorityHits(recipe));
+  return recipe.ingredients
+    .filter(ing => !excluded.has(ing.n) && !manual.has(ing.n) && names.some(x => nameMatch(x, ing.n)))
+    .map(ing => ing.n);
+}
+// 優先ヒットの合算（手動＋期限連動）。おすすめ順の並び替えに使う。
+function effectivePriorityHits(recipe){
+  return priorityHits(recipe).concat(autoPriorityHits(recipe));
+}
 // レシピに含まれる優先食材の材料名リストを返す。
 // 優先より除外が強い原則のため、苦手・アレルギーにも当てはまる材料は優先として数えない。
 function priorityHits(recipe){
@@ -1432,7 +1509,7 @@ function sortEvals(list, mode){
     case "kcal-asc": arr.sort((a, b) => (a.recipe.kcal || 0) - (b.recipe.kcal || 0) || a.perMeal - b.perMeal); break;
     case "time": arr.sort((a, b) => a.recipe.time - b.recipe.time || a.perMeal - b.perMeal); break;
     case "servings": arr.sort((a, b) => b.recipe.servings - a.recipe.servings || a.perMeal - b.perMeal); break;
-    default: arr.sort((a, b) => priorityHits(b.recipe).length - priorityHits(a.recipe).length || a.missingCount - b.missingCount || a.perMeal - b.perMeal);
+    default: arr.sort((a, b) => effectivePriorityHits(b.recipe).length - effectivePriorityHits(a.recipe).length || a.missingCount - b.missingCount || a.perMeal - b.perMeal);
   }
   return arr;
 }
@@ -1448,6 +1525,9 @@ function loadState(){
       v.allergy = Array.isArray(v.allergy) ? v.allergy.filter(x => typeof x === "string" && x) : [];
       // 優先食材追加前の保存データ（priorityなし）でもそのまま使えるように補完する
       v.priority = Array.isArray(v.priority) ? v.priority.filter(x => typeof x === "string" && x) : [];
+      // 賞味期限追加前の在庫データ（expiryなし）でもそのまま使えるように補完する
+      v.stock = v.stock.map(s => (s && typeof s === "object")
+        ? Object.assign({}, s, { expiry: typeof s.expiry === "string" ? s.expiry : "" }) : s);
       return v;
     }
   } catch(e) {}
@@ -1472,7 +1552,8 @@ document.getElementById("tabbar").addEventListener("click", e => {
 });
 
 // ---- レシピ表示 ----
-function recipeCard(ev){
+function recipeCard(ev, opts){
+  opts = opts || {};
   const r = ev.recipe;
   let badge = "";
   if (ev.missingCount === 0){
@@ -1485,17 +1566,30 @@ function recipeCard(ev){
   }
   const hits = ngHits(r);
   const ngBadge = hits.length ? '<span class="badge warn">苦手食材：' + esc(hits.join("・")) + '</span>' : '';
-  const pHits = priorityHits(r);
+  const pHits = opts.priorityOnly ? rawPriorityHits(r) : priorityHits(r);
   const priorityBadge = pHits.length ? '<span class="badge good">優先食材：' + esc(pHits.join("・")) + '</span>' : '';
+  const aHits = autoPriorityHits(r);
+  const autoBadge = aHits.length ? '<span class="badge warn">期限間近：' + esc(aHits.join("・")) + '（自動優先）</span>' : '';
+  // 優先食材のみモードでは、苦手を含むレシピを消さず、赤文字警告＋赤枠で見せる
+  // （アレルギーを含むレシピはこのモードでも一覧に出てこない＝呼び出し側で常時除外済み）
+  let cardClass = "recipe";
+  let warnHtml = "";
+  if (opts.priorityOnly){
+    const nTerms = ngTermsHit(r);
+    if (nTerms.length){
+      cardClass = "recipe caution";
+      warnHtml += '<p class="warnline soft">苦手な食材：' + esc(nTerms.join("・")) + ' を含みます</p>';
+    }
+  }
   const tags = (r.tags || []).map(tg => '<span class="badge">#' + esc(tg) + '</span>').join("");
-  return '<div class="recipe" data-recipe="' + r.id + '">' +
+  return '<div class="' + cardClass + '" data-recipe="' + r.id + '">' +
     '<div class="rimg"><div class="ph"><div>' + r.emoji + '</div><div class="phname">' + esc(r.name) + '</div></div>' +
     (r.img ? '<img src="' + esc(r.img) + '" alt="" loading="lazy" onerror="this.remove()">' : '') + '</div>' +
     '<div class="rbody"><p class="rname">' + esc(r.name) + '</p>' +
-    '<p class="rdesc">' + esc(r.desc) + '</p>' +
+    '<p class="rdesc">' + esc(r.desc) + '</p>' + warnHtml +
     '<div class="rmeta"><span class="price">' + yen(ev.perMeal) + '<small> / 1食</small></span>' +
     '<span class="badge">' + r.servings + '食分</span><span class="badge">約' + r.time + '分</span>' +
-    (r.kcal ? '<span class="badge">約' + r.kcal + 'kcal（目安）</span>' : '') + badge + ngBadge + priorityBadge + '</div>' +
+    (r.kcal ? '<span class="badge">約' + r.kcal + 'kcal（目安）</span>' : '') + badge + ngBadge + priorityBadge + autoBadge + '</div>' +
     (tags ? '<div class="rtags">' + tags + '</div>' : '') +
     '</div></div>';
 }
@@ -1515,6 +1609,9 @@ function renderSuggest(){
       parts.push("苦手な食材（" + state.ng.join("、") + "）を含む " + ngExcluded + " 件は提案から除いています");
     if (state.priority && state.priority.length)
       parts.push("優先食材（" + state.priority.join("、") + "）を使うレシピを上位に表示しています");
+    const autoNames = autoPriorityNames();
+    if (autoNames.length)
+      parts.push("賞味期限が近い在庫（" + autoNames.join("、") + "）も自動で優先しています");
     ngNote.textContent = parts.length ? parts.join("。") + "。変更は「設定」タブから。" : "";
   }
   const makeable = sortEvals(evals.filter(e => e.missingCount === 0 && !e.items.some(i => i.status === "sale")), suggestSort);
@@ -1538,8 +1635,58 @@ function renderRecipeList(){
     (tg === "全部" ? "全部" : "#" + esc(tg)) + '</button>').join("");
   const hideNgEl = document.getElementById("recipe-hide-ng");
   const hideNg = !hideNgEl || hideNgEl.checked;
+  const priorityOnlyEl = document.getElementById("recipe-priority-only");
+  const priorityOnly = !!(priorityOnlyEl && priorityOnlyEl.checked);
+  const hasPriority = (state.priority || []).length > 0 || autoPriorityNames().length > 0;
+  const pNote = document.getElementById("recipe-priority-note");
   let list = RECIPES.filter(r => currentCat === "全部" || r.cat === currentCat)
     .filter(r => currentTag === "全部" || (r.tags || []).includes(currentTag));
+
+  // ---- 優先食材のみモード（レシピ一覧だけの特別な見せ方） ----
+  // 優先食材を使うレシピだけを出す。苦手を含むものは消さず、赤文字警告付きで表示する。
+  // アレルギーを含むレシピはこのモードでも表示しない（常時除外を維持）。
+  // 献立提案では従来どおりアレルギー絶対除外・苦手除外で、このモードでも提案には出ない。
+  if (priorityOnly){
+    if (!hasPriority){
+      if (pNote){
+        pNote.style.color = "var(--danger)";
+        pNote.textContent = "優先食材がまだ登録されていません。「設定」タブの「優先したい食材」に好きな食材や使い切りたい食材を登録するか、「冷蔵庫」の在庫に賞味期限（3日以内・期限切れが対象）を入れると、その食材を使うレシピだけをここに表示できます。";
+      }
+      const cnt0 = document.getElementById("recipe-count");
+      if (cnt0) cnt0.textContent = "";
+      document.getElementById("recipe-list").innerHTML =
+        '<div class="empty">優先食材が未登録のため表示できるレシピがありません。まず「設定」タブで優先したい食材を登録してください。</div>';
+      return;
+    }
+    list = list.filter(r => rawPriorityHits(r).length > 0);
+    const pMatched = list.length;
+    // アレルギーを含むレシピは、優先食材のみモードでも表示しない（常時除外）
+    list = list.filter(r => allergyHits(r).length === 0);
+    const pAllergyExcluded = pMatched - list.length;
+    const evalsP = sortEvals(list.map(r => evaluateRecipe(r, state)), recipeSort);
+    const cautionCount = list.filter(r => ngTermsHit(r).length > 0).length;
+    if (pNote){
+      pNote.style.color = "var(--danger)";
+      pNote.textContent = "優先食材のみ表示中：アレルギー食材を含むレシピは、このモードでも表示しません（常時除外）" +
+        "。苦手な食材を含むレシピは、消さずに赤文字の警告付きで表示します。なお献立提案には、アレルギー・苦手な食材を含むレシピは一切出ません。";
+    }
+    const cntP = document.getElementById("recipe-count");
+    if (cntP){
+      cntP.textContent = evalsP.length + "件表示（優先食材を使うレシピのみ）" +
+        (pAllergyExcluded ? "（アレルギーで " + pAllergyExcluded + " 件を除外中）" : "") +
+        (cautionCount ? "／ 苦手な食材を含む " + cautionCount + " 件を赤文字で表示中" : "") +
+        "　※カロリーは材料からの目安（推定値）です";
+    }
+    document.getElementById("recipe-list").innerHTML = evalsP.length
+      ? evalsP.map(ev => recipeCard(ev, { priorityOnly: true })).join("")
+      : '<div class="empty">優先食材（' + esc((state.priority || []).concat(autoPriorityNames()).join("、")) + '）を使うレシピがありません' +
+        (pAllergyExcluded ? "（アレルギー食材を含む " + pAllergyExcluded + " 件は、このモードでも表示しません）" : "") +
+        '。優先食材の登録を変えるか、タグ・カテゴリの絞り込みを外してみてください。</div>';
+    return;
+  }
+  if (pNote) pNote.textContent = "";
+
+  // ---- 通常モード（従来どおり） ----
   const totalMatched = list.length;
   // アレルギー食材を含むレシピは常時除外する（オフにはできない）
   list = list.filter(r => allergyHits(r).length === 0);
@@ -1555,7 +1702,7 @@ function renderRecipeList(){
       "　※カロリーは材料からの目安（推定値）です";
   }
   document.getElementById("recipe-list").innerHTML = evals.length
-    ? evals.map(recipeCard).join("")
+    ? evals.map(ev => recipeCard(ev)).join("")
     : '<div class="empty">条件に合うレシピがありません。タグやカテゴリ、苦手食材の除外を変えてみてください（アレルギー食材を含むレシピは常時除外されます）。</div>';
 }
 document.getElementById("recipe-chips").addEventListener("click", e => {
@@ -1575,6 +1722,7 @@ document.getElementById("recipe-sort").addEventListener("change", e => {
   renderRecipeList();
 });
 document.getElementById("recipe-hide-ng").addEventListener("change", () => renderRecipeList());
+document.getElementById("recipe-priority-only").addEventListener("change", () => renderRecipeList());
 document.getElementById("suggest-sort").addEventListener("change", e => {
   suggestSort = e.target.value;
   renderSuggest();
@@ -1944,10 +2092,12 @@ function renderSales(){
 document.getElementById("btn-add-stock").addEventListener("click", () => {
   const name = document.getElementById("stock-name").value.trim();
   if (!name){ alert("食材名を入力してください。"); return; }
-  state.stock.push({ id: uid(), name, qty: document.getElementById("stock-qty").value.trim() });
+  const expiryEl = document.getElementById("stock-expiry");
+  state.stock.push({ id: uid(), name, qty: document.getElementById("stock-qty").value.trim(), expiry: expiryEl ? expiryEl.value : "" });
   saveState();
   document.getElementById("stock-name").value = "";
   document.getElementById("stock-qty").value = "";
+  if (expiryEl) expiryEl.value = "";
   renderAll();
 });
 function renderStock(){
@@ -1956,14 +2106,29 @@ function renderStock(){
     box.innerHTML = '<div class="empty">在庫はまだありません。家にある食材を入れてください。</div>';
     return;
   }
-  box.innerHTML = state.stock.map(s =>
+  // 期限が近い順（期限なしは最後）に並べる
+  const items = state.stock.slice().sort((a, b) => {
+    const da = expiryDaysLeft(a.expiry), db = expiryDaysLeft(b.expiry);
+    if (da === null && db === null) return 0;
+    if (da === null) return 1;
+    if (db === null) return -1;
+    return da - db;
+  });
+  box.innerHTML = items.map(s =>
     '<div class="item"><div class="grow"><div class="ttl">' + esc(s.name) + '</div>' +
-    (s.qty ? '<div class="sub2">' + esc(s.qty) + '</div>' : '') + '</div>' +
+    (s.qty ? '<div class="sub2">' + esc(s.qty) + '</div>' : '') +
+    (expiryLabel(s) ? '<div class="sub2"' + expiryStyle(s) + '>' + esc(expiryLabel(s)) + '</div>' : '') +
+    '<div class="sub2">賞味期限 <input type="date" data-stock-expiry="' + s.id + '" value="' + esc(s.expiry || "") + '"></div>' +
+    '</div>' +
     '<button class="btn small" data-stock-search="' + esc(s.name) + '">レシピ検索</button>' +
     '<button class="btn small danger" data-delstock="' + s.id + '">削除</button></div>').join("");
   box.querySelectorAll("[data-delstock]").forEach(b => b.addEventListener("click", () => {
     state.stock = state.stock.filter(x => x.id !== b.dataset.delstock);
     saveState(); renderAll();
+  }));
+  box.querySelectorAll("[data-stock-expiry]").forEach(inp => inp.addEventListener("change", () => {
+    const item = state.stock.find(x => x.id === inp.dataset.stockExpiry);
+    if (item){ item.expiry = inp.value || ""; saveState(); renderAll(); }
   }));
   box.querySelectorAll("[data-stock-search]").forEach(b => b.addEventListener("click", () => {
     window.open("https://cookpad.com/search/" + encodeURIComponent(b.dataset.stockSearch), "_blank");
@@ -2056,6 +2221,16 @@ document.getElementById("btn-add-priority").addEventListener("click", () => {
 function renderPriority(){
   const box = document.getElementById("priority-list");
   if (!box) return;
+  // 期限連動の自動優先（冷蔵庫の在庫から都度計算）
+  const autoBox = document.getElementById("priority-auto");
+  if (autoBox){
+    const autos = (state.stock || []).filter(s => { const d = expiryDaysLeft(s.expiry); return d !== null && d <= 3; });
+    autoBox.innerHTML = autos.length
+      ? '<div class="fieldlabel">期限が近いため自動で優先中（冷蔵庫の在庫から）</div>' + autos.map(s =>
+          '<div class="item"><div class="grow"><div class="ttl">' + esc(s.name) + '</div>' +
+          '<div class="sub2"' + expiryStyle(s) + '>' + esc(expiryLabel(s)) + '</div></div></div>').join("")
+      : "";
+  }
   const pr = state.priority || [];
   if (!pr.length){
     box.innerHTML = '<div class="empty">まだ登録がありません。</div>';
@@ -2072,7 +2247,7 @@ function renderPriority(){
 
 // ---- 設定：バックアップ ----
 document.getElementById("btn-export").addEventListener("click", () => {
-  const data = { app: "kondate-maker", version: 4, exportedAt: new Date().toISOString(),
+  const data = { app: "kondate-maker", version: 5, exportedAt: new Date().toISOString(),
     stores: state.stores, sales: state.sales, stock: state.stock, ng: state.ng || [], allergy: state.allergy || [], priority: state.priority || [] };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
@@ -2094,7 +2269,10 @@ document.getElementById("file-import").addEventListener("change", e => {
       }
       if (!confirm("今のデータを、読み込んだ内容で置き換えます。よろしいですか？")) return;
       // 第1版のバックアップ（ngなし）・アレルギー追加前（allergyなし）・優先食材追加前（priorityなし）のバックアップも読み込める
-      state = { stores: data.stores, sales: data.sales, stock: data.stock,
+      state = { stores: data.stores, sales: data.sales,
+        // 賞味期限追加前のバックアップ（在庫にexpiryなし）も読み込める
+        stock: data.stock.map(s => (s && typeof s === "object")
+          ? Object.assign({}, s, { expiry: typeof s.expiry === "string" ? s.expiry : "" }) : s),
         ng: Array.isArray(data.ng) ? data.ng.filter(x => typeof x === "string" && x) : [],
         allergy: Array.isArray(data.allergy) ? data.allergy.filter(x => typeof x === "string" && x) : [],
         priority: Array.isArray(data.priority) ? data.priority.filter(x => typeof x === "string" && x) : [] };
