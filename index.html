@@ -137,6 +137,10 @@
   .item .ttl{font-weight:700;}
   .item .sub2{font-size:13px;color:var(--muted);}
   .empty{color:var(--muted);font-size:14px;padding:8px 0;}
+  /* お店検索結果のカテゴリ見出し（スーパーを主役に、薬局・ドラッグストアは別枠で最後に） */
+  .shop-group-ttl{font-weight:700;font-size:15px;margin:16px 0 2px;padding-top:10px;border-top:2px solid var(--line);}
+  .shop-group-ttl:first-child{margin-top:4px;padding-top:0;border-top:none;}
+  .shop-group-ttl.drug{margin-top:22px;color:var(--muted);}
   /* 詳細オーバーレイ */
   .overlay{
     position:fixed;inset:0;z-index:50;background:var(--bg);overflow-y:auto;display:none;
@@ -2584,6 +2588,20 @@ function shopDisplayName(tags){
   if (branch && tags.name.indexOf(branch) < 0) return tags.name + " " + branch;
   return tags.name;
 }
+// お店検索結果の表示グループ（このアプリは献立・買い物用なのでスーパーを主役にし、
+// 薬局・ドラッグストアは混ぜずに別枠として最後に分ける）。並びはこの配列の順。
+const SHOP_GROUPS = [
+  { title: "スーパー" },
+  { title: "コンビニ" },
+  { title: "八百屋・その他" },
+  { title: "薬局・ドラッグストア", cls: "drug" }
+];
+function shopGroupIndex(r){
+  if (r.prio === 0 || r.label === "スーパー" || r.label === "百貨店・量販店") return 0;
+  if (r.label === "コンビニ") return 1;
+  if (r.label === "薬局" || r.label === "ドラッグストア") return 3;
+  return 2;
+}
 // 現在表示中の検索結果（住所補完の非同期再描画で、別の検索結果を上書きしないための照合用）
 let lastShopResults = null;
 function renderShopResults(results){
@@ -2593,11 +2611,21 @@ function renderShopResults(results){
     box.innerHTML = '<div class="empty">見つかりませんでした。検索のことばを変えるか、手動登録をお使いください。</div>';
     return;
   }
-  box.innerHTML = results.map((r, i) =>
-    '<div class="item"><div class="grow"><div class="ttl">' + esc(r.name) + '</div>' +
-    '<div class="sub2">' + esc(r.label) + (r.distKm != null ? ' ／ 約' + r.distKm.toFixed(1) + 'km' : '') +
-    (r.address ? ' ／ ' + esc(r.address) : '') + '</div></div>' +
-    '<button class="btn small primary" data-addshop="' + i + '">登録</button></div>').join("");
+  // カテゴリ別にグループ化する。各グループ内は元の並び（距離順）を維持し、
+  // data-addshop には元の配列のインデックスを持たせて登録対象がずれないようにする。
+  const grouped = SHOP_GROUPS.map(() => []);
+  results.forEach((r, i) => { grouped[shopGroupIndex(r)].push({ r, i }); });
+  let html = "";
+  grouped.forEach((items, g) => {
+    if (!items.length) return; // 0件のグループは見出しごと出さない
+    html += '<div class="shop-group-ttl' + (SHOP_GROUPS[g].cls ? " " + SHOP_GROUPS[g].cls : "") + '">' + SHOP_GROUPS[g].title + '</div>';
+    html += items.map(({ r, i }) =>
+      '<div class="item"><div class="grow"><div class="ttl">' + esc(r.name) + '</div>' +
+      '<div class="sub2">' + esc(r.label) + (r.distKm != null ? ' ／ 約' + r.distKm.toFixed(1) + 'km' : '') +
+      (r.address ? ' ／ ' + esc(r.address) : '') + '</div></div>' +
+      '<button class="btn small primary" data-addshop="' + i + '">登録</button></div>').join("");
+  });
+  box.innerHTML = html;
   box.querySelectorAll("[data-addshop]").forEach(b => {
     b.addEventListener("click", () => {
       const r = results[Number(b.dataset.addshop)];
