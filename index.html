@@ -126,6 +126,17 @@
   .fieldlabel{font-size:13px;color:var(--muted);margin:10px 0 4px;}
   .rtags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;}
   .rtags .badge{background:#fff7ed;border-color:#fed7aa;color:var(--accent-dark);font-size:11px;padding:1px 7px;}
+  /* レシピ一覧の2列表示（コンパクトカード） */
+  .rgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+  .rgrid .recipe{margin-bottom:0;}
+  .recipe.compact{flex-direction:column;gap:8px;padding:8px;}
+  .recipe.compact .rimg{flex:none;width:100%;height:76px;min-height:76px;}
+  .recipe.compact .rimg .ph{font-size:26px;}
+  .recipe.compact .rimg .ph .phname{display:none;}
+  .recipe.compact .rname{font-size:14px;line-height:1.35;}
+  .recipe.compact .price{font-size:16px;}
+  .recipe.compact .rtags{margin-top:4px;}
+  .recipe.compact .warnline{font-size:12px;}
   .checkrow{display:flex;align-items:center;gap:8px;font-size:14px;margin:8px 0;}
   .checkrow input{width:20px;height:20px;flex:0 0 auto;}
   /* 一覧の行 */
@@ -237,6 +248,11 @@
       <option value="time">時短順</option>
       <option value="servings">食分数が多い順</option>
     </select>
+    <div class="fieldlabel">カードの並べ方</div>
+    <div class="seg" id="recipe-layout-seg" style="max-width:320px;">
+      <button data-layout="1col">1列</button>
+      <button data-layout="2col">2列</button>
+    </div>
     <div class="checkrow"><input type="checkbox" id="recipe-hide-ng" checked><span>苦手な食材（設定で登録）を含むレシピを除く</span></div>
     <div class="checkrow"><input type="checkbox" id="recipe-priority-only"><span>優先食材のみで探す（設定で登録した優先食材を使うレシピだけ表示）</span></div>
     <div class="note" id="recipe-priority-note" style="margin:6px 0;"></div>
@@ -2297,10 +2313,12 @@ function loadState(){
       // 賞味期限追加前の在庫データ（expiryなし）でもそのまま使えるように補完する
       v.stock = v.stock.map(s => (s && typeof s === "object")
         ? Object.assign({}, s, { expiry: typeof s.expiry === "string" ? s.expiry : "" }) : s);
+      // レシピ一覧の並べ方（1列／2列）追加前の保存データでもそのまま使えるように補完する
+      v.recipeLayout = v.recipeLayout === "2col" ? "2col" : "1col";
       return v;
     }
   } catch(e) {}
-  return { stores: [], sales: [], stock: [], ng: [], allergy: [], priority: [] };
+  return { stores: [], sales: [], stock: [], ng: [], allergy: [], priority: [], recipeLayout: "1col" };
 }
 function saveState(){
   try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e) {}
@@ -2362,6 +2380,39 @@ function recipeCard(ev, opts){
     (tags ? '<div class="rtags">' + tags + '</div>' : '') +
     '</div></div>';
 }
+// レシピ一覧の2列表示用コンパクトカード（料理名・1食単価・カロリー目安・主要タグだけに絞る）。
+// タップで詳細が開くよう、通常カードと同じ data-recipe 属性を持つ。
+function recipeCardCompact(ev, opts){
+  opts = opts || {};
+  const r = ev.recipe;
+  // 優先食材のみモードでは、通常カードと同じく苦手を含むレシピを赤枠＋赤文字警告で見せる
+  let cardClass = "recipe compact";
+  let warnHtml = "";
+  if (opts.priorityOnly){
+    const nTerms = ngTermsHit(r);
+    if (nTerms.length){
+      cardClass = "recipe compact caution";
+      warnHtml = '<p class="warnline soft">苦手な食材：' + esc(nTerms.join("・")) + ' を含みます</p>';
+    }
+  }
+  const tags = (r.tags || []).slice(0, 3).map(tg => '<span class="badge">#' + esc(tg) + '</span>').join("");
+  return '<div class="' + cardClass + '" data-recipe="' + r.id + '">' +
+    '<div class="rimg"><div class="ph"><div>' + r.emoji + '</div></div>' +
+    (r.img ? '<img src="' + esc(r.img) + '" alt="" loading="lazy" onerror="this.remove()">' : '') + '</div>' +
+    '<div class="rbody"><p class="rname">' + esc(r.name) + '</p>' + warnHtml +
+    '<div class="rmeta"><span class="price">' + yen(ev.perMeal) + '<small> / 1食</small></span>' +
+    (r.kcal ? '<span class="badge">約' + r.kcal + 'kcal（目安）</span>' : '') + '</div>' +
+    (tags ? '<div class="rtags">' + tags + '</div>' : '') +
+    '</div></div>';
+}
+// レシピ一覧のカードHTMLを、保存済みの並べ方（1列／2列）に応じて組み立てる。
+// 献立提案タブはこの関数を使わず、従来どおり1列カードのまま。
+function recipeCardsHtml(evals, opts){
+  if (state.recipeLayout === "2col"){
+    return '<div class="rgrid">' + evals.map(ev => recipeCardCompact(ev, opts)).join("") + '</div>';
+  }
+  return evals.map(ev => recipeCard(ev, opts)).join("");
+}
 function renderSuggest(){
   const allEvals = RECIPES.map(r => evaluateRecipe(r, state));
   // アレルギー食材を含むレシピは常時除外し、苦手食材を含むレシピも提案から除外する（件数は分けて表示）
@@ -2395,6 +2446,9 @@ function renderSuggest(){
     : '<div class="empty">まだありません。「お店・特売」で特売メモを入れると、ここに候補が出ます。</div>';
 }
 function renderRecipeList(){
+  // 並べ方（1列／2列）トグルの選択状態を、保存済みの設定に合わせる
+  document.querySelectorAll("#recipe-layout-seg button").forEach(b =>
+    b.classList.toggle("active", b.dataset.layout === (state.recipeLayout === "2col" ? "2col" : "1col")));
   const cats = ["全部"].concat(Array.from(new Set(RECIPES.map(r => r.cat))));
   document.getElementById("recipe-chips").innerHTML = cats.map(c =>
     '<button data-cat="' + esc(c) + '"' + (c === currentCat ? ' class="active"' : '') + '>' + esc(c) + '</button>').join("");
@@ -2447,7 +2501,7 @@ function renderRecipeList(){
         "　※カロリーは材料からの目安（推定値）です";
     }
     document.getElementById("recipe-list").innerHTML = evalsP.length
-      ? evalsP.map(ev => recipeCard(ev, { priorityOnly: true })).join("")
+      ? recipeCardsHtml(evalsP, { priorityOnly: true })
       : '<div class="empty">優先食材（' + esc((state.priority || []).concat(autoPriorityNames()).join("、")) + '）を使うレシピがありません' +
         (pAllergyExcluded ? "（アレルギー食材を含む " + pAllergyExcluded + " 件は、このモードでも表示しません）" : "") +
         '。優先食材の登録を変えるか、タグ・カテゴリの絞り込みを外してみてください。</div>';
@@ -2471,7 +2525,7 @@ function renderRecipeList(){
       "　※カロリーは材料からの目安（推定値）です";
   }
   document.getElementById("recipe-list").innerHTML = evals.length
-    ? evals.map(ev => recipeCard(ev)).join("")
+    ? recipeCardsHtml(evals)
     : '<div class="empty">条件に合うレシピがありません。タグやカテゴリ、苦手食材の除外を変えてみてください（アレルギー食材を含むレシピは常時除外されます）。</div>';
 }
 document.getElementById("recipe-chips").addEventListener("click", e => {
@@ -2488,6 +2542,13 @@ document.getElementById("recipe-tags").addEventListener("click", e => {
 });
 document.getElementById("recipe-sort").addEventListener("change", e => {
   recipeSort = e.target.value;
+  renderRecipeList();
+});
+document.getElementById("recipe-layout-seg").addEventListener("click", e => {
+  const b = e.target.closest("button[data-layout]");
+  if (!b) return;
+  state.recipeLayout = b.dataset.layout === "2col" ? "2col" : "1col";
+  saveState();
   renderRecipeList();
 });
 document.getElementById("recipe-hide-ng").addEventListener("change", () => renderRecipeList());
@@ -3111,7 +3172,8 @@ function renderPriority(){
 // ---- 設定：バックアップ ----
 document.getElementById("btn-export").addEventListener("click", () => {
   const data = { app: "kondate-maker", version: 5, exportedAt: new Date().toISOString(),
-    stores: state.stores, sales: state.sales, stock: state.stock, ng: state.ng || [], allergy: state.allergy || [], priority: state.priority || [] };
+    stores: state.stores, sales: state.sales, stock: state.stock, ng: state.ng || [], allergy: state.allergy || [], priority: state.priority || [],
+    recipeLayout: state.recipeLayout === "2col" ? "2col" : "1col" };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
@@ -3138,7 +3200,9 @@ document.getElementById("file-import").addEventListener("change", e => {
           ? Object.assign({}, s, { expiry: typeof s.expiry === "string" ? s.expiry : "" }) : s),
         ng: Array.isArray(data.ng) ? data.ng.filter(x => typeof x === "string" && x) : [],
         allergy: Array.isArray(data.allergy) ? data.allergy.filter(x => typeof x === "string" && x) : [],
-        priority: Array.isArray(data.priority) ? data.priority.filter(x => typeof x === "string" && x) : [] };
+        priority: Array.isArray(data.priority) ? data.priority.filter(x => typeof x === "string" && x) : [],
+        // 並べ方（1列／2列）追加前のバックアップ（recipeLayoutなし）も読み込める
+        recipeLayout: data.recipeLayout === "2col" ? "2col" : "1col" };
       saveState(); renderAll();
       document.getElementById("backup-status").textContent = "読み込みました。";
     } catch(err) {
@@ -3150,7 +3214,7 @@ document.getElementById("file-import").addEventListener("change", e => {
 });
 document.getElementById("btn-clear").addEventListener("click", () => {
   if (!confirm("お店・特売メモ・在庫・苦手な食材・アレルギー・優先したい食材をすべて消します。よろしいですか？")) return;
-  state = { stores: [], sales: [], stock: [], ng: [], allergy: [], priority: [] };
+  state = { stores: [], sales: [], stock: [], ng: [], allergy: [], priority: [], recipeLayout: "1col" };
   saveState(); renderAll();
 });
 
