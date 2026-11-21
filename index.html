@@ -51,6 +51,7 @@
     padding:10px 6px;font-size:15px;cursor:pointer;
   }
   nav.tabs button.active{background:var(--accent);color:#fff;font-weight:700;border-color:var(--accent);}
+  #shop-search-results{scroll-margin-top:150px;}
   main{padding:14px;max-width:760px;margin:0 auto;}
   section.tab{display:none;}
   section.tab.active{display:block;}
@@ -3008,7 +3009,7 @@ function renderShopResults(results, resetPage){
   box.querySelectorAll("[data-addshop]").forEach(b => {
     b.addEventListener("click", () => {
       const r = results[Number(b.dataset.addshop)];
-      state.stores.push({ id: uid(), name: r.name, kind: r.label, address: r.address || "", flyerUrl: "" });
+      state.stores.push({ id: uid(), name: r.name, kind: r.label, address: r.address || "", flyerUrl: r.website || "" });
       saveState(); renderAll();
       setShopStatus("「" + r.name + "」をいつものお店に登録しました。");
     });
@@ -3111,7 +3112,7 @@ async function nominatimNearby(lat, lon){
   for (let qi = 0; qi < NOMINATIM_NEARBY_QUERIES.length; qi++){
     if (qi > 0) await sleepMs(1100);
     const q = NOMINATIM_NEARBY_QUERIES[qi];
-    const url = "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=30&addressdetails=1&countrycodes=jp&bounded=1&viewbox=" +
+    const url = "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=30&addressdetails=1&extratags=1&countrycodes=jp&bounded=1&viewbox=" +
       encodeURIComponent(viewbox) + "&q=" + encodeURIComponent(q);
     try {
       const res = await fetch(url, { headers: { "Accept": "application/json" } });
@@ -3128,7 +3129,7 @@ async function nominatimNearby(lat, lon){
         const a = d.address || {};
         const addr = [a.prefecture || a.province, a.city || a.town || a.village, a.suburb || a.neighbourhood || a.quarter].filter(Boolean).join("");
         const label = d.type === "pharmacy" ? "薬局" : (SHOP_TYPE_LABEL[d.type] || "お店");
-        out.push({ name, label, address: addr, distKm: haversineKm(lat, lon, Number(d.lat), Number(d.lon)), lat: Number(d.lat), lon: Number(d.lon) });
+        out.push({ name, label, address: addr, distKm: haversineKm(lat, lon, Number(d.lat), Number(d.lon)), lat: Number(d.lat), lon: Number(d.lon), website: (d.extratags && (d.extratags.website || d.extratags["contact:website"])) || "" });
       }
     } catch(e) { /* このカテゴリは飛ばして次へ */ }
   }
@@ -3180,6 +3181,7 @@ async function overpassNearby(lat, lon){
       distKm: haversineKm(lat, lon, c.lat, c.lon),
       lat: c.lat,
       lon: c.lon,
+      website: tags.website || tags["contact:website"] || tags.url || "",
       // スーパー系を優先するための並び替え用（同じ距離帯ではスーパーを先に）
       prio: (tags.shop === "supermarket" || tags.shop === "department_store") ? 0 : 1
     });
@@ -3214,7 +3216,7 @@ document.getElementById("btn-textsearch").addEventListener("click", async () => 
   if (!q){ setShopStatus("店名や地名を入力してください。", true); return; }
   setShopStatus("検索しています…");
   try {
-    const url = "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=20&addressdetails=1&countrycodes=jp&q=" + encodeURIComponent(q);
+    const url = "https://nominatim.openstreetmap.org/search?format=jsonv2&limit=20&addressdetails=1&extratags=1&countrycodes=jp&q=" + encodeURIComponent(q);
     const res = await fetch(url, { headers: { "Accept": "application/json" } });
     if (!res.ok) throw new Error("nominatim " + res.status);
     const data = await res.json();
@@ -3224,7 +3226,7 @@ document.getElementById("btn-textsearch").addEventListener("click", async () => 
       const addr = [a.prefecture || a.province, a.city || a.town || a.village, a.suburb || a.neighbourhood || a.quarter].filter(Boolean).join("");
       const cls = d.category || d.class;
       const label = d.type === "pharmacy" ? "薬局" : (cls === "shop" ? (SHOP_TYPE_LABEL[d.type] || "お店") : cls === "amenity" ? "施設" : "場所");
-      return { name, label, address: addr, distKm: null, lat: Number(d.lat), lon: Number(d.lon) };
+      return { name, label, address: addr, distKm: null, lat: Number(d.lat), lon: Number(d.lon), website: (d.extratags && (d.extratags.website || d.extratags["contact:website"])) || "" };
     }).filter(r => r.name);
     setShopStatus(results.length ? results.length + "件見つかりました。" : "");
     renderShopResults(results, true);
@@ -3272,8 +3274,9 @@ function renderShops(){
       '<div class="item"><div class="grow"><div class="ttl">' + esc(s.name) + '</div>' +
       '<div class="sub2">' + esc(s.kind || "") + (s.address ? ' ／ ' + esc(s.address) : '') + '</div>' +
       (s.flyerUrl
-        ? '<div class="sub2"><a class="ext" target="_blank" rel="noopener" href="' + esc(s.flyerUrl) + '">チラシ掲載ページを開く</a></div>'
+        ? '<div class="sub2"><a class="ext" target="_blank" rel="noopener" href="' + esc(s.flyerUrl) + '">チラシ掲載ページを開く</a> ／ <a class="ext" target="_blank" rel="noopener" href="https://www.google.com/search?q=' + encodeURIComponent(s.name + " " + (s.address || "") + " チラシ") + '">ウェブでチラシを探す</a></div>'
         : '<div class="sub2">チラシURL： <input type="url" data-flyer-input="' + s.id + '" placeholder="https://…" style="width:60%;padding:6px;font-size:13px;"> <button class="btn small" data-flyer-save="' + s.id + '">保存</button></div>') +
+      '<div class="sub2"><a class="ext" target="_blank" rel="noopener" href="https://www.google.com/search?q=' + encodeURIComponent(s.name + " " + (s.address || "") + " チラシ") + '">ウェブでチラシを探す</a></div>' +
       '</div><button class="btn small danger" data-delshop="' + s.id + '">削除</button></div>').join("");
     box.querySelectorAll("[data-delshop]").forEach(b => b.addEventListener("click", () => {
       state.stores = state.stores.filter(x => x.id !== b.dataset.delshop);
@@ -3357,9 +3360,8 @@ function flyerUnitIn(line, name){
   for (const u of units){ if (after.includes(u)) return u; }
   return "パック";
 }
-function parseFlyerText(text){
+function parseFlyerLines(lines, ys){
   const vocab = flyerVocab();
-  const lines = String(text || "").split(/\n/).map(s => normFlyerText(s).trim()).filter(Boolean);
   const found = new Map();
   const findName = (line) => vocab.find(w => line.includes(w)) || null;
   lines.forEach((line, idx) => {
@@ -3367,12 +3369,18 @@ function parseFlyerText(text){
     let price = flyerPriceIn(line);
     let unitLine = line;
     if (name && price == null && lines[idx + 1]){
-      const p2 = flyerPriceIn(lines[idx + 1]);
-      if (p2 != null){ price = p2; unitLine = line + " " + lines[idx + 1]; }
+      // 価格が次の行にある場合。次の行に別の食材名があるときは、その食材の価格なので取り合わない。
+      // 位置情報がある場合は、すぐ下の行だけを対象にする（離れた行の価格を拾わない）。
+      const gapOk = !ys || !ys[idx] || !ys[idx + 1] || (ys[idx + 1].top - ys[idx].bottom) <= Math.max(ys[idx].h || 24, 24) * 1.6;
+      if (gapOk && !findName(lines[idx + 1])){
+        const p2 = flyerPriceIn(lines[idx + 1]);
+        if (p2 != null){ price = p2; unitLine = line + lines[idx + 1]; }
+      }
     }
     if (!name && price != null && lines[idx - 1]){
       const n2 = findName(lines[idx - 1]);
-      if (n2){ name = n2; unitLine = lines[idx - 1] + " " + line; }
+      // 前の行の食材がすでに価格を持っている場合は、別の商品の価格なので取り合わない
+      if (n2 && !found.has(n2)){ name = n2; unitLine = lines[idx - 1] + line; }
     }
     if (name && price != null && price >= 10 && price <= 9999){
       const unitSel = flyerUnitIn(unitLine, name);
@@ -3380,6 +3388,33 @@ function parseFlyerText(text){
     }
   });
   return [...found.values()];
+}
+function parseFlyerText(text){
+  const lines = String(text || "").split(/\n/).map(s => normFlyerText(s).replace(/\s+/g, "")).filter(Boolean);
+  return parseFlyerLines(lines, null);
+}
+function flyerRowsFromTsv(tsv){
+  // TSV（単語ごとの位置情報）から行ごとの文字列と位置を取り出す。
+  // 名前と価格が同じ行にある場合は同じ行として扱えるため、対応づけのずれが減る。
+  const rows = String(tsv || "").split(/\n/);
+  if (rows.length < 2) return null;
+  const lines = new Map();
+  for (let i = 1; i < rows.length; i++){
+    const c = rows[i].split("\t");
+    if (c.length < 12 || c[0] !== "5") continue;
+    const word = normFlyerText(c[11]).replace(/\s+/g, "");
+    if (!word) continue;
+    const key = c[2] + "/" + c[3] + "/" + c[4];
+    if (!lines.has(key)) lines.set(key, { text: "", top: Infinity, bottom: 0 });
+    const L = lines.get(key);
+    L.text += word;
+    L.top = Math.min(L.top, Number(c[7]) || 0);
+    L.bottom = Math.max(L.bottom, (Number(c[7]) || 0) + (Number(c[9]) || 0));
+  }
+  const arr = [...lines.values()].filter(l => l.text).sort((a, b) => a.top - b.top);
+  if (!arr.length) return null;
+  arr.forEach(l => { l.h = Math.max(1, l.bottom - l.top); });
+  return { lines: arr.map(l => l.text), ys: arr };
 }
 function flyerUnitOptions(sel){
   return ["100g", "個", "パック", "袋", "本", "缶", "丁", "玉", "箱"].map(u =>
@@ -3448,10 +3483,15 @@ document.getElementById("btn-flyer-ocr").addEventListener("click", async () => {
     const byName = new Map();
     for (const f of files){
       const url = await fileToDataUrl(f);
-      const res = await worker.recognize(url);
-      parseFlyerText(res && res.data ? res.data.text : "").forEach(c => {
+      const res = await worker.recognize(url, {}, { text: true, tsv: true });
+      const data = (res && res.data) || {};
+      const merge = (cands) => cands.forEach(c => {
         if (!byName.has(c.name) || byName.get(c.name).price > c.price) byName.set(c.name, c);
       });
+      // 位置情報つきの行（TSV）は対応づけが確かなので優先し、通常のテキスト解析は補完に回す
+      const rows = flyerRowsFromTsv(data.tsv || "");
+      if (rows) merge(parseFlyerLines(rows.lines, rows.ys));
+      parseFlyerText(data.text || "").forEach(c => { if (!byName.has(c.name)) byName.set(c.name, c); });
     }
     status.textContent = "読み取りが終わりました。";
     renderFlyerCandidates([...byName.values()]);
