@@ -3466,14 +3466,16 @@ async function pdfFileToDataUrls(f){
   const maxPages = Math.min(pdf.numPages, 3);
   for (let p = 1; p <= maxPages; p++){
     const page = await pdf.getPage(p);
-    // 拡大しすぎるとOCRの読み取りが落ちるため、幅1,000px程度になる倍率で描く
     const base = page.getViewport({ scale: 1 });
-    const viewport = page.getViewport({ scale: Math.min(2, Math.max(0.8, 1000 / base.width)) });
-    const canvas = document.createElement("canvas");
-    canvas.width = viewport.width;
-    canvas.height = viewport.height;
-    await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
-    urls.push(canvas.toDataURL("image/png"));
+    // 画像の幅でOCRの読み取り結果が変わるため、幅900pxと1,500pxの2段階で描いて両方読む
+    for (const w of [900, 1500]){
+      const viewport = page.getViewport({ scale: Math.min(3, Math.max(0.7, w / base.width)) });
+      const canvas = document.createElement("canvas");
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
+      urls.push(canvas.toDataURL("image/png"));
+    }
   }
   return urls;
 }
@@ -3517,7 +3519,7 @@ document.getElementById("btn-flyer-ocr").addEventListener("click", async () => {
       const res = await worker.recognize(url, {}, { text: true, tsv: true });
       const data = (res && res.data) || {};
       const merge = (cands) => cands.forEach(c => {
-        if (!byName.has(c.name) || byName.get(c.name).price > c.price) byName.set(c.name, c);
+        if (!byName.has(c.name)) byName.set(c.name, c);
       });
       // 位置情報つきの行（TSV）は対応づけが確かなので優先し、通常のテキスト解析は補完に回す
       const rows = flyerRowsFromTsv(data.tsv || "");
