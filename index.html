@@ -206,6 +206,11 @@
   <!-- 献立提案 -->
   <section class="tab active" id="tab-suggest">
     <div class="card">
+      <h2>キーワード検索</h2>
+      <input type="text" id="suggest-q" placeholder="キーワード検索（料理名・材料名）例：カレー、鶏肉">
+      <div class="note" style="margin-top:6px;">料理名・説明文・材料名で、下の2つのリストを絞り込めます。</div>
+    </div>
+    <div class="card">
       <h2>並び替え</h2>
       <label>表示順</label>
       <select id="suggest-sort">
@@ -221,6 +226,7 @@
     <div class="card">
       <h2>いま作れる献立</h2>
       <div class="note">冷蔵庫の在庫だけで作れるもの</div>
+      <div class="note" id="suggest-stock-peek" style="margin-top:6px;"></div>
       <div id="suggest-makeable" style="margin-top:10px;"></div>
     </div>
     <div class="card">
@@ -236,6 +242,8 @@
 
   <!-- レシピ一覧 -->
   <section class="tab" id="tab-recipes">
+    <div class="fieldlabel">キーワード検索</div>
+    <input type="text" id="recipe-q" placeholder="キーワード検索（料理名・材料名）例：カレー、鶏肉" style="margin-bottom:10px;">
     <div class="fieldlabel">ハッシュタグで絞る（タップでON／もう一度タップで解除）</div>
     <div class="chips tagchips" id="recipe-tags"></div>
     <div class="fieldlabel">カテゴリ</div>
@@ -2175,6 +2183,17 @@ let currentCat = "全部";
 let currentTag = "全部";
 let recipeSort = "recommend";
 let suggestSort = "recommend";
+// キーワード検索のクエリ（保存せず、JS変数だけで保持する。リロードでリセットされる）
+let suggestQuery = "";
+let recipeQuery = "";
+// キーワード検索の照合：料理名・説明文・材料名への部分一致。空クエリは全件一致。
+function recipeMatchesQuery(recipe, query){
+  const q = (query || "").trim().toLowerCase();
+  if (!q) return true;
+  if ((recipe.name || "").toLowerCase().includes(q)) return true;
+  if ((recipe.desc || "").toLowerCase().includes(q)) return true;
+  return (recipe.ingredients || []).some(ing => (ing.n || "").toLowerCase().includes(q));
+}
 let detailId = null;
 let detailFactor = 1;
 
@@ -2435,16 +2454,40 @@ function renderSuggest(){
       parts.push("賞味期限が近い在庫（" + autoNames.join("、") + "）も自動で優先しています");
     ngNote.textContent = parts.length ? parts.join("。") + "。変更は「設定」タブから。" : "";
   }
-  const makeable = sortEvals(evals.filter(e => e.missingCount === 0 && !e.items.some(i => i.status === "sale")), suggestSort);
-  const almost = sortEvals(evals.filter(e => e.missingCount > 0 ? e.missingCount <= 2 : e.items.some(i => i.status === "sale")), suggestSort);
+  const q = suggestQuery.trim();
+  const makeable = sortEvals(evals.filter(e => e.missingCount === 0 && !e.items.some(i => i.status === "sale") && recipeMatchesQuery(e.recipe, suggestQuery)), suggestSort);
+  const almost = sortEvals(evals.filter(e => (e.missingCount > 0 ? e.missingCount <= 2 : e.items.some(i => i.status === "sale")) && recipeMatchesQuery(e.recipe, suggestQuery)), suggestSort);
   const mk = document.getElementById("suggest-makeable");
   mk.innerHTML = makeable.length
     ? makeable.map(recipeCard).join("")
-    : '<div class="empty">まだありません。「冷蔵庫」に在庫を入れると、ここに作れる献立が出ます。</div>';
+    : (q ? '<div class="empty">「' + esc(q) + '」に合う献立はありません</div>'
+         : '<div class="empty">まだありません。「冷蔵庫」に在庫を入れると、ここに作れる献立が出ます。</div>');
   const al = document.getElementById("suggest-almost");
   al.innerHTML = almost.length
     ? almost.map(recipeCard).join("")
-    : '<div class="empty">まだありません。「お店・特売」で特売メモを入れると、ここに候補が出ます。</div>';
+    : (q ? '<div class="empty">「' + esc(q) + '」に合う献立はありません</div>'
+         : '<div class="empty">まだありません。「お店・特売」で特売メモを入れると、ここに候補が出ます。</div>');
+  renderStockPeek();
+}
+// 献立提案タブの「いま作れる献立」に、冷蔵庫の在庫を小さく一覧表示する（登録順・先頭10件まで）。
+// 在庫の編集は冷蔵庫タブで行うため、ボタンでタブを切り替える。
+function renderStockPeek(){
+  const peek = document.getElementById("suggest-stock-peek");
+  if (!peek) return;
+  const names = (state.stock || []).map(s => s.name);
+  if (names.length){
+    const shown = names.slice(0, 10);
+    const rest = names.length - shown.length;
+    peek.innerHTML = "冷蔵庫の在庫：" + esc(shown.join("、")) + (rest > 0 ? " …他" + rest + "件" : "") +
+      ' <button type="button" class="btn small" data-goto-fridge>冷蔵庫タブで編集</button>';
+  } else {
+    peek.innerHTML = '冷蔵庫の在庫はまだ登録されていません <button type="button" class="btn small" data-goto-fridge>冷蔵庫タブで登録</button>';
+  }
+  const btn = peek.querySelector("[data-goto-fridge]");
+  if (btn) btn.addEventListener("click", () => {
+    const tabBtn = document.querySelector('nav.tabs button[data-tab="fridge"]');
+    if (tabBtn) tabBtn.click();
+  });
 }
 function renderRecipeList(){
   // 並べ方（1列／2列）トグルの選択状態を、保存済みの設定に合わせる
@@ -2464,7 +2507,8 @@ function renderRecipeList(){
   const hasPriority = (state.priority || []).length > 0 || autoPriorityNames().length > 0;
   const pNote = document.getElementById("recipe-priority-note");
   let list = RECIPES.filter(r => currentCat === "全部" || r.cat === currentCat)
-    .filter(r => currentTag === "全部" || (r.tags || []).includes(currentTag));
+    .filter(r => currentTag === "全部" || (r.tags || []).includes(currentTag))
+    .filter(r => recipeMatchesQuery(r, recipeQuery));
 
   // ---- 優先食材のみモード（レシピ一覧だけの特別な見せ方） ----
   // 優先食材を使うレシピだけを出す。苦手を含むものは消さず、赤文字警告付きで表示する。
@@ -2501,11 +2545,17 @@ function renderRecipeList(){
         (cautionCount ? "／ 苦手な食材を含む " + cautionCount + " 件を赤文字で表示中" : "") +
         "　※カロリーは材料からの目安（推定値）です";
     }
-    document.getElementById("recipe-list").innerHTML = evalsP.length
-      ? recipeCardsHtml(evalsP, { priorityOnly: true })
-      : '<div class="empty">優先食材（' + esc((state.priority || []).concat(autoPriorityNames()).join("、")) + '）を使うレシピがありません' +
+    if (evalsP.length){
+      document.getElementById("recipe-list").innerHTML = recipeCardsHtml(evalsP, { priorityOnly: true });
+    } else if (recipeQuery.trim()){
+      document.getElementById("recipe-list").innerHTML =
+        '<div class="empty">「' + esc(recipeQuery.trim()) + '」に合うレシピはありません</div>';
+    } else {
+      document.getElementById("recipe-list").innerHTML =
+        '<div class="empty">優先食材（' + esc((state.priority || []).concat(autoPriorityNames()).join("、")) + '）を使うレシピがありません' +
         (pAllergyExcluded ? "（アレルギー食材を含む " + pAllergyExcluded + " 件は、このモードでも表示しません）" : "") +
         '。優先食材の登録を変えるか、タグ・カテゴリの絞り込みを外してみてください。</div>';
+    }
     return;
   }
   if (pNote) pNote.textContent = "";
@@ -2527,7 +2577,9 @@ function renderRecipeList(){
   }
   document.getElementById("recipe-list").innerHTML = evals.length
     ? recipeCardsHtml(evals)
-    : '<div class="empty">条件に合うレシピがありません。タグやカテゴリ、苦手食材の除外を変えてみてください（アレルギー食材を含むレシピは常時除外されます）。</div>';
+    : (recipeQuery.trim()
+        ? '<div class="empty">「' + esc(recipeQuery.trim()) + '」に合うレシピはありません</div>'
+        : '<div class="empty">条件に合うレシピがありません。タグやカテゴリ、苦手食材の除外を変えてみてください（アレルギー食材を含むレシピは常時除外されます）。</div>');
 }
 document.getElementById("recipe-chips").addEventListener("click", e => {
   const b = e.target.closest("button[data-cat]");
@@ -2557,6 +2609,14 @@ document.getElementById("recipe-priority-only").addEventListener("change", () =>
 document.getElementById("suggest-sort").addEventListener("change", e => {
   suggestSort = e.target.value;
   renderSuggest();
+});
+document.getElementById("suggest-q").addEventListener("input", e => {
+  suggestQuery = e.target.value;
+  renderSuggest();
+});
+document.getElementById("recipe-q").addEventListener("input", e => {
+  recipeQuery = e.target.value;
+  renderRecipeList();
 });
 document.querySelector("main").addEventListener("click", e => {
   const card = e.target.closest("[data-recipe]");
