@@ -2576,7 +2576,18 @@ function setShopStatus(msg, isErr){
   el.textContent = msg || "";
   el.className = "status" + (isErr ? " err" : "");
 }
+// 店名の表示名：OSMの branch（支店名）があれば「チェーン名＋支店名」にする。
+// branchが既にnameに含まれている場合は二重にしない。name自体に支店名まで入っているデータはそのまま。
+function shopDisplayName(tags){
+  if (!tags || !tags.name) return shopLabel(tags || {});
+  const branch = String(tags.branch || "").trim();
+  if (branch && tags.name.indexOf(branch) < 0) return tags.name + " " + branch;
+  return tags.name;
+}
+// 現在表示中の検索結果（住所補完の非同期再描画で、別の検索結果を上書きしないための照合用）
+let lastShopResults = null;
 function renderShopResults(results){
+  lastShopResults = results;
   const box = document.getElementById("shop-search-results");
   if (!results.length){
     box.innerHTML = '<div class="empty">見つかりませんでした。検索のことばを変えるか、手動登録をお使いください。</div>';
@@ -2595,6 +2606,35 @@ function renderShopResults(results){
       setShopStatus("「" + r.name + "」をいつものお店に登録しました。");
     });
   });
+  // 住所が無い結果は、緯度経度からの逆ジオコーディングで町名レベルを後から補う（一覧は先に表示する）
+  fillMissingShopAddresses(results);
+}
+// 住所補完：OSMの addr:* タグが無い店舗が多いため、緯度経度から市区町村＋町名を補う。
+// BigDataCloudの reverse-geocode-client（無料・キー不要・ブラウザから直接可）を使う。
+// 失敗しても無言で住所なしのままにし、検索結果の表示自体は壊さない。
+async function fillMissingShopAddresses(results){
+  const targets = results.slice(0, 15).filter(r => r && !r.address && !r._addrTried && r.lat != null && r.lon != null);
+  if (!targets.length) return;
+  targets.forEach(r => { r._addrTried = true; });
+  let filled = false;
+  await Promise.allSettled(targets.map(async r => {
+    try {
+      const url = "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=" +
+        encodeURIComponent(r.lat) + "&longitude=" + encodeURIComponent(r.lon) + "&localityLanguage=ja";
+      const res = await fetch(url);
+      if (!res.ok) return;
+      const d = await res.json();
+      const parts = [];
+      [d.principalSubdivision, d.city, d.locality].forEach(p => {
+        p = String(p || "").trim();
+        if (p && parts.indexOf(p) < 0) parts.push(p);
+      });
+      const addr = parts.join("");
+      if (addr){ r.address = addr; filled = true; }
+    } catch(e) { /* 補完できなくても住所なしのまま表示する */ }
+  }));
+  // いま表示中の結果が同じ配列のときだけ再描画する（その後の別検索の結果を上書きしない）
+  if (filled && lastShopResults === results) renderShopResults(results);
 }
 // Overpassは無料の公共サーバーで、本家（overpass-api.de）が混雑で容量オーバー（502等）になることがある。
 // 待ち時間を短くするため、複数のエンドポイントへ同時にリクエストし、最初に成功したものを採用する
@@ -2680,7 +2720,7 @@ async function nominatimNearby(lat, lon){
         const a = d.address || {};
         const addr = [a.prefecture || a.province, a.city || a.town || a.village, a.suburb || a.neighbourhood || a.quarter].filter(Boolean).join("");
         const label = d.type === "pharmacy" ? "薬局" : (SHOP_TYPE_LABEL[d.type] || "お店");
-        out.push({ name, label, address: addr, distKm: haversineKm(lat, lon, Number(d.lat), Number(d.lon)) });
+        out.push({ name, label, address: addr, distKm: haversineKm(lat, lon, Number(d.lat), Number(d.lon)), lat: Number(d.lat), lon: Number(d.lon) });
       }
     } catch(e) { /* このカテゴリは飛ばして次へ */ }
   }
@@ -2696,12 +2736,19 @@ function nearbyFoundMessage(results){
   return results.length + "件見つかりました。";
 }
 async function overpassNearby(lat, lon){
-  const q = '[out:json][timeout:10];(' +
-    'node["shop"~"supermarket|chemist|department_store|convenience|greengrocer"](around:1500,' + lat + ',' + lon + ');' +
-    'way["shop"~"supermarket|chemist|department_store|convenience|greengrocer"](around:1500,' + lat + ',' + lon + ');' +
-    'node["amenity"="pharmacy"](around:1500,' + lat + ',' + lon + ');' +
-    'way["amenity"="pharmacy"](around:1500,' + lat + ',' + lon + ');' +
-    ');out center 50;';
+  // カテゴリごとに名前付きセットで分けて取得し、カテゴリごとの上限を持たせる。
+  // 1つの out の上限（旧：out center 50）だと、件数の多いコンビニにスーパーが埋もれて
+  // 取得段階で切り捨てられてしまうため。取得後にマージ・重複排除・距離順ソートする。
+  const A = '(around:1500,' + lat + ',' + lon + ')';
+  const q = '[out:json][timeout:10];' +
+    '(node["shop"~"supermarket|department_store"]' + A + ';way["shop"~"supermarket|department_store"]' + A + ';)->.g_super;' +
+    '(node["shop"="convenience"]' + A + ';way["shop"="convenience"]' + A + ';)->.g_conv;' +
+    '(node["shop"="chemist"]' + A + ';way["shop"="chemist"]' + A + ';node["amenity"="pharmacy"]' + A + ';way["amenity"="pharmacy"]' + A + ';)->.g_drug;' +
+    '(node["shop"="greengrocer"]' + A + ';way["shop"="greengrocer"]' + A + ';)->.g_grocery;' +
+    '.g_super out center 80;' +
+    '.g_conv out center 60;' +
+    '.g_drug out center 60;' +
+    '.g_grocery out center 30;';
   let data;
   try {
     data = await fetchOverpass(q);
@@ -2709,17 +2756,31 @@ async function overpassNearby(lat, lon){
     // Overpassが全滅した場合はNominatim viewbox検索へフォールバックする
     return await nominatimNearby(lat, lon);
   }
-  return (data.elements || []).map(el => {
+  const seen = new Set();
+  const mapped = [];
+  for (const el of (data.elements || [])){
+    const key = el.type + "/" + el.id;
+    if (seen.has(key)) continue;
+    seen.add(key);
     const c = el.center || el;
     const tags = el.tags || {};
     const addr = [tags["addr:province"], tags["addr:city"], tags["addr:suburb"], tags["addr:quarter"]].filter(Boolean).join("");
-    return {
-      name: tags.name || shopLabel(tags),
+    mapped.push({
+      name: shopDisplayName(tags),
       label: shopLabel(tags),
       address: addr,
-      distKm: haversineKm(lat, lon, c.lat, c.lon)
-    };
-  }).sort((a, b) => a.distKm - b.distKm);
+      distKm: haversineKm(lat, lon, c.lat, c.lon),
+      lat: c.lat,
+      lon: c.lon,
+      // スーパー系を優先するための並び替え用（同じ距離帯ではスーパーを先に）
+      prio: (tags.shop === "supermarket" || tags.shop === "department_store") ? 0 : 1
+    });
+  }
+  // 距離順を基本に、0.1km単位の同じ距離帯ではスーパー系を優先する
+  mapped.sort((a, b) =>
+    (Math.round(a.distKm * 10) - Math.round(b.distKm * 10)) || (a.prio - b.prio) || (a.distKm - b.distKm));
+  // 表示は現実的な上限50件まで（取得段階ではカテゴリ別に確保済みなのでスーパーは落ちない）
+  return mapped.slice(0, 50);
 }
 document.getElementById("btn-nearby").addEventListener("click", () => {
   if (!navigator.geolocation){
@@ -2755,7 +2816,7 @@ document.getElementById("btn-textsearch").addEventListener("click", async () => 
       const addr = [a.prefecture || a.province, a.city || a.town || a.village, a.suburb || a.neighbourhood || a.quarter].filter(Boolean).join("");
       const cls = d.category || d.class;
       const label = d.type === "pharmacy" ? "薬局" : (cls === "shop" ? (SHOP_TYPE_LABEL[d.type] || "お店") : cls === "amenity" ? "施設" : "場所");
-      return { name, label, address: addr, distKm: null };
+      return { name, label, address: addr, distKm: null, lat: Number(d.lat), lon: Number(d.lon) };
     }).filter(r => r.name);
     setShopStatus(results.length ? results.length + "件見つかりました。" : "");
     renderShopResults(results);
