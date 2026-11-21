@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>献立メーカー</title>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 <style>
   :root{
     --accent:#ea580c;
@@ -335,10 +336,10 @@
       <label>お店（任意）</label>
       <select id="sale-shop"></select>
       <button class="btn primary block" id="btn-add-sale">特売メモを追加</button>
-      <h3>チラシ画像から読み込む</h3>
-      <div class="sub2">チラシの写真やスクリーンショットを選ぶと、食材名と価格を読み取って候補を出します。上の「お店」で選んだお店の特売として追加されます。読み取りは目安なので、追加前に金額を確認してください。</div>
-      <input type="file" id="flyer-file" accept="image/*" multiple>
-      <button class="btn block" id="btn-flyer-ocr">画像を読み込む</button>
+      <h3>チラシ画像・PDFから読み込む</h3>
+      <div class="sub2">チラシの写真・スクリーンショット・PDFを選ぶと、食材名と価格を読み取って候補を出します（PDFは先頭3ページまで）。上の「お店」で選んだお店の特売として追加されます。読み取りは目安なので、追加前に金額を確認してください。</div>
+      <input type="file" id="flyer-file" accept="image/*,application/pdf,.pdf" multiple>
+      <button class="btn block" id="btn-flyer-ocr">読み込む</button>
       <div class="status" id="flyer-status"></div>
       <div id="flyer-candidates"></div>
       <div id="sale-list" style="margin-top:10px;"></div>
@@ -3455,6 +3456,25 @@ function renderFlyerCandidates(cands){
     box.innerHTML = "";
   });
 }
+const PDFJS_WORKER_SRC = "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js";
+async function pdfFileToDataUrls(f){
+  if (typeof pdfjsLib === "undefined") throw new Error("pdfjs unavailable");
+  pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_SRC;
+  const buf = await f.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+  const urls = [];
+  const maxPages = Math.min(pdf.numPages, 3);
+  for (let p = 1; p <= maxPages; p++){
+    const page = await pdf.getPage(p);
+    const viewport = page.getViewport({ scale: 2 });
+    const canvas = document.createElement("canvas");
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+    await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
+    urls.push(canvas.toDataURL("image/png"));
+  }
+  return urls;
+}
 function fileToDataUrl(f){
   return new Promise((resolve, reject) => {
     const r = new FileReader();
@@ -3467,7 +3487,7 @@ document.getElementById("btn-flyer-ocr").addEventListener("click", async () => {
   const input = document.getElementById("flyer-file");
   const status = document.getElementById("flyer-status");
   const files = [...(input.files || [])];
-  if (!files.length){ alert("チラシ画像を選んでください。"); return; }
+  if (!files.length){ alert("チラシ画像かPDFを選んでください。"); return; }
   if (typeof Tesseract === "undefined"){
     status.textContent = "読み取りの準備ができませんでした。通信環境を確認してもう一度お試しください。";
     return;
@@ -3481,8 +3501,17 @@ document.getElementById("btn-flyer-ocr").addEventListener("click", async () => {
       }
     });
     const byName = new Map();
+    const urls = [];
+    let pdfFailed = 0;
     for (const f of files){
-      const url = await fileToDataUrl(f);
+      if (f.type === "application/pdf" || /\.pdf$/i.test(f.name || "")){
+        try { (await pdfFileToDataUrls(f)).forEach(u => urls.push(u)); }
+        catch(e) { pdfFailed++; }
+      } else {
+        urls.push(await fileToDataUrl(f));
+      }
+    }
+    for (const url of urls){
       const res = await worker.recognize(url, {}, { text: true, tsv: true });
       const data = (res && res.data) || {};
       const merge = (cands) => cands.forEach(c => {
@@ -3493,7 +3522,7 @@ document.getElementById("btn-flyer-ocr").addEventListener("click", async () => {
       if (rows) merge(parseFlyerLines(rows.lines, rows.ys));
       parseFlyerText(data.text || "").forEach(c => { if (!byName.has(c.name)) byName.set(c.name, c); });
     }
-    status.textContent = "読み取りが終わりました。";
+    status.textContent = "読み取りが終わりました。" + (pdfFailed ? "（" + pdfFailed + "件のPDFは読み込めませんでした）" : "");
     renderFlyerCandidates([...byName.values()]);
   } catch(e) {
     status.textContent = "読み取りに失敗しました。画像を変えてもう一度お試しください。";
