@@ -747,7 +747,7 @@ const RECIPES = [
   },
   {
     id:"range-buta-moyashi", name:"レンジで豚バラもやし", img:"range-moyashi.jpg", emoji:"🍽️", cat:"レンジ",
-    servings:2, time:10, kcal:480, tags:["時短","レンジのみ","炊飯器で作れる"],
+    servings:2, time:10, kcal:480, tags:["時短","レンジのみ"],
     desc:"耐熱皿に重ねてチンするだけ。洗い物が少ない蒸ししゃぶ風。",
     ingredients:[
       {n:"豚バラ肉", amt:300, unit:"g", per:148, main:true},
@@ -2355,7 +2355,7 @@ function sortEvals(list, mode){
   }
   return arr;
 }
-const TAG_ORDER = ["大盛り", "ガッツリ", "ヘルシー", "野菜たっぷり", "節約", "時短", "作り置き", "お弁当OK", "ご飯が進む", "鍋のみ", "フライパンのみ", "レンジのみ"];
+const TAG_ORDER = ["大盛り", "ガッツリ", "ヘルシー", "野菜たっぷり", "節約", "時短", "作り置き", "お弁当OK", "ご飯が進む", "鍋のみ", "フライパンのみ", "レンジのみ", "炊飯器で作れる"];
 
 function loadState(){
   try {
