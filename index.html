@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>献立メーカー</title>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
   :root{
     --accent:#ea580c;
@@ -306,7 +307,7 @@
       <h2>特売メモ</h2>
       <details class="help">
         <summary>特売メモについて</summary>
-        <div class="help-body">チラシで見つけた特売を、手でメモする欄です（例：鶏もも肉 100gあたり 88円）。写真の読み取りはしません。ここに入れた食材は、献立の計算で特売価格が使われます。お店を選ぶと、そのお店のメモとして残ります。</div>
+        <div class="help-body">チラシで見つけた特売をメモする欄です（例：鶏もも肉 100gあたり 88円）。手入力のほか、下の「チラシ画像から読み込む」でチラシの写真やスクリーンショットから食材名と価格を読み取ることもできます（読み取りは目安です）。ここに入れた食材は、献立の計算で特売価格が使われます。お店を選ぶと、そのお店のメモとして残ります。</div>
       </details>
       <label>食材名</label>
       <input type="text" id="sale-name" placeholder="例：鶏もも肉">
@@ -333,6 +334,12 @@
       <label>お店（任意）</label>
       <select id="sale-shop"></select>
       <button class="btn primary block" id="btn-add-sale">特売メモを追加</button>
+      <h3>チラシ画像から読み込む</h3>
+      <div class="sub2">チラシの写真やスクリーンショットを選ぶと、食材名と価格を読み取って候補を出します。上の「お店」で選んだお店の特売として追加されます。読み取りは目安なので、追加前に金額を確認してください。</div>
+      <input type="file" id="flyer-file" accept="image/*" multiple>
+      <button class="btn block" id="btn-flyer-ocr">画像を読み込む</button>
+      <div class="status" id="flyer-status"></div>
+      <div id="flyer-candidates"></div>
       <div id="sale-list" style="margin-top:10px;"></div>
     </div>
   </section>
@@ -393,7 +400,7 @@
     </div>
     <div class="card">
       <h2>このアプリについて</h2>
-      <div class="note">主婦層と一人暮らしで自炊する人のための献立アプリです。近所のお店の特売と冷蔵庫の在庫から献立を提案し、1食あたりの単価が見えるのが特長です。レシピはアプリ内蔵のものだけを使い、分量と手順は自前の言葉で書いています。料理写真にはAI生成画像を使用していて、レシピデータの画像欄（img）にファイル名が入っています（画像が無い間はプレースホルダが表示されます）。チラシの価格データは自動取得せず、特売メモとして手入力する形式です。レシピにはハッシュタグ（大盛り／ガッツリ／ヘルシー／野菜たっぷり／節約／時短／作り置き／お弁当OK／ご飯が進む／鍋のみ／フライパンのみ／レンジのみ等）が付いていて、レシピ一覧でタップして絞り込めます。表示されるカロリーは材料から見積もった1食あたりの目安（推定値）です。苦手な食材を登録すると、それを含むレシピを献立提案から除外できます。アレルギー食材を登録すると、それを含むレシピは最優先（絶対）で献立提案とレシピ一覧から常時除外されます（判定は材料名への照合のため、完全な保証ではありません）。優先したい食材を登録すると、それを使うレシピが献立提案のおすすめ順で上位に出ます。材料はお好みで有機（オーガニック）のものに置き換えても作れます。</div>
+      <div class="note">主婦層と一人暮らしで自炊する人のための献立アプリです。近所のお店の特売と冷蔵庫の在庫から献立を提案し、1食あたりの単価が見えるのが特長です。レシピはアプリ内蔵のものだけを使い、分量と手順は自前の言葉で書いています。料理写真にはAI生成画像を使用していて、レシピデータの画像欄（img）にファイル名が入っています（画像が無い間はプレースホルダが表示されます）。チラシの価格データはウェブから自動取得せず、特売メモへの手入力と、チラシ画像からの読み取り（目安）で取り込む形式です。レシピにはハッシュタグ（大盛り／ガッツリ／ヘルシー／野菜たっぷり／節約／時短／作り置き／お弁当OK／ご飯が進む／鍋のみ／フライパンのみ／レンジのみ等）が付いていて、レシピ一覧でタップして絞り込めます。表示されるカロリーは材料から見積もった1食あたりの目安（推定値）です。苦手な食材を登録すると、それを含むレシピを献立提案から除外できます。アレルギー食材を登録すると、それを含むレシピは最優先（絶対）で献立提案とレシピ一覧から常時除外されます（判定は材料名への照合のため、完全な保証ではありません）。優先したい食材を登録すると、それを使うレシピが献立提案のおすすめ順で上位に出ます。材料はお好みで有機（オーガニック）のものに置き換えても作れます。</div>
       <button class="btn danger block" id="btn-clear">データをすべて消す</button>
     </div>
   </section>
@@ -2954,7 +2961,10 @@ function shopGroupIndex(r){
 }
 // 現在表示中の検索結果（住所補完の非同期再描画で、別の検索結果を上書きしないための照合用）
 let lastShopResults = null;
-function renderShopResults(results){
+let shopResultPage = 1;
+const SHOP_PAGE_SIZE = 10;
+function renderShopResults(results, resetPage){
+  if (resetPage) shopResultPage = 1;
   lastShopResults = results;
   const box = document.getElementById("shop-search-results");
   if (!results.length){
@@ -2965,17 +2975,36 @@ function renderShopResults(results){
   // data-addshop には元の配列のインデックスを持たせて登録対象がずれないようにする。
   const grouped = SHOP_GROUPS.map(() => []);
   results.forEach((r, i) => { grouped[shopGroupIndex(r)].push({ r, i }); });
-  let html = "";
-  grouped.forEach((items, g) => {
-    if (!items.length) return; // 0件のグループは見出しごと出さない
-    html += '<div class="shop-group-ttl' + (SHOP_GROUPS[g].cls ? " " + SHOP_GROUPS[g].cls : "") + '">' + SHOP_GROUPS[g].title + '</div>';
-    html += items.map(({ r, i }) =>
-      '<div class="item"><div class="grow"><div class="ttl">' + esc(r.name) + '</div>' +
+  // ページ分け：1ページ10件。グループ見出しは、そのページでそのグループが最初に出るときに付ける
+  const flat = [];
+  grouped.forEach((items, g) => { items.forEach(x => flat.push({ r: x.r, i: x.i, g })); });
+  const pageCount = Math.max(1, Math.ceil(flat.length / SHOP_PAGE_SIZE));
+  if (shopResultPage > pageCount) shopResultPage = pageCount;
+  if (shopResultPage < 1) shopResultPage = 1;
+  const pageItems = flat.slice((shopResultPage - 1) * SHOP_PAGE_SIZE, shopResultPage * SHOP_PAGE_SIZE);
+  let html = '<div class="sub2">全' + flat.length + '件（' + shopResultPage + ' / ' + pageCount + 'ページ）</div>';
+  let lastG = -1;
+  pageItems.forEach(({ r, i, g }) => {
+    if (g !== lastG){
+      lastG = g;
+      html += '<div class="shop-group-ttl' + (SHOP_GROUPS[g].cls ? " " + SHOP_GROUPS[g].cls : "") + '">' + SHOP_GROUPS[g].title + '</div>';
+    }
+    html += '<div class="item"><div class="grow"><div class="ttl">' + esc(r.name) + '</div>' +
       '<div class="sub2">' + esc(r.label) + (r.distKm != null ? ' ／ 約' + r.distKm.toFixed(1) + 'km' : '') +
       (r.address ? ' ／ ' + esc(r.address) : '') + '</div></div>' +
-      '<button class="btn small primary" data-addshop="' + i + '">登録</button></div>').join("");
+      '<button class="btn small primary" data-addshop="' + i + '">登録</button></div>';
   });
+  if (pageCount > 1){
+    html += '<div class="row" style="margin-top:10px;">' +
+      '<button class="btn" data-shoppage="-1"' + (shopResultPage <= 1 ? ' disabled' : '') + '>← 前へ</button>' +
+      '<button class="btn" data-shoppage="1"' + (shopResultPage >= pageCount ? ' disabled' : '') + '>次へ →</button></div>';
+  }
   box.innerHTML = html;
+  box.querySelectorAll("[data-shoppage]").forEach(b => b.addEventListener("click", () => {
+    shopResultPage += Number(b.dataset.shoppage);
+    renderShopResults(results);
+    box.scrollIntoView({ behavior: "smooth", block: "start" });
+  }));
   box.querySelectorAll("[data-addshop]").forEach(b => {
     b.addEventListener("click", () => {
       const r = results[Number(b.dataset.addshop)];
@@ -3172,7 +3201,7 @@ document.getElementById("btn-nearby").addEventListener("click", () => {
       setShopStatus("近くのお店を探しています…");
       const results = await overpassNearby(pos.coords.latitude, pos.coords.longitude);
       setShopStatus(nearbyFoundMessage(results));
-      renderShopResults(results);
+      renderShopResults(results, true);
     } catch(e) {
       setShopStatus("お店の検索に失敗しました。地図サーバーが混雑している可能性があります。少し時間をおいてもう一度試すか、店名検索・郵便番号からの検索をお使いください。", true);
     }
@@ -3198,7 +3227,7 @@ document.getElementById("btn-textsearch").addEventListener("click", async () => 
       return { name, label, address: addr, distKm: null, lat: Number(d.lat), lon: Number(d.lon) };
     }).filter(r => r.name);
     setShopStatus(results.length ? results.length + "件見つかりました。" : "");
-    renderShopResults(results);
+    renderShopResults(results, true);
   } catch(e) {
     setShopStatus("検索に失敗しました。通信環境を確認してもう一度お試しください。", true);
   }
@@ -3219,7 +3248,7 @@ document.getElementById("btn-zipsearch").addEventListener("click", async () => {
     if (!ndata.length){ setShopStatus("住所の場所が特定できませんでした。", true); return; }
     const results = await overpassNearby(Number(ndata[0].lat), Number(ndata[0].lon));
     setShopStatus(nearbyFoundMessage(results));
-    renderShopResults(results);
+    renderShopResults(results, true);
   } catch(e) {
     setShopStatus("検索に失敗しました。地図サーバーが混雑している可能性があります。少し時間をおいてもう一度試すか、店名検索をお使いください。", true);
   }
@@ -3300,6 +3329,138 @@ function renderSales(){
     window.open("https://cookpad.com/search/" + encodeURIComponent(b.dataset.saleSearch), "_blank");
   }));
 }
+
+// ---- チラシ画像の読み取り（OCR） ----
+const FLYER_EXTRA_WORDS = ["卵","牛乳","食パン","豆腐","納豆","鶏むね肉","豚こま肉","合いびき肉","ツナ缶","ちくわ","かまぼこ","ウインナー","ベーコン","ハム","チーズ","バター","ヨーグルト","もやし","キャベツ","レタス","トマト","きゅうり","なす","ピーマン","ほうれん草","ブロッコリー","ねぎ","米","うどん","そば","パスタ"];
+function flyerVocab(){
+  const set = new Set(FLYER_EXTRA_WORDS);
+  RECIPES.forEach(r => (r.ingredients || []).forEach(g => { if (g.n) set.add(g.n); }));
+  return [...set].sort((a, b) => b.length - a.length);
+}
+function normFlyerText(s){
+  return String(s || "")
+    .replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0))
+    .replace(/，/g, ",")
+    .replace(/\s+/g, " ");
+}
+function flyerPriceIn(line){
+  const m = line.match(/(\d{1,3}(?:,\d{3})+|\d{2,4})\s*円/);
+  if (m) return Number(m[1].replace(/,/g, ""));
+  const m2 = line.match(/本体\s*(\d{2,4})/);
+  if (m2) return Number(m2[1]);
+  return null;
+}
+function flyerUnitIn(line, name){
+  if (/100\s*g/.test(line)) return "100g";
+  const after = line.slice(line.indexOf(name) + name.length).replace(/本体/g, "").replace(/税込/g, "");
+  const units = ["パック", "袋", "箱", "缶", "丁", "玉", "個", "本"];
+  for (const u of units){ if (after.includes(u)) return u; }
+  return "パック";
+}
+function parseFlyerText(text){
+  const vocab = flyerVocab();
+  const lines = String(text || "").split(/\n/).map(s => normFlyerText(s).trim()).filter(Boolean);
+  const found = new Map();
+  const findName = (line) => vocab.find(w => line.includes(w)) || null;
+  lines.forEach((line, idx) => {
+    let name = findName(line);
+    let price = flyerPriceIn(line);
+    let unitLine = line;
+    if (name && price == null && lines[idx + 1]){
+      const p2 = flyerPriceIn(lines[idx + 1]);
+      if (p2 != null){ price = p2; unitLine = line + " " + lines[idx + 1]; }
+    }
+    if (!name && price != null && lines[idx - 1]){
+      const n2 = findName(lines[idx - 1]);
+      if (n2){ name = n2; unitLine = lines[idx - 1] + " " + line; }
+    }
+    if (name && price != null && price >= 10 && price <= 9999){
+      const unitSel = flyerUnitIn(unitLine, name);
+      if (!found.has(name) || found.get(name).price > price) found.set(name, { name, price, unitSel });
+    }
+  });
+  return [...found.values()];
+}
+function flyerUnitOptions(sel){
+  return ["100g", "個", "パック", "袋", "本", "缶", "丁", "玉", "箱"].map(u =>
+    '<option value="' + u + '"' + (u === sel ? ' selected' : '') + '>' + (u === "100g" ? "100gあたり" : "1" + u + "あたり") + '</option>').join("");
+}
+function renderFlyerCandidates(cands){
+  const box = document.getElementById("flyer-candidates");
+  if (!cands.length){
+    box.innerHTML = '<div class="empty">読み取れた特売が見つかりませんでした。写真を明るい場所で撮り直すか、手入力で追加してください。</div>';
+    return;
+  }
+  box.innerHTML = '<div class="sub2">読み取り候補（' + cands.length + '件）。金額や単位が違うものは直してから追加してください。</div>' +
+    cands.map((c, i) =>
+      '<div class="item"><input type="checkbox" data-fc-check="' + i + '" checked style="width:20px;height:20px;flex:none;">' +
+      '<div class="grow"><input type="text" data-fc-name="' + i + '" value="' + esc(c.name) + '" style="width:100%;padding:6px;font-size:14px;">' +
+      '<div class="row"><div><input type="number" data-fc-price="' + i + '" value="' + c.price + '" inputmode="numeric" style="padding:6px;"></div>' +
+      '<div><select data-fc-unit="' + i + '">' + flyerUnitOptions(c.unitSel) + '</select></div></div></div></div>').join("") +
+    '<button class="btn primary block" id="btn-flyer-add">選んだ特売をメモに追加</button>';
+  document.getElementById("btn-flyer-add").addEventListener("click", () => {
+    const shopId = document.getElementById("sale-shop").value || "";
+    let added = 0;
+    box.querySelectorAll("[data-fc-check]").forEach(chk => {
+      if (!chk.checked) return;
+      const i = chk.dataset.fcCheck;
+      const name = box.querySelector('[data-fc-name="' + i + '"]').value.trim();
+      const price = Number(box.querySelector('[data-fc-price="' + i + '"]').value);
+      const unitSel = box.querySelector('[data-fc-unit="' + i + '"]').value;
+      if (!name || !(price > 0)) return;
+      const sale = { id: uid(), name, price, shopId };
+      if (unitSel === "100g"){ sale.basis = "100g"; sale.unitName = ""; }
+      else { sale.basis = "unit"; sale.unitName = unitSel; }
+      state.sales.push(sale);
+      added++;
+    });
+    if (!added){ alert("追加できる候補がありませんでした。"); return; }
+    saveState(); renderAll();
+    document.getElementById("flyer-status").textContent = added + "件の特売メモを追加しました。";
+    box.innerHTML = "";
+  });
+}
+function fileToDataUrl(f){
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result);
+    r.onerror = reject;
+    r.readAsDataURL(f);
+  });
+}
+document.getElementById("btn-flyer-ocr").addEventListener("click", async () => {
+  const input = document.getElementById("flyer-file");
+  const status = document.getElementById("flyer-status");
+  const files = [...(input.files || [])];
+  if (!files.length){ alert("チラシ画像を選んでください。"); return; }
+  if (typeof Tesseract === "undefined"){
+    status.textContent = "読み取りの準備ができませんでした。通信環境を確認してもう一度お試しください。";
+    return;
+  }
+  status.textContent = "準備中…（初回は言語データを読み込むため、少し時間がかかります）";
+  let worker = null;
+  try {
+    worker = await Tesseract.createWorker("jpn+eng", 1, {
+      logger: m => {
+        if (m && m.status === "recognizing text") status.textContent = "読み取り中… " + Math.round((m.progress || 0) * 100) + "%";
+      }
+    });
+    const byName = new Map();
+    for (const f of files){
+      const url = await fileToDataUrl(f);
+      const res = await worker.recognize(url);
+      parseFlyerText(res && res.data ? res.data.text : "").forEach(c => {
+        if (!byName.has(c.name) || byName.get(c.name).price > c.price) byName.set(c.name, c);
+      });
+    }
+    status.textContent = "読み取りが終わりました。";
+    renderFlyerCandidates([...byName.values()]);
+  } catch(e) {
+    status.textContent = "読み取りに失敗しました。画像を変えてもう一度お試しください。";
+  } finally {
+    if (worker){ try { await worker.terminate(); } catch(_){} }
+  }
+});
 
 // ---- 冷蔵庫 ----
 document.getElementById("btn-add-stock").addEventListener("click", () => {
