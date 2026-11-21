@@ -2722,7 +2722,8 @@ async function fetchOverpass(q){
 // 最終フォールバック：Overpassが全エンドポイント失敗（混雑等）のとき、Nominatimのviewbox検索で
 // カテゴリごとに近隣のお店を探す。Nominatimの利用ポリシーに配慮し、クエリは必要最小限の5件を
 // 逐次実行し、リクエスト間隔も1秒以上空ける。結果形式はOverpass時と同じ {name,label,address,distKm}。
-const NOMINATIM_NEARBY_QUERIES = ["supermarket", "convenience", "chemist", "greengrocer", "pharmacy"];
+// ※ "convenience" はNominatimの範囲内検索で0件になるため、日本語の「コンビニ」で検索する
+const NOMINATIM_NEARBY_QUERIES = ["supermarket", "コンビニ", "chemist", "greengrocer", "pharmacy"];
 async function nominatimNearby(lat, lon){
   const viewbox = (lon - 0.02) + "," + (lat + 0.02) + "," + (lon + 0.02) + "," + (lat - 0.02);
   const seen = new Set();
