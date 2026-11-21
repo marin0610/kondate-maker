@@ -2120,10 +2120,26 @@ const RECIPES = [
 function normName(s){
   return String(s == null ? "" : s).replace(/[\s　・,、]/g, "").toLowerCase();
 }
+// 汎用名エイリアス：「鶏肉」のような汎用名で登録しても部位名（鶏もも肉など）に当たるよう、
+// 同じ食材の呼び名をグループ化し、グループ内の名前同士は一致とみなす（normName後の名前で判定）。
+// 在庫・特売の照合のほか、苦手・アレルギー・優先食材の照合でも共通で使う（広く当たる＝安全側）。
+const NAME_ALIAS_GROUPS = [
+  ["鶏肉", "鶏もも肉", "鶏むね肉", "鶏ひき肉"],
+  ["豚肉", "豚バラ肉", "豚こま肉", "豚ロース肉", "豚ひき肉"],
+  ["牛肉", "牛こま肉"],
+  ["ひき肉", "挽肉", "合いびき肉", "合挽き肉", "鶏ひき肉", "豚ひき肉"],
+  ["卵", "たまご", "玉子"],
+  ["玉ねぎ", "玉葱", "新玉ねぎ"],
+  ["じゃがいも", "ジャガイモ", "新じゃがいも"],
+  ["ねぎ", "長ねぎ", "長ネギ", "青ねぎ"]
+].map(g => g.map(normName));
+function sameAliasGroup(na, nb){
+  return NAME_ALIAS_GROUPS.some(g => g.includes(na) && g.includes(nb));
+}
 function nameMatch(a, b){
   const na = normName(a), nb = normName(b);
   if (!na || !nb) return false;
-  return na === nb || na.includes(nb) || nb.includes(na);
+  return na === nb || na.includes(nb) || nb.includes(na) || sameAliasGroup(na, nb);
 }
 function findSale(ingName, sales){
   return (sales || []).find(s => nameMatch(s.name, ingName)) || null;
@@ -2461,7 +2477,9 @@ function renderSuggest(){
   mk.innerHTML = makeable.length
     ? makeable.map(recipeCard).join("")
     : (q ? '<div class="empty">「' + esc(q) + '」に合う献立はありません</div>'
-         : '<div class="empty">まだありません。「冷蔵庫」に在庫を入れると、ここに作れる献立が出ます。</div>');
+         : (state.stock && state.stock.length
+             ? '<div class="empty">いまの在庫で材料が全部そろう献立はまだありません。下の『あと少しで作れる献立』も見てみてください。</div>'
+             : '<div class="empty">まだありません。「冷蔵庫」に在庫を入れると、ここに作れる献立が出ます。</div>'));
   const al = document.getElementById("suggest-almost");
   al.innerHTML = almost.length
     ? almost.map(recipeCard).join("")
