@@ -112,6 +112,7 @@
   .badge.sale{background:#eff6ff;border-color:#bfdbfe;color:#1d4ed8;font-weight:700;}
   .badge.warn{background:var(--warn-bg);border-color:#fde68a;color:var(--warn);font-weight:700;}
   .badge.allergy{background:var(--danger-bg);border-color:#fecaca;color:var(--danger);font-weight:700;}
+  .badge.season{background:#faf5ff;border-color:#e9d5ff;color:#7e22ce;font-weight:700;}
   /* 優先食材のみモードでの警告表示（苦手食材を含むカード） */
   .recipe.caution{border:2px solid #f87171;background:#fff7f7;}
   .warnline{color:var(--danger);font-weight:700;font-size:14px;margin:4px 0;}
@@ -2134,6 +2135,172 @@ const RECIPES = [
       "ソースを作る。小鍋に冷凍ミックスベリー100gと砂糖大さじ3を入れ、中火で5分煮る。ベリーが崩れてとろみがついたら火を止め、レモン汁小さじ1を混ぜる。",
       "ケーキの粗熱（触れるくらいまで冷めること）が取れたら切り分け、皿に盛ってベリーソースをかける。"
     ]
+  },
+  {
+    id:"roast-chicken", name:"ローストチキン", img:"roast-chicken.jpg", emoji:"🍗", cat:"炒め物",
+    servings:4, time:60, kcal:650, tags:["ガッツリ","野菜たっぷり","ご飯が進む"],
+    season:{from:"11-15", to:"12-25", label:"クリスマス"},
+    desc:"皮はパリッと、中はジューシー。付け合わせの野菜も一緒に焼ける、クリスマスのごちそう。",
+    ingredients:[
+      {n:"鶏もも肉", amt:800, unit:"g", per:98, main:true},
+      {n:"じゃがいも", amt:3, unit:"個", per:40, main:true},
+      {n:"にんじん", amt:1, unit:"本", per:50, main:true},
+      {n:"玉ねぎ", amt:2, unit:"個", per:40, main:true},
+      {n:"オリーブオイル・にんにく・ローズマリーなど", fixed:40, main:false}
+    ],
+    steps:[
+      "鶏もも肉は余分な脂を取り除き、皮の面にフォークで数か所穴をあける。塩小さじ1、こしょう少々、すりおろしにんにく小さじ1、オリーブオイル大さじ1をもみ込み、15分おく（下味をつける）。",
+      "じゃがいもは大きめのひと口大（約3cm）、にんじんは乱切り（回しながら斜めに切る）、玉ねぎはくし切り（半分に切ってから放射状に切り分ける）にする。オーブンを200℃に温め始める（予熱）。",
+      "天板にクッキングシートを敷き、野菜を広げる。塩小さじ1/2とオリーブオイル大さじ1を全体にからめ、真ん中をあけて鶏肉を皮の面を上にして並べる。",
+      "200℃のオーブンで40分焼く。途中の20分で野菜を裏返す。皮がこんがりと色づき、竹串を刺して透明な肉汁が出れば焼き上がり（赤い肉汁が出る場合は5分ずつ追加で焼く）。",
+      "焼き上がったら5分おいて肉汁を落ち着かせ、切り分けて野菜と一緒に大皿に盛る。好みでローズマリーを添える。"
+    ]
+  },
+  {
+    id:"pumpkin-pudding", name:"かぼちゃプリン", img:"pumpkin-pudding.jpg", emoji:"🍮", cat:"デザート",
+    servings:4, time:20, kcal:280, tags:["レンジのみ","作り置き"],
+    season:{from:"10-01", to:"10-31", label:"ハロウィン"},
+    desc:"電子レンジで作る、かぼちゃの濃厚プリン。ハロウィンにぴったりの鮮やかな橙色。",
+    ingredients:[
+      {n:"かぼちゃ", amt:300, unit:"g", per:30, main:true},
+      {n:"卵", amt:2, unit:"個", per:25, main:true},
+      {n:"牛乳", amt:200, unit:"ml", per:28, main:true},
+      {n:"生クリーム", amt:100, unit:"ml", per:85, main:true},
+      {n:"砂糖・シナモンなど", fixed:20, main:false}
+    ],
+    steps:[
+      "かぼちゃは種とワタを取り、皮をむいて2cm角に切る。耐熱ボウルに入れてふんわりとラップをし、電子レンジ600Wで5分温める。熱いうちにフォークでなめらかにつぶす。",
+      "砂糖大さじ4を加えて混ぜる。溶いた卵2個、生クリーム100ml、牛乳200mlの順に、少しずつ加えて混ぜる。茶こしでこすと、なめらかになる。",
+      "耐熱カップ（レンジに使えるカップ）4個に分け入れ、ふんわりとラップをする。電子レンジ600Wで2分温め、次に200W（解凍モード）で6分温める。まだ固まっていなければ、200Wで1分ずつ追加で温める。",
+      "粗熱を取って（手でさわれるくらいまで冷ます）から、冷蔵庫で2時間冷やす。好みでシナモンを少々ふる。"
+    ]
+  },
+  {
+    id:"ozoni", name:"お雑煮", img:"ozoni.jpg", emoji:"🎍", cat:"汁物",
+    servings:4, time:25, kcal:320, tags:["ヘルシー","節約","鍋のみ"],
+    desc:"鶏肉と根菜の澄まし汁に餅を入れる、お正月の定番。",
+    season:{from:"12-28", to:"01-07", label:"お正月"},
+    ingredients:[
+      {n:"鶏もも肉", amt:200, unit:"g", per:98, main:true},
+      {n:"にんじん", amt:1, unit:"本", per:50, main:true},
+      {n:"大根", amt:300, unit:"g", per:18, main:true},
+      {n:"切り餅", amt:8, unit:"個", per:40, main:true},
+      {n:"だし・醤油・塩など", fixed:20, main:false}
+    ],
+    steps:[
+      "鶏肉はひと口大（約3cmの大きさ）に切る。にんじんは5mm厚さの輪切りに、大根は5mm厚さのいちょう切り（半分に切ったものを、さらに縦半分に切った形）にする。",
+      "鍋に水1Lと顆粒だし小さじ2を入れて中火にかけ、沸いたら鶏肉、大根、にんじんを入れて弱めの中火で10分煮る。表面に浮くアク（泡のようなもの）をすくい取る。",
+      "醤油大さじ1と塩小さじ1/2を加えて味を調える。切り餅を加えて弱火で3分煮る（餅がやわらかくなればOK。煮すぎると溶けるので注意）。",
+      "餅が沈まないうちに、汁と一緒に器に盛る。"
+    ]
+  },
+  {
+    id:"ehomaki", name:"恵方巻き", img:"ehomaki.jpg", emoji:"🍣", cat:"主食",
+    servings:2, time:25, kcal:680, tags:["ガッツリ"],
+    desc:"サーモンと厚焼き卵の太巻き。節分に丸かぶりする縁起物。",
+    season:{from:"01-25", to:"02-03", label:"節分"},
+    ingredients:[
+      {n:"米", amt:300, unit:"g", per:50, main:true},
+      {n:"サーモン（刺身用）", amt:1, unit:"パック", per:300, main:true},
+      {n:"卵", amt:2, unit:"個", per:25, main:true},
+      {n:"きゅうり", amt:1, unit:"本", per:40, main:true},
+      {n:"焼きのり", amt:2, unit:"枚", per:30, main:true},
+      {n:"酢・砂糖・塩など", fixed:25, main:false}
+    ],
+    steps:[
+      "炊きたてのご飯（米300g分）に、酢大さじ3、砂糖大さじ1と1/2、塩小さじ1を混ぜたすし酢を回しかけ、切るように混ぜて冷ます（酢飯）。",
+      "卵に砂糖小さじ2と塩ひとつまみを混ぜ、卵焼き器（四角いフライパン）で厚焼き卵を作り、1cm幅の棒状に切る。サーモンは1cm角の棒状に切り、きゅうりは縦4等分に切る。",
+      "巻きす（なければラップ）の上にのりを置き、酢飯を薄く広げる（奥の2cm分は残す）。手前にサーモン、卵、きゅうりを並べる。",
+      "手前から巻きすごと持ち上げて一気に巻き、形を整えて10分置く。切らずに1本のまま、その年の恵方（縁起の良い方角）を向いて食べるのが習わし。"
+    ]
+  },
+  {
+    id:"namachoco", name:"生チョコ", img:"namachoco.jpg", emoji:"🍫", cat:"デザート",
+    servings:4, time:20, kcal:300, tags:["作り置き"],
+    desc:"板チョコと生クリームだけ。口どけなめらかな一口チョコ。",
+    season:{from:"02-01", to:"02-14", label:"バレンタイン"},
+    ingredients:[
+      {n:"板チョコレート", amt:3, unit:"枚", per:110, main:true},
+      {n:"生クリーム", amt:100, unit:"ml", per:85, main:true},
+      {n:"ココアパウダーなど", fixed:20, main:false}
+    ],
+    steps:[
+      "板チョコ3枚を細かく刻む（細かいほど溶けやすい）。生クリーム100mlを小鍋に入れて弱火で温め、ふちがふつふつしてきたら火を止める（沸騰させない）。",
+      "刻んだチョコに温めた生クリームを注ぎ、1分置いてから中心から静かに混ぜ、なめらかに溶かす。",
+      "ラップを敷いたバットや保存容器に流し入れ、冷蔵庫で3時間冷やし固める。",
+      "包丁を温めて（熱湯につけて拭くと切りやすい）2cm角に切り分け、ココアパウダー大さじ1を茶こしで振ってまぶす。"
+    ]
+  },
+  {
+    id:"chirashi", name:"ちらし寿司", img:"chirashi.jpg", emoji:"🌸", cat:"主食",
+    servings:4, time:20, kcal:520, tags:["節約"],
+    desc:"鮭フレークと錦糸卵で手軽に作る、ひな祭りの彩りちらし。",
+    season:{from:"02-20", to:"03-03", label:"ひな祭り"},
+    ingredients:[
+      {n:"米", amt:450, unit:"g", per:50, main:true},
+      {n:"鮭フレーク", amt:1, unit:"パック", per:250, main:true},
+      {n:"卵", amt:3, unit:"個", per:25, main:true},
+      {n:"きゅうり", amt:1, unit:"本", per:40, main:true},
+      {n:"酢・砂糖・塩・ごまなど", fixed:30, main:false}
+    ],
+    steps:[
+      "炊きたてのご飯（米450g分）に、酢大さじ4、砂糖大さじ2、塩小さじ1を混ぜたすし酢を回しかけ、切るように混ぜて冷ます。",
+      "錦糸卵を作る。卵3個に砂糖小さじ1と塩ひとつまみを混ぜる。フライパンに油を薄く引いて弱火にし、卵液の1/3量を薄く広げて焼く（表面が乾いたらOK、裏返さなくてよい）。3枚焼いて重ね、細く切る。",
+      "きゅうりは1cm角に切り、塩少々でもんで5分置き、水気をしぼる。",
+      "器に酢飯を盛り、鮭フレーク、錦糸卵、きゅうりを彩りよく散らす。白ごま少々を振る。"
+    ]
+  },
+  {
+    id:"tanabata-somen", name:"七夕そうめん", img:"tanabata-somen.jpg", emoji:"🎋", cat:"麺",
+    servings:2, time:15, kcal:430, tags:["節約","時短"],
+    desc:"星形のオクラと錦糸卵を散らした、七夕の冷たいそうめん。",
+    season:{from:"06-25", to:"07-07", label:"七夕"},
+    ingredients:[
+      {n:"そうめん", amt:200, unit:"g", per:70, main:true},
+      {n:"オクラ", amt:1, unit:"パック", per:90, main:true},
+      {n:"卵", amt:1, unit:"個", per:25, main:true},
+      {n:"ハム", amt:2, unit:"枚", per:35, main:true},
+      {n:"めんつゆなど", fixed:20, main:false}
+    ],
+    steps:[
+      "錦糸卵を作る。卵1個に塩ひとつまみを混ぜ、フライパンで薄焼き卵を焼いて細く切る。ハムは細切りにする。",
+      "オクラは塩少々で板ずり（まな板の上で塩をまぶして転がすこと）して洗う。たっぷりの湯で1分ゆで、冷水に取って3mm幅の輪切りにする（切り口が星の形になる）。",
+      "同じ湯でそうめんを袋の表示時間どおり（約2分）ゆで、流水でもみ洗いして水気を切る。",
+      "器にそうめんを盛り、錦糸卵、ハム、オクラを天の川のように散らす。冷やしためんつゆ（ストレート、または表示どおりに薄めたもの）を添える。"
+    ]
+  },
+  {
+    id:"nasu-kabayaki", name:"なすの蒲焼き丼", img:"nasu-kabayaki.jpg", emoji:"🍆", cat:"丼",
+    servings:2, time:15, kcal:600, tags:["節約","時短","ご飯が進む","フライパンのみ"],
+    desc:"うなぎの代わりになすを甘辛だれで焼く、土用の丑の日の丼。",
+    season:{from:"07-10", to:"07-31", label:"土用の丑の日"},
+    ingredients:[
+      {n:"なす", amt:3, unit:"個", per:40, main:true},
+      {n:"米", amt:300, unit:"g", per:50, main:true},
+      {n:"醤油・みりん・砂糖・片栗粉など", fixed:30, main:false}
+    ],
+    steps:[
+      "なすはヘタを取り、縦半分に切る。皮に格子状の切り込みを入れ、切り口に片栗粉を薄くまぶす（たれがからみやすくなる）。",
+      "フライパンに油大さじ2を入れて中火にかけ、なすを皮の面から3分、裏返して2分焼く。",
+      "醤油大さじ2、みりん大さじ2、砂糖大さじ1を加え、弱めの中火で2分、たれをからめながら煮詰める（蒲焼き＝甘辛いたれで照りよく焼く調理法）。",
+      "ご飯にたれごとのせ、好みで山椒を少々振る（うなぎの蒲焼き風になる）。"
+    ]
+  },
+  {
+    id:"tsukimi-dango", name:"お月見団子", img:"tsukimi-dango.jpg", emoji:"🍡", cat:"デザート",
+    servings:4, time:30, kcal:170, tags:["作り置き"],
+    desc:"白玉粉で作るもちもち団子。みたらしだれをかけて月見に。",
+    season:{from:"09-01", to:"09-30", label:"お月見"},
+    ingredients:[
+      {n:"白玉粉", amt:150, unit:"g", per:140, main:true},
+      {n:"砂糖・醤油・片栗粉など", fixed:30, main:false}
+    ],
+    steps:[
+      "ボウルに白玉粉150gを入れ、水120mlを少しずつ加えながらこねる。耳たぶくらいのやわらかさになったら、15等分して丸める（真ん中を少しへこませると火が通りやすい）。",
+      "たっぷりの湯を沸かし、団子を入れる。浮いてきてからさらに2分ゆで、冷水に取って冷ます。",
+      "みたらしだれを作る。小鍋に砂糖大さじ4、醤油大さじ2、水大さじ5、片栗粉大さじ1を入れてよく混ぜ、中火にかける。混ぜ続け、とろみがついて透明感が出たら火を止める。",
+      "団子の水気を切り、器にピラミッド状に積み上げる（十五夜は15個積むのが習わし）。上からみたらしだれをかける。"
+    ]
   }
 ];
 
@@ -2395,6 +2562,25 @@ document.getElementById("tabbar").addEventListener("click", e => {
   renderAll();
 });
 
+// ===== 季節限定レシピ =====
+// レシピに season:{from:"MM-DD", to:"MM-DD", label:"クリスマス"} がある場合、
+// 端末の日付がその期間内（開始日・終了日を含む）のときだけ表示する。
+// from > to の指定（例：12-28〜01-07）では年をまたいで判定する。
+function seasonActive(recipe, date){
+  const s = recipe && recipe.season;
+  if (!s || !s.from || !s.to) return true;
+  const d = date || new Date();
+  const cur = (d.getMonth() + 1) * 100 + d.getDate();
+  const from = parseInt(s.from.replace("-", ""), 10);
+  const to = parseInt(s.to.replace("-", ""), 10);
+  if (from <= to) return cur >= from && cur <= to;
+  return cur >= from || cur <= to;
+}
+// いま表示してよいレシピだけを返す（季節限定の期間外レシピを除外）。
+function visibleRecipes(date){
+  return RECIPES.filter(r => seasonActive(r, date));
+}
+
 // ---- レシピ表示 ----
 function recipeCard(ev, opts){
   opts = opts || {};
@@ -2414,6 +2600,7 @@ function recipeCard(ev, opts){
   const priorityBadge = pHits.length ? '<span class="badge good">優先食材：' + esc(pHits.join("・")) + '</span>' : '';
   const aHits = autoPriorityHits(r);
   const autoBadge = aHits.length ? '<span class="badge warn">期限間近：' + esc(aHits.join("・")) + '（自動優先）</span>' : '';
+  const seasonBadge = r.season ? '<span class="badge season">期間限定（' + esc(r.season.label || "") + '）</span>' : '';
   // 優先食材のみモードでは、苦手を含むレシピを消さず、赤文字警告＋赤枠で見せる
   // （アレルギーを含むレシピはこのモードでも一覧に出てこない＝呼び出し側で常時除外済み）
   let cardClass = "recipe";
@@ -2433,7 +2620,7 @@ function recipeCard(ev, opts){
     '<p class="rdesc">' + esc(r.desc) + '</p>' + warnHtml +
     '<div class="rmeta"><span class="price">' + yen(ev.perMeal) + '<small> / 1食</small></span>' +
     '<span class="badge">' + r.servings + '食分</span><span class="badge">約' + r.time + '分</span>' +
-    (r.kcal ? '<span class="badge">約' + r.kcal + 'kcal（目安）</span>' : '') + badge + ngBadge + priorityBadge + autoBadge + '</div>' +
+    (r.kcal ? '<span class="badge">約' + r.kcal + 'kcal（目安）</span>' : '') + badge + ngBadge + priorityBadge + autoBadge + seasonBadge + '</div>' +
     (tags ? '<div class="rtags">' + tags + '</div>' : '') +
     '</div></div>';
 }
@@ -2453,12 +2640,13 @@ function recipeCardCompact(ev, opts){
     }
   }
   const tags = (r.tags || []).slice(0, 3).map(tg => '<span class="badge">#' + esc(tg) + '</span>').join("");
+  const seasonBadge = r.season ? '<span class="badge season">期間限定（' + esc(r.season.label || "") + '）</span>' : '';
   return '<div class="' + cardClass + '" data-recipe="' + r.id + '">' +
     '<div class="rimg"><div class="ph"><div>' + r.emoji + '</div></div>' +
     (r.img ? '<img src="' + esc(r.img) + '" alt="" loading="lazy" onerror="this.remove()">' : '') + '</div>' +
     '<div class="rbody"><p class="rname">' + esc(r.name) + '</p>' + warnHtml +
     '<div class="rmeta"><span class="price">' + yen(ev.perMeal) + '<small> / 1食</small></span>' +
-    (r.kcal ? '<span class="badge">約' + r.kcal + 'kcal（目安）</span>' : '') + '</div>' +
+    (r.kcal ? '<span class="badge">約' + r.kcal + 'kcal（目安）</span>' : '') + seasonBadge + '</div>' +
     (tags ? '<div class="rtags">' + tags + '</div>' : '') +
     '</div></div>';
 }
@@ -2471,7 +2659,7 @@ function recipeCardsHtml(evals, opts){
   return evals.map(ev => recipeCard(ev, opts)).join("");
 }
 function renderSuggest(){
-  const allEvals = RECIPES.map(r => evaluateRecipe(r, state));
+  const allEvals = visibleRecipes().map(r => evaluateRecipe(r, state));
   // アレルギー食材を含むレシピは常時除外し、苦手食材を含むレシピも提案から除外する（件数は分けて表示）
   const afterAllergy = allEvals.filter(e => allergyHits(e.recipe).length === 0);
   const allergyExcluded = allEvals.length - afterAllergy.length;
@@ -2532,10 +2720,11 @@ function renderRecipeList(){
   // 並べ方（1列／2列）トグルの選択状態を、保存済みの設定に合わせる
   document.querySelectorAll("#recipe-layout-seg button").forEach(b =>
     b.classList.toggle("active", b.dataset.layout === (state.recipeLayout === "2col" ? "2col" : "1col")));
-  const cats = ["全部"].concat(Array.from(new Set(RECIPES.map(r => r.cat))));
+  const visible = visibleRecipes();
+  const cats = ["全部"].concat(Array.from(new Set(visible.map(r => r.cat))));
   document.getElementById("recipe-chips").innerHTML = cats.map(c =>
     '<button data-cat="' + esc(c) + '"' + (c === currentCat ? ' class="active"' : '') + '>' + esc(c) + '</button>').join("");
-  const tags = ["全部"].concat(TAG_ORDER.filter(tg => RECIPES.some(r => (r.tags || []).includes(tg))));
+  const tags = ["全部"].concat(TAG_ORDER.filter(tg => visible.some(r => (r.tags || []).includes(tg))));
   document.getElementById("recipe-tags").innerHTML = tags.map(tg =>
     '<button data-tag="' + esc(tg) + '"' + (tg === currentTag ? ' class="active"' : '') + '>' +
     (tg === "全部" ? "全部" : "#" + esc(tg)) + '</button>').join("");
@@ -2545,7 +2734,7 @@ function renderRecipeList(){
   const priorityOnly = !!(priorityOnlyEl && priorityOnlyEl.checked);
   const hasPriority = (state.priority || []).length > 0 || autoPriorityNames().length > 0;
   const pNote = document.getElementById("recipe-priority-note");
-  let list = RECIPES.filter(r => currentCat === "全部" || r.cat === currentCat)
+  let list = visible.filter(r => currentCat === "全部" || r.cat === currentCat)
     .filter(r => currentTag === "全部" || (r.tags || []).includes(currentTag))
     .filter(r => recipeMatchesQuery(r, recipeQuery));
 
