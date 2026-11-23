@@ -536,7 +536,7 @@ const RECIPES = [
   },
   {
     id:"teriyaki-don", name:"鶏の照り焼き丼", img:"teriyaki.jpg", emoji:"🍚", cat:"丼",
-    servings:2, time:18, kcal:700, tags:["ガッツリ","フライパンのみ"],
+    servings:2, time:18, kcal:700, tags:["ガッツリ","フライパンのみ","お弁当OK"],
     desc:"甘辛だれをからめた鶏ももと、ふわふわ卵の丼。",
     ingredients:[
       {n:"鶏もも肉", amt:400, unit:"g", per:98, main:true},
@@ -1122,7 +1122,7 @@ const RECIPES = [
   },
   {
     id:"gapao", name:"ガパオライス", img:"gapao.jpg", emoji:"🍚", cat:"丼",
-    servings:2, time:15, kcal:680, tags:["ガッツリ","時短","フライパンのみ"],
+    servings:2, time:15, kcal:680, tags:["ガッツリ","時短","フライパンのみ","お弁当OK"],
     desc:"ナンプラーの香りと目玉焼きが決め手。仕上げにパクチーを散らすタイ風ご飯。",
     ingredients:[
       {n:"鶏ひき肉", amt:300, unit:"g", per:98, main:true},
@@ -1175,7 +1175,7 @@ const RECIPES = [
   },
   {
     id:"bibimbap", name:"ビビンバ", img:"bibimbap.jpg", emoji:"🍚", cat:"丼",
-    servings:2, time:20, kcal:690, tags:["ガッツリ","野菜たっぷり","フライパンのみ"],
+    servings:2, time:20, kcal:690, tags:["ガッツリ","野菜たっぷり","フライパンのみ","お弁当OK"],
     desc:"肉そぼろと野菜のナムルをのせて混ぜて食べる、韓国の混ぜご飯。",
     ingredients:[
       {n:"豚ひき肉", amt:200, unit:"g", per:108, main:true},
@@ -1389,7 +1389,7 @@ const RECIPES = [
   },
   {
     id:"keema-curry", name:"キーマカレー", img:"keema.jpg", emoji:"🍛", cat:"カレー",
-    servings:3, time:20, kcal:680, tags:["ガッツリ","作り置き","鍋のみ"],
+    servings:3, time:20, kcal:680, tags:["ガッツリ","作り置き","鍋のみ","お弁当OK"],
     desc:"ひき肉とみじん切り野菜を煮込む、水分の少ないカレー。冷凍保存もできる。",
     ingredients:[
       {n:"合いびき肉", amt:300, unit:"g", per:110, main:true},
@@ -1696,7 +1696,7 @@ const RECIPES = [
   },
   {
     id:"yaki-udon", name:"焼きうどん", img:"yakiudon.jpg", emoji:"🍜", cat:"うどん",
-    servings:2, time:15, kcal:640, tags:["時短","野菜たっぷり","フライパンのみ"],
+    servings:2, time:15, kcal:640, tags:["時短","野菜たっぷり","フライパンのみ","お弁当OK"],
     desc:"冷凍うどんと野菜たっぷりの醤油味焼きうどん。",
     ingredients:[
       {n:"冷凍うどん", amt:2, unit:"玉", per:60, main:true},
@@ -2442,6 +2442,248 @@ const RECIPES = [
       "フライパンに油小さじ2を中火で熱し、厚揚げを片面2分ずつ焼いて焼き色をつけ、玉ねぎを加えて2分炒める。",
       "すりおろししょうが小さじ2、醤油大さじ2、みりん大さじ1、砂糖小さじ2を加えて全体にからめる。",
       "汁気を切ってお弁当に詰める。ご飯の上にのせてもおいしい。"
+    ]
+  },
+  {
+    id:"shiozake", name:"鮭の塩焼き", img:"shiozake.jpg", emoji:"🐟", cat:"炒め物",
+    servings:2, time:12, kcal:280, tags:["節約","時短","お弁当OK","ご飯が進む","フライパンのみ"],
+    desc:"お弁当の王道。フライパンで皮パリッと焼く塩鮭。大根おろし添え。",
+    ingredients:[
+      {n:"鮭", amt:2, unit:"切れ", per:150, main:true},
+      {n:"大根・塩など", fixed:20, main:false}
+    ],
+    steps:[
+      "鮭は両面に塩小さじ1/3をふり、10分置いて水気をキッチンペーパーで拭く。",
+      "フライパンに油小さじ1を中火で熱し、鮭を皮目から入れて4分焼く。裏返して3分焼く。",
+      "大根はすりおろして軽く水気を切る。",
+      "鮭に大根おろしを添える。お弁当には粗熱を取ってから詰める。"
+    ]
+  },
+  {
+    id:"saba-tatsuta", name:"サバの竜田揚げ風", img:"saba-tatsuta.jpg", emoji:"🐟", cat:"揚げ物",
+    servings:2, time:15, kcal:380, tags:["節約","お弁当OK","ご飯が進む","フライパンのみ"],
+    desc:"片栗粉をまぶして揚げ焼きにする竜田揚げ風。冷めても衣が香ばしい。",
+    ingredients:[
+      {n:"サバ", amt:2, unit:"切れ", per:130, main:true},
+      {n:"片栗粉・油・醤油・酒・しょうがなど", fixed:25, main:false}
+    ],
+    steps:[
+      "サバは骨を取り、一口大に切る。醤油大さじ1、酒大さじ1、すりおろししょうが小さじ1に10分つける。",
+      "汁気を拭き、片栗粉大さじ3を薄くまぶす。",
+      "フライパンに5mmほどの油を中火で熱し、片面3分ずつ揚げ焼きにする。",
+      "油を切って粗熱を取り、お弁当に詰める。"
+    ]
+  },
+  {
+    id:"tori-misomayo", name:"鶏肉の味噌マヨ焼き", img:"tori-misomayo.jpg", emoji:"🍗", cat:"炒め物",
+    servings:2, time:15, kcal:450, tags:["節約","時短","お弁当OK","ご飯が進む","フライパンのみ"],
+    desc:"味噌とマヨのコクのあるタレで焼く鶏もも肉。冷めてもやわらかい。",
+    ingredients:[
+      {n:"鶏もも肉", amt:300, unit:"g", per:98, main:true},
+      {n:"レタス", amt:100, unit:"g", per:30, main:true},
+      {n:"味噌・マヨネーズ・みりん・油など", fixed:25, main:false}
+    ],
+    steps:[
+      "鶏もも肉は一口大に切り、味噌大さじ1、マヨネーズ大さじ1、みりん大さじ1を混ぜたタレに10分つける。",
+      "フライパンに油小さじ2を中火で熱し、タレを軽く拭った鶏肉を皮目から3分焼く。裏返して2分焼く。",
+      "残りのタレを加えて1分からめる。",
+      "レタスを敷いて盛る。お弁当には汁気を切って詰める。"
+    ]
+  },
+  {
+    id:"butakoma-ketchup", name:"豚こまのケチャップ炒め", img:"butakoma-ketchup.jpg", emoji:"🍅", cat:"炒め物",
+    servings:2, time:10, kcal:420, tags:["節約","時短","お弁当OK","ご飯が進む","フライパンのみ"],
+    desc:"ケチャップとウスターソースの甘辛味で、ポークチャップ風。子どもにも人気の味。",
+    ingredients:[
+      {n:"豚こま肉", amt:250, unit:"g", per:108, main:true},
+      {n:"玉ねぎ", amt:1, unit:"個", per:40, main:true},
+      {n:"ケチャップ・ウスターソース・油など", fixed:20, main:false}
+    ],
+    steps:[
+      "豚こま肉は塩こしょう少々と小麦粉大さじ1をまぶす。玉ねぎは薄切りにする。",
+      "フライパンに油大さじ1を中火で熱し、豚肉を3分炒める。玉ねぎを加えて2分炒める。",
+      "ケチャップ大さじ3、ウスターソース大さじ1、砂糖小さじ1を加えて全体にからめる。",
+      "汁気を飛ばして仕上げる。お弁当にもそのまま詰められる。"
+    ]
+  },
+  {
+    id:"kinpira-gobo", name:"きんぴらごぼう", img:"kinpira-gobo.jpg", emoji:"🥕", cat:"副菜",
+    servings:2, time:12, kcal:110, tags:["ヘルシー","野菜たっぷり","節約","時短","作り置き","お弁当OK","フライパンのみ"],
+    desc:"お弁当の定番副菜。ごぼうとにんじんの甘辛きんぴらで、作り置きにも向く。",
+    ingredients:[
+      {n:"ごぼう", amt:1, unit:"本", per:70, main:true},
+      {n:"にんじん", amt:1, unit:"本", per:50, main:true},
+      {n:"醤油・みりん・砂糖・ごま油・白ごまなど", fixed:20, main:false}
+    ],
+    steps:[
+      "ごぼうは皮をこそげて細い千切りにし、水に5分さらして水気を切る。にんじんも千切りにする。",
+      "フライパンにごま油大さじ1を中火で熱し、ごぼうとにんじんを4分炒める。",
+      "醤油大さじ1.5、みりん大さじ1、砂糖大さじ1を加えて汁気がなくなるまで2分炒める。",
+      "白ごま小さじ1をふる。粗熱を取ってお弁当に詰める。"
+    ]
+  },
+  {
+    id:"broccoli-goma", name:"ブロッコリーのごま和え", img:"broccoli-goma.jpg", emoji:"🥦", cat:"副菜",
+    servings:2, time:8, kcal:70, tags:["ヘルシー","野菜たっぷり","節約","時短","お弁当OK","レンジのみ"],
+    desc:"レンジで加熱してごま和えに。緑の彩りが入るだけでお弁当が見栄えする。",
+    ingredients:[
+      {n:"ブロッコリー", amt:1, unit:"株", per:130, main:true},
+      {n:"すりごま・醤油・砂糖など", fixed:15, main:false}
+    ],
+    steps:[
+      "ブロッコリーは小房に分け、茎は薄切りにする。水で洗って水気をつけたまま耐熱ボウルに入れる。",
+      "ふんわりラップをして600Wで2分半加熱し、水気を切る。",
+      "すりごま大さじ2、醤油小さじ2、砂糖小さじ1を和える。",
+      "粗熱を取って水気を切ってからお弁当に詰める。"
+    ]
+  },
+  {
+    id:"hourenso-namul", name:"ほうれん草のナムル", img:"hourenso-namul.jpg", emoji:"🥬", cat:"副菜",
+    servings:2, time:8, kcal:60, tags:["ヘルシー","野菜たっぷり","節約","時短","お弁当OK","レンジのみ"],
+    desc:"ごま油と塩で和えるだけの定番ナムル。お弁当の緑の副菜に。",
+    ingredients:[
+      {n:"ほうれん草", amt:1, unit:"束", per:100, main:true},
+      {n:"ごま油・鶏がらスープの素・白ごまなど", fixed:15, main:false}
+    ],
+    steps:[
+      "ほうれん草は洗ってラップで包み、600Wで2分加熱する。",
+      "冷水に取って水気をしっかり絞り、4cm幅に切る。",
+      "ごま油小さじ2、鶏がらスープの素小さじ1/2、塩少々、白ごま小さじ1を和える。",
+      "水気を切ってお弁当に詰める。"
+    ]
+  },
+  {
+    id:"cabbage-shiokombu", name:"キャベツと塩昆布の和え物", img:"cabbage-shiokombu.jpg", emoji:"🥗", cat:"副菜",
+    servings:2, time:5, kcal:50, tags:["ヘルシー","野菜たっぷり","節約","時短","作り置き","お弁当OK"],
+    desc:"切って和えるだけの無限キャベツ風。火を使わず、あと一品に便利。",
+    ingredients:[
+      {n:"キャベツ", amt:300, unit:"g", per:20, main:true},
+      {n:"塩昆布・ごま油・白ごまなど", fixed:40, main:false}
+    ],
+    steps:[
+      "キャベツはざく切りにして洗い、水気を切る。",
+      "塩昆布10g、ごま油小さじ2、白ごま小さじ1を和えて5分置く。",
+      "水気を軽く絞ってお弁当に詰める。"
+    ]
+  },
+  {
+    id:"tamago-soboro", name:"卵そぼろ", img:"tamago-soboro.jpg", emoji:"🥚", cat:"丼",
+    servings:2, time:8, kcal:420, tags:["節約","時短","お弁当OK","フライパンのみ"],
+    desc:"ふんわり甘い卵そぼろをご飯にのせて。鶏そぼろと合わせれば二色丼になる。",
+    ingredients:[
+      {n:"卵", amt:3, unit:"個", per:25, main:true},
+      {n:"米", amt:300, unit:"g", per:50, main:true},
+      {n:"砂糖・酒・塩など", fixed:10, main:false}
+    ],
+    steps:[
+      "卵に砂糖大さじ1、酒大さじ1、塩少々を混ぜる。",
+      "フライパンを弱めの中火にかけ、菜箸4本で手早くかき混ぜながら3分ほど加熱し、細かいそぼろ状にする。",
+      "ご飯にのせる。お弁当にはご飯の上に広げてのせる。"
+    ]
+  },
+  {
+    id:"nikudango", name:"レンジ肉団子", img:"nikudango.jpg", emoji:"🧆", cat:"レンジ",
+    servings:2, time:12, kcal:380, tags:["節約","時短","お弁当OK","ご飯が進む","レンジのみ"],
+    desc:"レンジで作る甘酢風肉団子。揚げないから片付けも楽で、お弁当に詰めやすい。",
+    ingredients:[
+      {n:"合いびき肉", amt:300, unit:"g", per:110, main:true},
+      {n:"玉ねぎ", amt:1, unit:"個", per:40, main:true},
+      {n:"パン粉・ケチャップ・醤油・片栗粉など", fixed:30, main:false}
+    ],
+    steps:[
+      "玉ねぎはみじん切りにする。ひき肉、玉ねぎ、パン粉大さじ3、塩小さじ1/3、こしょう少々を粘りが出るまで混ぜ、10個に丸める。",
+      "耐熱皿に並べ、ふんわりラップをして600Wで5分加熱する。",
+      "ケチャップ大さじ3、醤油大さじ1、砂糖大さじ1、水大さじ2、片栗粉小さじ1を混ぜて肉団子にかけ、ラップなしで600Wで2分加熱してからめる。",
+      "粗熱を取ってお弁当に詰める。"
+    ]
+  },
+  {
+    id:"hash-potato", name:"ハッシュドポテト風", img:"hash-potato.jpg", emoji:"🥔", cat:"副菜",
+    servings:2, time:15, kcal:240, tags:["節約","お弁当OK","フライパンのみ"],
+    desc:"千切りじゃがいもをカリッと焼く。朝の忙しい時間でも作れるお弁当の味方。",
+    ingredients:[
+      {n:"じゃがいも", amt:3, unit:"個", per:40, main:true},
+      {n:"片栗粉・塩・油など", fixed:25, main:false}
+    ],
+    steps:[
+      "じゃがいもは皮をむいて細い千切りにする（水にはさらさない）。片栗粉大さじ1と塩小さじ1/3を混ぜる。",
+      "フライパンに油大さじ2を中火で熱し、生地を小判形に広げて片面4分ずつ焼く。",
+      "カリッとしたら取り出し、粗熱を取ってお弁当に詰める。"
+    ]
+  },
+  {
+    id:"mazegohan", name:"塩昆布と枝豆の混ぜご飯", img:"mazegohan.jpg", emoji:"🍚", cat:"主食",
+    servings:2, time:10, kcal:400, tags:["節約","時短","お弁当OK"],
+    desc:"炊きたてご飯に混ぜるだけ。おにぎりにしてもおいしい、お弁当向きのご飯。",
+    ingredients:[
+      {n:"米", amt:300, unit:"g", per:50, main:true},
+      {n:"冷凍枝豆", amt:100, unit:"g", per:60, main:true},
+      {n:"塩昆布・白ごまなど", fixed:30, main:false}
+    ],
+    steps:[
+      "ご飯を炊く。冷凍枝豆は解凍してさやから出す。",
+      "炊きたてご飯に枝豆、塩昆布15g、白ごま小さじ2を混ぜる。",
+      "そのまま詰めても、おにぎりにしてもよい。"
+    ]
+  },
+  {
+    id:"wakame-gohan", name:"わかめご飯", img:"wakame-gohan.jpg", emoji:"🍚", cat:"主食",
+    servings:2, time:10, kcal:380, tags:["節約","時短","お弁当OK"],
+    desc:"給食の定番わかめご飯を家庭で。安くて、お弁当のご飯に変化がつく。",
+    ingredients:[
+      {n:"米", amt:300, unit:"g", per:50, main:true},
+      {n:"乾燥わかめ・塩・白ごまなど", fixed:25, main:false}
+    ],
+    steps:[
+      "ご飯は塩小さじ1/2を加えて炊く。",
+      "乾燥わかめ大さじ2は水で戻して水気を絞り、細かく刻む。",
+      "炊きたてご飯にわかめと白ごま小さじ2を混ぜる。おにぎりにしてもよい。"
+    ]
+  },
+  {
+    id:"chikuwa-kyuri", name:"ちくわときゅうりのマヨ和え", img:"chikuwa-kyuri.jpg", emoji:"🥒", cat:"副菜",
+    servings:2, time:5, kcal:110, tags:["節約","時短","お弁当OK"],
+    desc:"火を使わない即席副菜。わさびを少し入れると大人の味になる。",
+    ingredients:[
+      {n:"ちくわ", amt:4, unit:"本", per:30, main:true},
+      {n:"きゅうり", amt:1, unit:"本", per:40, main:true},
+      {n:"マヨネーズ・醤油など", fixed:10, main:false}
+    ],
+    steps:[
+      "ちくわは斜め薄切りにする。きゅうりは薄切りにして塩少々（分量外）でもみ、水気を絞る。",
+      "マヨネーズ大さじ2、醤油小さじ1/2で和える。",
+      "水気を切ってお弁当に詰める。"
+    ]
+  },
+  {
+    id:"tuna-corn", name:"ツナとコーンのマヨサラダ", img:"tuna-corn.jpg", emoji:"🌽", cat:"副菜",
+    servings:2, time:5, kcal:180, tags:["節約","時短","お弁当OK"],
+    desc:"缶詰同士の組み合わせで包丁いらず。甘くてお弁当の箸休めになる。",
+    ingredients:[
+      {n:"ツナ缶", amt:1, unit:"缶", per:110, main:true},
+      {n:"コーン缶", amt:1, unit:"缶", per:100, main:true},
+      {n:"マヨネーズ・塩こしょうなど", fixed:10, main:false}
+    ],
+    steps:[
+      "ツナとコーンは缶の汁気をしっかり切る。",
+      "マヨネーズ大さじ2、塩こしょう少々で和える。",
+      "カップに入れてお弁当に詰めると汁漏れしにくい。"
+    ]
+  },
+  {
+    id:"piman-chikuwa", name:"ピーマンとちくわの炒め物", img:"piman-chikuwa.jpg", emoji:"🫑", cat:"副菜",
+    servings:2, time:8, kcal:130, tags:["ヘルシー","野菜たっぷり","節約","時短","お弁当OK","フライパンのみ"],
+    desc:"ピーマンの苦味とちくわの旨味が合う、ごま油香る炒め物。彩りの緑にもなる。",
+    ingredients:[
+      {n:"ピーマン", amt:3, unit:"個", per:35, main:true},
+      {n:"ちくわ", amt:4, unit:"本", per:30, main:true},
+      {n:"ごま油・醤油・みりん・白ごまなど", fixed:15, main:false}
+    ],
+    steps:[
+      "ピーマンは細切りにし、ちくわは斜め薄切りにする。",
+      "フライパンにごま油大さじ1を中火で熱し、ピーマンとちくわを3分炒める。",
+      "醤油小さじ2、みりん小さじ2を加えて1分炒め、白ごま小さじ1をふる。",
+      "粗熱を取ってお弁当に詰める。"
     ]
   }
 ];
