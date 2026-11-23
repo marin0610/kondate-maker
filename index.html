@@ -72,6 +72,9 @@
     width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;
     font-size:16px;background:#fff;color:var(--ink);
   }
+  /* フォーカス時のブラウザ自動スクロールで、入力欄がスティッキーヘッダー（約156px）の
+     裏に隠れないようにする（LINE内ブラウザ等で検索欄が見えなくなる問題への対策） */
+  input,select,textarea{scroll-margin-top:166px;}
   .row{display:flex;gap:8px;}
   .row>*{flex:1;}
   .btn{
@@ -2855,6 +2858,21 @@ document.getElementById("recipe-q").addEventListener("input", e => {
   recipeQuery = e.target.value;
   renderRecipeList();
 });
+// フォーカス時のブラウザ自動スクロールで入力欄がスティッキーヘッダーの裏に隠れてしまう
+// 環境（LINE内ブラウザなど）への対策。キーボード表示が落ち着いた後、欄がヘッダーに
+// 隠れたままの場合だけ、scroll-margin-top を効かせて見える位置へ戻す。
+// すでに見えている場合・フォーカスが外れた場合は何もしない。
+document.addEventListener("focusin", e => {
+  const el = e.target;
+  if (!el || !el.matches || !el.matches('input[type="text"],input[type="number"],input[type="url"],input[type="date"],textarea,select')) return;
+  [350, 800].forEach(ms => setTimeout(() => {
+    if (document.activeElement !== el) return;
+    const header = document.querySelector("header");
+    const hh = header ? header.getBoundingClientRect().height : 0;
+    if (el.getBoundingClientRect().top < hh + 4)
+      el.scrollIntoView({ block: "start", behavior: "smooth" });
+  }, ms));
+});
 document.querySelector("main").addEventListener("click", e => {
   const card = e.target.closest("[data-recipe]");
   if (card) openDetail(card.dataset.recipe);
@@ -3276,7 +3294,7 @@ function renderShops(){
       '<div class="sub2">' + esc(s.kind || "") + (s.address ? ' ／ ' + esc(s.address) : '') + '</div>' +
       (s.flyerUrl
         ? '<div class="sub2"><a class="ext" target="_blank" rel="noopener" href="' + esc(s.flyerUrl) + '">チラシ掲載ページを開く</a> ／ <a class="ext" target="_blank" rel="noopener" href="https://www.google.com/search?q=' + encodeURIComponent(s.name + " " + (s.address || "") + " チラシ") + '">ウェブでチラシを探す</a></div>'
-        : '<div class="sub2">チラシURL： <input type="url" data-flyer-input="' + s.id + '" placeholder="https://…" style="width:60%;padding:6px;font-size:13px;"> <button class="btn small" data-flyer-save="' + s.id + '">保存</button></div>') +
+        : '<div class="sub2">チラシURL： <input type="url" data-flyer-input="' + s.id + '" placeholder="https://…" style="width:60%;padding:6px;font-size:16px;"> <button class="btn small" data-flyer-save="' + s.id + '">保存</button></div>') +
       '<div class="sub2"><a class="ext" target="_blank" rel="noopener" href="https://www.google.com/search?q=' + encodeURIComponent(s.name + " " + (s.address || "") + " チラシ") + '">ウェブでチラシを探す</a></div>' +
       '</div><button class="btn small danger" data-delshop="' + s.id + '">削除</button></div>').join("");
     box.querySelectorAll("[data-delshop]").forEach(b => b.addEventListener("click", () => {
@@ -3430,7 +3448,7 @@ function renderFlyerCandidates(cands){
   box.innerHTML = '<div class="sub2">読み取り候補（' + cands.length + '件）。金額や単位が違うものは直してから追加してください。</div>' +
     cands.map((c, i) =>
       '<div class="item"><input type="checkbox" data-fc-check="' + i + '" checked style="width:20px;height:20px;flex:none;">' +
-      '<div class="grow"><input type="text" data-fc-name="' + i + '" value="' + esc(c.name) + '" style="width:100%;padding:6px;font-size:14px;">' +
+      '<div class="grow"><input type="text" data-fc-name="' + i + '" value="' + esc(c.name) + '" style="width:100%;padding:6px;font-size:16px;">' +
       '<div class="row"><div><input type="number" data-fc-price="' + i + '" value="' + c.price + '" inputmode="numeric" style="padding:6px;"></div>' +
       '<div><select data-fc-unit="' + i + '">' + flyerUnitOptions(c.unitSel) + '</select></div></div></div></div>').join("") +
     '<button class="btn primary block" id="btn-flyer-add">選んだ特売をメモに追加</button>';
